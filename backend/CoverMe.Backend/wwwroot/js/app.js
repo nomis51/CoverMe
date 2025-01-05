@@ -1,0 +1,1 @@
+(function(n){typeof define=="function"&&define.amd?define(n):n()})(function(){"use strict";const n="intellij";class o{static namespace=n;getProjectSettings(){if(window[n])return{projectRootPath:window[n].PROJECT_ROOT_PATH,channelId:window[n].CHANNEL_ID}}}const i=[o],t="coverme";window[t]={};for(const e of i)window[t][e.namespace]=new e});

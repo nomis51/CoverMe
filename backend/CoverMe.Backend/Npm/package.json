@@ -1,0 +1,21 @@
+{
+  "name": "coverme.backend",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "packageManager": "yarn@1.22.22",
+  "scripts": {
+    "build": "yarn build:tailwind && yarn build:ts",
+    "build:ts": "vite build",
+    "build:tailwind": "npx tailwindcss -c ./tailwind.config.js -i ../tailwind.css -o ../wwwroot/css/tailwind.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.12",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}

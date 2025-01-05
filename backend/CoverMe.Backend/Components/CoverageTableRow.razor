@@ -1,0 +1,40 @@
+﻿@inherits AppComponentBase
+
+<MudTr data-testid="coverage-table-row">
+    <MudTd Style="@($"padding-left: {Level}rem !important; padding-right: 0 !important")"
+           @ondblclick="@OpenFileAtLine">
+        <MudStack Row="true"
+                  AlignItems="AlignItems.Center">
+            @if (CanBeExpanded)
+            {
+                <MudIconButton Size="Size.Small"
+                               OnClick="@(() => OnExpand.InvokeAsync())"
+                               Icon="@Icons.Material.Filled.ChevronRight"/>
+            }
+
+            <MudImage Src="@($"/images/{Icon.ToString().ToLower()}.png")"
+                      Class="h-[24px]"
+                      ObjectFit="ObjectFit.Contain"/>
+
+            <MudText Class="select-none text-nowrap"
+                     Style="@(HasFilePath ? "cursor: pointer" : string.Empty)">@Symbol</MudText>
+        </MudStack>
+    </MudTd>
+    <MudTd Class="relative"
+           Style="padding-left: 0 !important; padding-right: 0 !important">
+        <div class="bg-neutral-500 overflow-hidden relative min-h-[24px] w-full min-w-[50px] rounded">
+            <div class="h-full w-full min-h-[24px] rounded"
+                 style="max-width: @Coverage%; background-color: @BarColor"></div>
+            <MudText Class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-bold drop-shadow-md"
+                     Style="@($"color: {FontColor}")">
+                @Coverage%
+            </MudText>
+        </div>
+    </MudTd>
+    @if (Settings.Interface.ShowStatementsColumn)
+    {
+        <MudTd Style="padding-left: 4px !important; padding-right: 0 !important">
+            <MudText Align="Align.Left">@CoveredStatements / @TotalStatements</MudText>
+        </MudTd>
+    }
+</MudTr>

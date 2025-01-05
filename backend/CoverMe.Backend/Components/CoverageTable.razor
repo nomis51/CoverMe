@@ -1,0 +1,38 @@
+﻿<MudSimpleTable data-testid="coverage-table"
+                Class="coverage-table !bg-transparent"
+                Dense="true"
+                Elevation="0"
+                Hover="true"
+                FixedHeader="true">
+    <thead>
+    <MudTr>
+        <MudTh Class="text-ellipsis">Symbol</MudTh>
+        <MudTh Class="text-ellipsis">Coverage</MudTh>
+
+        @if (Settings.Interface.ShowStatementsColumn)
+        {
+            <MudTh Class="text-ellipsis whitespace-nowrap">Covered / total statements</MudTh>
+        }
+    </MudTr>
+    </thead>
+    <tbody>
+    @for (var i = 0; i < Nodes.Count; i++)
+    {
+        var i1 = i;
+        if (!IsVisible(i1)) continue;
+
+        var node = Nodes[i1];
+
+        <CoverageTableRow Level="@node.Level"
+                          Symbol="@node.Symbol"
+                          Coverage="@node.Coverage"
+                          CoveredStatements="@node.CoveredStatements"
+                          TotalStatements="@node.TotalStatements"
+                          Icon="@node.Icon"
+                          FilePath="@node.FilePath"
+                          Line="@node.LineNumber"
+                          CanBeExpanded="@CanBeExpanded(i1)"
+                          OnExpand="@(() => ToggleExpand(i1))"/>
+    }
+    </tbody>
+</MudSimpleTable>

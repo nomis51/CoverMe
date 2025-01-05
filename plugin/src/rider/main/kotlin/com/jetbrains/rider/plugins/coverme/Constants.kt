@@ -1,0 +1,20 @@
+package com.jetbrains.rider.plugins.coverme
+
+class Constants {
+    companion object {
+        const val ENV = Environments.PRODUCTION
+
+        const val BACKEND_PORT = "5263"
+        const val BACKEND_URL = "http://localhost:$BACKEND_PORT"
+        const val BACKEND_ZIP_NAME = "backend.zip"
+        const val BACKEND_EXE_NAME = "CoverMe.Backend.exe"
+        const val BACKEND_DOWNLOAD_URL = "https://github.com/nomis51/CoverMe/releases/latest/backend.zip"
+
+        const val JS_NAMESPACE = "coverme"
+
+        const val APP_FOLDER_NAME = ".coverme"
+        const val APP_LOGS_FOLDER_NAME = "logs"
+        const val APP_BIN_FOLDER_NAME = "bin"
+        const val APP_LOCK_FILE_NAME = ".lock"
+    }
+}
