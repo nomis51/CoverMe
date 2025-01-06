@@ -3,6 +3,7 @@ package com.jetbrains.rider.plugins.coverme.services
 import com.jetbrains.rider.plugins.coverme.Constants
 import com.jetbrains.rider.plugins.coverme.Environments
 import com.jetbrains.rider.plugins.coverme.helpers.FileHelper
+import com.jetbrains.rider.plugins.coverme.helpers.GithubHelper
 import com.jetbrains.rider.plugins.coverme.ipc.IpcClient
 import com.jetbrains.rider.plugins.coverme.models.ipc.abstractions.ProtocolMessage
 import com.jetbrains.rider.plugins.coverme.models.ipc.abstractions.ProtocolMessageTypes
@@ -121,10 +122,19 @@ class BackendService : IProtocolService {
 
     private fun downloadBackend(): Boolean {
         try {
+            val backendUrl = GithubHelper.getLatestBackendReleaseUrl()
+            if (backendUrl.isEmpty()) return false
+
+            val binFolder =
+                File(System.getProperty("user.home") + "/${Constants.APP_FOLDER_NAME}/${Constants.APP_BIN_FOLDER_NAME}/")
+            if (!binFolder.exists()) {
+                binFolder.mkdirs()
+            }
+
             val outputFile =
-                File(System.getProperty("user.home") + "/${Constants.APP_FOLDER_NAME}/${Constants.APP_BIN_FOLDER_NAME}/${Constants.BACKEND_ZIP_NAME}")
+                File("${binFolder.absolutePath}/${Constants.BACKEND_ZIP_NAME}")
             if (!outputFile.exists()) {
-                URL(Constants.BACKEND_DOWNLOAD_URL)
+                URL(backendUrl)
                     .openStream()
                     .use { input ->
                         FileOutputStream(outputFile)
@@ -139,7 +149,7 @@ class BackendService : IProtocolService {
                     var entry = zipInputStream.nextEntry
                     while (entry != null) {
                         val file = File(
-                            System.getProperty("user.home") + "/${Constants.APP_FOLDER_NAME}/${Constants.APP_BIN_FOLDER_NAME}/",
+                            binFolder.absolutePath,
                             entry.name
                         )
 

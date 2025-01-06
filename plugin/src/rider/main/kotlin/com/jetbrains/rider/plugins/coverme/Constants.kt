@@ -8,7 +8,7 @@ class Constants {
         const val BACKEND_URL = "http://localhost:$BACKEND_PORT"
         const val BACKEND_ZIP_NAME = "backend.zip"
         const val BACKEND_EXE_NAME = "CoverMe.Backend.exe"
-        const val BACKEND_DOWNLOAD_URL = "https://github.com/nomis51/CoverMe/releases/latest/backend.zip"
+        const val BACKEND_RELEASES_URL = "https://api.github.com/repos/nomis51/CoverMe/releases"
 
         const val JS_NAMESPACE = "coverme"
 
