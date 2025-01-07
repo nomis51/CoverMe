@@ -69,7 +69,6 @@ public class IpcChannel : IIpcChannel
         }
     }
 
-
     public Task SendMessageAsync(IpcMessage message)
     {
         return Write(message);

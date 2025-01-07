@@ -89,9 +89,9 @@ class BackendService : IProtocolService {
             retryCount = 3
         )
 
-        if(!ok) return false
+        if (!ok) return false
 
-        while(!checkBackendStatus()) {
+        while (!checkBackendStatus()) {
             Thread.sleep(1000)
         }
 
@@ -142,14 +142,18 @@ class BackendService : IProtocolService {
             val outputFile =
                 File("${binFolder.absolutePath}/${Configuration.BACKEND_ZIP_NAME}")
             if (!outputFile.exists()) {
-                URL(backendUrl)
-                    .openStream()
-                    .use { input ->
-                        FileOutputStream(outputFile)
-                            .use { output ->
-                                input.copyTo(output)
-                            }
-                    }
+                val fileSha = FileHelper.calculateFileSHA(outputFile)
+
+                if (fileSha != GithubHelper.getLatestBackendSha()) {
+                    URL(backendUrl)
+                        .openStream()
+                        .use { input ->
+                            FileOutputStream(outputFile)
+                                .use { output ->
+                                    input.copyTo(output)
+                                }
+                        }
+                }
             }
 
             ZipInputStream(outputFile.inputStream())

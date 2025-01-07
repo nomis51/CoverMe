@@ -8,10 +8,25 @@ import java.io.RandomAccessFile
 import java.nio.channels.FileLock
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
+import java.security.MessageDigest
 import kotlin.io.path.exists
 
 class FileHelper {
     companion object {
+        fun calculateFileSHA(file: File, algorithm: String = "SHA-256"): String {
+            val buffer = ByteArray(1024)
+            val digest = MessageDigest.getInstance(algorithm)
+
+            file.inputStream().use { inputStream ->
+                var bytesRead: Int
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    digest.update(buffer, 0, bytesRead)
+                }
+            }
+
+            return digest.digest().joinToString("") { "%02x".format(it) }
+        }
+
         fun lockFileAndPerformOperation(filePath: String, operation: () -> Boolean, retryCount: Int = 3): Boolean {
             try {
                 val f = File(filePath)

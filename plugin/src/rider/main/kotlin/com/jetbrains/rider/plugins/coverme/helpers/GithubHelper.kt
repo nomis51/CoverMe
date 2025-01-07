@@ -9,6 +9,39 @@ import okhttp3.Request
 
 class GithubHelper {
     companion object {
+        fun getLatestBackendSha(): String {
+            try {
+                val releases = getReleases()
+            if (releases.isEmpty()) return ""
+
+            val url = releases.maxByOrNull { it.published_at }!!
+                .assets
+                .first { it.name == Configuration.BACKEND_SHA_NAME }
+                .browser_download_url
+
+            val client = OkHttpClient()
+                .newBuilder()
+                .build()
+
+            val request = Request.Builder()
+                .url(url)
+                .build()
+
+            client.newCall(request)
+                .execute()
+                .use {
+                    if (!it.isSuccessful) return ""
+
+                    return it.body!!.string()
+                }
+            } catch (e: Exception) {
+                LoggingService.getInstance()
+                    .error("GithubHelper: failed to get latest backend release SHA: ${e.message}")
+            }
+
+            return ""
+        }
+
         fun getLatestBackendReleaseUrl(): String {
             try {
                 val releases = getReleases()
