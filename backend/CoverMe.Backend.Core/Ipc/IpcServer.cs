@@ -54,7 +54,11 @@ public class IpcServer : IIpcServer
         var channel = new IpcChannel(id, _loggerChannel);
 
         var ok = _channels.TryAdd(id, channel);
-        if (!ok) return string.Empty;
+        if (!ok)
+        {
+            _logger.LogWarning("IPC: Failed to add channel {Id}", id);
+            return string.Empty;
+        }
 
         channel.MessageReceived += Channel_OnMessageReceived;
         StartChannel(channel);
@@ -67,7 +71,11 @@ public class IpcServer : IIpcServer
     {
         _logger.LogInformation("IPC: Removing channel {Id}", channelId);
         var ok = _channels.TryRemove(channelId, out var channel);
-        if (!ok) return false;
+        if (!ok)
+        {
+            _logger.LogWarning("IPC: Failed to remove channel {Id}", channelId);
+            return false;
+        }
 
         channel!.Dispose();
         _logger.LogInformation("IPC: Removed channel {Id}", channelId);
