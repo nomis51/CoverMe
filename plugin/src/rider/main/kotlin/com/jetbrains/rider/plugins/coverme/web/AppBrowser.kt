@@ -8,6 +8,7 @@ import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.ui.jcef.JBCefBrowserBase
 import com.intellij.ui.jcef.JBCefJSQuery
 import com.jetbrains.rider.plugins.coverme.Configuration
+import com.jetbrains.rider.plugins.coverme.Environments
 import com.jetbrains.rider.plugins.coverme.models.ipc.abstractions.ProtocolMessage
 import com.jetbrains.rider.plugins.coverme.services.LoggingService
 import org.cef.browser.CefBrowser
@@ -30,7 +31,7 @@ class AppBrowser : Disposable {
 
             _jsQuery = JBCefJSQuery.create(_browser as JBCefBrowserBase)
 
-            if (Constants.ENV != Environments.PRODUCTION) {
+            if (Configuration.ENV != Environments.PRODUCTION) {
                 _browser!!.jbCefClient.addLifeSpanHandler(object : CefLifeSpanHandlerAdapter() {
                     override fun onAfterCreated(browser: CefBrowser?) {
                         super.onAfterCreated(browser)
@@ -41,6 +42,10 @@ class AppBrowser : Disposable {
         } else {
             LoggingService.getInstance().warn("AppBrowser: JCEF is not supported")
         }
+    }
+
+    fun reload() {
+        _browser?.cefBrowser?.reload()
     }
 
     fun getComponent(): Component {

@@ -28,6 +28,10 @@ class AppService : Disposable {
         _appBrowser.dispose()
     }
 
+    fun reloadAppBrowser() {
+        _appBrowser.reload();
+    }
+
     fun getBrowserComponent(): Component {
         return _appBrowser.getComponent()
     }
