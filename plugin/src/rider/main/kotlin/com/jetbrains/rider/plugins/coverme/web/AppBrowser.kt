@@ -7,8 +7,7 @@ import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.ui.jcef.JBCefBrowserBase
 import com.intellij.ui.jcef.JBCefJSQuery
-import com.jetbrains.rider.plugins.coverme.Constants
-import com.jetbrains.rider.plugins.coverme.Environments
+import com.jetbrains.rider.plugins.coverme.Configuration
 import com.jetbrains.rider.plugins.coverme.models.ipc.abstractions.ProtocolMessage
 import com.jetbrains.rider.plugins.coverme.services.LoggingService
 import org.cef.browser.CefBrowser
@@ -60,7 +59,7 @@ class AppBrowser : Disposable {
         try {
             _browser!!.cefBrowser.executeJavaScript(
                 """
-            window.${Constants.JS_NAMESPACE}.receive("$message");
+            window.${Configuration.JS_NAMESPACE}.receive("$message");
             """.trimIndent(), _browser!!.cefBrowser.url, 0
             )
         } catch (e: Exception) {
@@ -70,38 +69,38 @@ class AppBrowser : Disposable {
     }
 
     fun initialize(project: Project, channelId: String) {
-        _browser!!.loadURL("http://localhost:${Constants.BACKEND_PORT}")
+        _browser!!.loadURL("http://localhost:${Configuration.BACKEND_PORT}")
         addHandlers(project, channelId)
     }
 
     private fun addHandlers(project: Project, channelId: String) {
         _browser!!.jbCefClient.addLoadHandler(object : CefLoadHandlerAdapter() {
-                override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
-                    super.onLoadEnd(browser, frame, httpStatusCode)
-                    injecProjectSettings(project, channelId)
-                }
-            }, _browser!!.cefBrowser)
+            override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
+                super.onLoadEnd(browser, frame, httpStatusCode)
+                injecProjectSettings(project, channelId)
+            }
+        }, _browser!!.cefBrowser)
     }
 
     private fun injecProjectSettings(project: Project, channelId: String) {
         ApplicationManager.getApplication().invokeLater {
-                try {
-                    _jsQuery.let {
-                        _browser!!.cefBrowser.executeJavaScript(
-                            """
+            try {
+                _jsQuery.let {
+                    _browser!!.cefBrowser.executeJavaScript(
+                        """
                         if(!window.intellij) {
                             window.intellij = {};
                         }
                         window.intellij.PROJECT_ROOT_PATH = "${project.basePath}";
                         window.intellij.CHANNEL_ID = "$channelId";
                      """.trimIndent(), _browser!!.cefBrowser.url, 0
-                        )
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    LoggingService.getInstance()
-                        .error("AppBrowser: failed to inject project root path: ${e.localizedMessage}")
+                    )
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                LoggingService.getInstance()
+                    .error("AppBrowser: failed to inject project root path: ${e.localizedMessage}")
             }
+        }
     }
 }

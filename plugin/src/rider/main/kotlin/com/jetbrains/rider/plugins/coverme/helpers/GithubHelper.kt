@@ -1,6 +1,6 @@
 package com.jetbrains.rider.plugins.coverme.helpers
 
-import com.jetbrains.rider.plugins.coverme.Constants
+import com.jetbrains.rider.plugins.coverme.Configuration
 import com.jetbrains.rider.plugins.coverme.models.github.Release
 import com.jetbrains.rider.plugins.coverme.services.LoggingService
 import kotlinx.serialization.json.Json
@@ -16,7 +16,7 @@ class GithubHelper {
 
             return releases.maxByOrNull { it.published_at }!!
                 .assets
-                .first { it.name == Constants.BACKEND_ZIP_NAME }
+                .first { it.name == Configuration.BACKEND_ZIP_NAME }
                 .browser_download_url
             } catch (e: Exception) {
                 LoggingService.getInstance()
@@ -30,7 +30,7 @@ class GithubHelper {
             try {
                 val client = OkHttpClient()
                 val request = Request.Builder()
-                    .url(Constants.BACKEND_RELEASES_URL)
+                    .url(Configuration.BACKEND_RELEASES_URL)
                     .build()
 
                 client.newCall(request)

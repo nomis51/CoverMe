@@ -13,8 +13,8 @@ public class ProcessHelper : IProcessHelper
     private readonly ILogger<ProcessHelper> _logger;
     private bool _isDotCoverCliInstalled;
     private bool _isReportGeneratorInstalled;
-    private static readonly SemaphoreSlim _dotCoverInstallationLock = new(1, 1);
-    private static readonly SemaphoreSlim _reportGeneratorInstallationLock = new(1, 1);
+    private static readonly SemaphoreSlim DotCoverInstallationLock = new(1, 1);
+    private static readonly SemaphoreSlim ReportGeneratorInstallationLock = new(1, 1);
 
     #endregion
 
@@ -78,7 +78,7 @@ public class ProcessHelper : IProcessHelper
 
     public async Task<bool> EnsureDotCoverCliInstalled()
     {
-        await _dotCoverInstallationLock.WaitAsync();
+        await DotCoverInstallationLock.WaitAsync();
 
         try
         {
@@ -112,7 +112,7 @@ public class ProcessHelper : IProcessHelper
         }
         finally
         {
-            _dotCoverInstallationLock.Release();
+            DotCoverInstallationLock.Release();
         }
     }
 
@@ -146,7 +146,7 @@ public class ProcessHelper : IProcessHelper
 
     public async Task<bool> EnsureReportGeneratorInstalled()
     {
-        await _reportGeneratorInstallationLock.WaitAsync();
+        await ReportGeneratorInstallationLock.WaitAsync();
 
         try
         {
@@ -180,7 +180,7 @@ public class ProcessHelper : IProcessHelper
         }
         finally
         {
-            _reportGeneratorInstallationLock.Release();
+            ReportGeneratorInstallationLock.Release();
         }
     }
 
@@ -190,12 +190,20 @@ public class ProcessHelper : IProcessHelper
         string workingDirectory
     )
     {
+        var argumentsStr = string.Join(" ", arguments);
+
+        _logger.LogInformation(
+            "ProcessHelper: Executed: Command={Command}; Arguments={Arguments}; WorkingDirectory={WorkingDirectory};",
+            command,
+            argumentsStr,
+            workingDirectory
+        );
         var process = new Process
         {
             StartInfo =
             {
                 FileName = command,
-                Arguments = string.Join(" ", arguments),
+                Arguments = argumentsStr,
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = false,
                 CreateNoWindow = true,
@@ -209,6 +217,17 @@ public class ProcessHelper : IProcessHelper
         var output = await process.StandardOutput.ReadToEndAsync();
         var error = await process.StandardError.ReadToEndAsync();
         await process.WaitForExitAsync();
+
+        _logger.LogInformation(
+            "ProcessHelper: Executed: Command={Command}; Arguments={Arguments}; WorkingDirectory={WorkingDirectory}; ExitCode={ExitCode}; Output={Output}; Error={Error};",
+            command,
+            argumentsStr,
+            workingDirectory,
+            process.ExitCode,
+            output,
+            error
+        );
+
         return new ProcessResponse
         {
             ExitCode = process.ExitCode,

@@ -1,6 +1,6 @@
 package com.jetbrains.rider.plugins.coverme
 
-class Constants {
+class Configuration {
     companion object {
         const val ENV = Environments.PRODUCTION
 

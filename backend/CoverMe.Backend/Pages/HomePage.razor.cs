@@ -3,6 +3,7 @@ using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Services.Abstractions;
 using Microsoft.AspNetCore.Components;
+using Serilog;
 
 namespace CoverMe.Backend.Pages;
 
@@ -74,8 +75,7 @@ public partial class HomePage : AppComponentBase
     {
         if (firstRender)
         {
-            await RetrieveLastCoverage();
-            await RetrieveTestsProjects();
+            await Refresh(); 
             StateHasChanged();
         }
     }

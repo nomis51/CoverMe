@@ -1,6 +1,6 @@
 package com.jetbrains.rider.plugins.coverme.services
 
-import com.jetbrains.rider.plugins.coverme.Constants
+import com.jetbrains.rider.plugins.coverme.Configuration
 import java.io.File
 import java.time.LocalDateTime
 import java.util.logging.FileHandler
@@ -29,7 +29,7 @@ class LoggingService {
                     .substring(0, 14)
 
             val dir =
-                "${System.getProperty("user.home")}/${Constants.APP_FOLDER_NAME}/${Constants.APP_LOGS_FOLDER_NAME}"
+                "${System.getProperty("user.home")}/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_LOGS_FOLDER_NAME}"
             if (!File(dir).exists()) {
                 File(dir).mkdir()
             }
