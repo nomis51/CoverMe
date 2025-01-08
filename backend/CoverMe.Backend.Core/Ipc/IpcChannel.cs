@@ -58,12 +58,16 @@ public class IpcChannel : IIpcChannel
 
     public void Dispose()
     {
-        _pipeLock.Dispose();
-        _reader.Dispose();
-        _writer.Dispose();
-        _pipe.Dispose();
+        try
+        {
+            _pipeLock.Dispose();
+            _pipe.Dispose();
+            _reader.Dispose();
+        } catch (Exception e)
+        {
+            _logger.LogError(e, "IPC Channel {Id}: Failed to dispose", Id);
+        }
     }
-
 
     public Task SendMessageAsync(IpcMessage message)
     {

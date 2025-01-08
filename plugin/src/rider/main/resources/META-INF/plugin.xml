@@ -16,7 +16,7 @@
         <backgroundPostStartupActivity
                 implementation="com.jetbrains.rider.plugins.coverme.startupActivities.CoverMeStartupActivity"/>
         <toolWindow factoryClass="com.jetbrains.rider.plugins.coverme.toolWindow.CoverMeToolWindowFactory"
-                    id="CoverMeToolWindow"
+                    id="CoverMe"
                     anchor="right"
                     doNotActivateOnStart="true"
                     secondary="false"
@@ -25,4 +25,10 @@
                                         implementationClass="com.jetbrains.rider.plugins.coverme.lineMarkers.CoverageLineMarkerProvider"/>
     </extensions>
 
+    <actions>
+        <action id="com.jetbrains.rider.plugins.coverme.actions.ReloadAppBrowserAction"
+                class="com.jetbrains.rider.plugins.coverme.actions.ReloadAppBrowserAction"
+                text="CoverMe: Reload Window"
+                description="Reload the CEF browser window"/>
+    </actions>
 </idea-plugin>
