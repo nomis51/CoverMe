@@ -13,7 +13,7 @@ public static class JsRuntimeIntellijExtensions
 
     #region Public methods
 
-    public static async Task<ProjectSettings> GetProjectSettings(this IJSRuntime jsRuntime)
+    public static async Task<ProjectSettings?> GetProjectSettings(this IJSRuntime jsRuntime)
     {
         return await jsRuntime.InvokeAsync<ProjectSettings>(
             $"{JsRuntimeExtensions.GlobalNamespace}.{Namespace}.getProjectSettings"

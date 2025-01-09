@@ -45,6 +45,9 @@ public partial class CoverageTableRow : AppComponentBase
     #region Services
 
     [Inject]
+    protected ILogger<CoverageTableRow> Logger { get; set; } = null!;
+
+    [Inject]
     protected IIntellijService IntellijService { get; set; } = null!;
 
     [Inject]
@@ -93,13 +96,16 @@ public partial class CoverageTableRow : AppComponentBase
         Settings = await SettingsService.GetSettingsAsync();
     }
 
-    private async Task OpenFileAtLine()
+    private void OpenFileAtLine()
     {
         if (!HasFilePath) return;
+        if (!HasProjectSettings)
+        {
+            Logger.LogWarning("Can't open file at line, probably running outside of Intellij");
+            return;
+        }
 
-        var settings = await GetProjectSettings();
-
-        IntellijService.OpenFileAtLine(settings.ChannelId, FilePath, Line);
+        IntellijService.OpenFileAtLine(ProjectSettings!.ChannelId, FilePath, Line);
     }
 
     #endregion

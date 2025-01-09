@@ -1,9 +1,9 @@
-﻿using CoverMe.Backend.Components.Abstractions;
+﻿using System.Transactions;
+using CoverMe.Backend.Components.Abstractions;
 using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Services.Abstractions;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 
 namespace CoverMe.Backend.Pages;
 
@@ -16,6 +16,9 @@ public partial class HomePage : AppComponentBase
 
     [Inject]
     protected IIntellijService IntellijService { get; set; } = null!;
+
+    [Inject]
+    protected ILogger<HomePage> Logger { get; set; } = null!;
 
     #endregion
 
@@ -73,9 +76,11 @@ public partial class HomePage : AppComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await base.OnAfterRenderAsync(firstRender);
+        
         if (firstRender)
         {
-            await Refresh(); 
+            await Refresh();
             StateHasChanged();
         }
     }
@@ -86,16 +91,21 @@ public partial class HomePage : AppComponentBase
 
     private async Task GenerateReport(bool detailed = false)
     {
+        if (!HasProjectSettings)
+        {
+            Logger.LogWarning("Can't generate report, probably running outside of Intellij");
+            return;
+        }
+
         try
         {
             IsGeneratingReport = true;
-            var projectSettings = await GetProjectSettings();
-            var solution = new Solution(FileSystem, projectSettings.ProjectRootPath);
+            var solution = new Solution(FileSystem, ProjectSettings!.ProjectRootPath);
 
             var reportFolder = await CoverageService.GenerateReport(solution, detailed);
             if (string.IsNullOrEmpty(reportFolder)) return;
 
-            IntellijService.SaveReport(projectSettings.ChannelId, reportFolder);
+            IntellijService.SaveReport(ProjectSettings.ChannelId, reportFolder);
         }
         finally
         {
@@ -106,30 +116,39 @@ public partial class HomePage : AppComponentBase
     private async Task Refresh()
     {
         IsRefreshing = true;
-        await RetrieveTestsProjects();
+        RetrieveTestsProjects();
         await RetrieveLastCoverage();
         IsRefreshing = false;
     }
 
     private async Task RetrieveLastCoverage()
     {
+        if (!HasProjectSettings)
+        {
+            Logger.LogWarning("Can't retrieve last coverage, probably running outside of Intellij");
+            return;
+        }
+
         IsRunningCoverage = true;
-        var solution = await GetSolution();
-        Nodes = await CoverageService.ParseLastCoverage(solution);
+        Nodes = await CoverageService.ParseLastCoverage(Solution!);
         IsRunningCoverage = false;
     }
 
     private async Task RunCoverage(bool noBuild = true)
     {
+        if (!HasProjectSettings)
+        {
+            Logger.LogWarning("Can't run coverage, probably running outside of Intellij");
+            return;
+        }
+
         try
         {
             IsRunningCoverage = true;
             var selectedProject = TestsProjects.FirstOrDefault(e => e.FilePath == SelectedTestsProject);
             if (selectedProject is null) return;
 
-            var solution = await GetSolution();
-
-            Nodes = await CoverageService.RunCoverage(solution, selectedProject, new CoverageOptions
+            Nodes = await CoverageService.RunCoverage(Solution!, selectedProject, new CoverageOptions
             {
                 Rebuild = !noBuild,
                 HideAutoProperties = true,
@@ -141,10 +160,15 @@ public partial class HomePage : AppComponentBase
         }
     }
 
-    private async Task RetrieveTestsProjects()
+    private void RetrieveTestsProjects()
     {
-        var solution = await GetSolution();
-        TestsProjects = CoverageService.GetTestsProjects(solution);
+        if (!HasProjectSettings)
+        {
+            Logger.LogWarning("Can't retrieve tests projects, probably running outside of Intellij");
+            return;
+        }
+
+        TestsProjects = CoverageService.GetTestsProjects(Solution!);
 
         if (string.IsNullOrEmpty(SelectedTestsProject) && TestsProjects.Count > 0)
         {

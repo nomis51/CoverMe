@@ -14,6 +14,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.zip.ZipInputStream
 
@@ -38,27 +39,24 @@ class BackendService : IProtocolService {
         val url = "${Configuration.BACKEND_URL}/api/channel"
         val request = Request.Builder().url(url).build()
 
-        client.newCall(request).execute().use {
-            if (!it.isSuccessful) {
-                LoggingService.getInstance().error("BackendService: failed to create channel: ${it.message}")
-            } else {
-                _channelId = it.body!!.string()
-                LoggingService.getInstance()
-                    .info("BackendService: created channel: $_channelId")
-                _ipcClient = IpcClient("\\\\.\\pipe\\${_channelId}", ::handleIpcMessage)
-                AppService.getInstance()
-                    .initializeAppBrowser(_channelId!!)
+        client.newCall(request)
+            .execute()
+            .use {
+                if (!it.isSuccessful) {
+                    LoggingService.getInstance().error("BackendService: failed to create channel: ${it.message}")
+                } else {
+                    _channelId = it.body!!.string()
+                    LoggingService.getInstance()
+                        .info("BackendService: created channel: $_channelId")
+                    _ipcClient = IpcClient("\\\\.\\pipe\\${_channelId}", ::handleIpcMessage)
+                    AppService.getInstance()
+                        .initializeAppBrowser(_channelId!!)
+                }
             }
-        }
     }
 
     fun handleIpcMessage(message: ProtocolMessage) {
         AppService.getInstance().dispatchMessageToIntellij(message)
-    }
-
-    fun sendMessage(message: ProtocolMessage) {
-        message.channelId = _channelId ?: return
-        _ipcClient?.writeMessage(message)
     }
 
     fun sendMessageAndWaitResponse(message: ProtocolMessage): ProtocolMessage? {
@@ -139,21 +137,17 @@ class BackendService : IProtocolService {
                 binFolder.mkdirs()
             }
 
-            val outputFile =
-                File("${binFolder.absolutePath}/${Configuration.BACKEND_ZIP_NAME}")
-            if (!outputFile.exists()) {
-                val fileSha = FileHelper.calculateFileSHA(outputFile)
-
-                if (fileSha != GithubHelper.getLatestBackendChecksum()) {
-                    URL(backendUrl)
-                        .openStream()
-                        .use { input ->
-                            FileOutputStream(outputFile)
-                                .use { output ->
-                                    input.copyTo(output)
-                                }
-                        }
-                }
+            val outputFile = File("${binFolder.absolutePath}/${Configuration.BACKEND_ZIP_NAME}")
+            val fileSha = FileHelper.calculateFileSHA(outputFile)
+            if (!outputFile.exists() || fileSha.isEmpty() || fileSha != GithubHelper.getLatestBackendChecksum()) {
+                URL(backendUrl)
+                    .openStream()
+                    .use { input ->
+                        FileOutputStream(outputFile)
+                            .use { output ->
+                                input.copyTo(output)
+                            }
+                    }
             }
 
             ZipInputStream(outputFile.inputStream())
@@ -200,6 +194,10 @@ class BackendService : IProtocolService {
                 }
 
             val process = processBuilder.start()
+
+            val executor = Executors.newFixedThreadPool(2)
+            executor.submit { process.inputStream.bufferedReader().use { it.readLines() } }
+            executor.submit { process.errorStream.bufferedReader().use { it.readLines() } }
 
             Thread {
                 try {
