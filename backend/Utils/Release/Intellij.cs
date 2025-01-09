@@ -43,7 +43,64 @@ public class Intellij
         }
     }
 
-    public static async Task UpdateVersion()
+    public static async Task UpdateInfos()
+    {
+        await UpdateGradleProperties();
+        await UpdatePluginXml();
+    }
+
+    public static async Task Cleanup()
+    {
+        var lines = await File.ReadAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath);
+        if (lines.Length == 0)
+        {
+            Console.WriteLine("Gradle properties file is empty: " + Configuration.Intellij.GradlePropertiesFilePath);
+            Environment.Exit(1);
+        }
+
+        for (var i = 0; i < lines.Length; ++i)
+        {
+            if (!lines[i].StartsWith("BuildConfiguration=")) continue;
+
+            lines[i] = "PluginVersion=Debug";
+
+            await File.WriteAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath, lines);
+            return;
+        }
+
+        Console.WriteLine("Plugin build configuration not found in gradle properties file: " +
+                          Configuration.Intellij.GradlePropertiesFilePath);
+        Environment.Exit(1);
+    }
+
+    #endregion
+
+    #region Private methods
+
+    private static async Task UpdatePluginXml()
+    {
+        var lines = await File.ReadAllLinesAsync(Configuration.Intellij.PluginXmlFilePath);
+        if (lines.Length == 0)
+        {
+            Console.WriteLine("Plugin xml file is empty: " + Configuration.Intellij.PluginXmlFilePath);
+            Environment.Exit(1);
+        }
+
+        for (var i = 0; i < lines.Length; ++i)
+        {
+            if (lines[i].TrimStart().StartsWith("<version>"))
+            {
+                lines[i] = $"    <version>{Configuration.Version}</version>";
+                await File.WriteAllLinesAsync(Configuration.Intellij.PluginXmlFilePath, lines);
+                return;
+            }
+        }
+
+        Console.WriteLine("Plugin version not found in plugin xml file: " + Configuration.Intellij.PluginXmlFilePath);
+        Environment.Exit(1);
+    }
+
+    private static async Task UpdateGradleProperties()
     {
         var lines = await File.ReadAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath);
         if (lines.Length == 0)
@@ -78,30 +135,6 @@ public class Intellij
         }
 
         Console.WriteLine("Plugin version or build configuration not found in gradle properties file: " +
-                          Configuration.Intellij.GradlePropertiesFilePath);
-        Environment.Exit(1);
-    }
-
-    public static async Task Cleanup()
-    {
-        var lines = await File.ReadAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath);
-        if (lines.Length == 0)
-        {
-            Console.WriteLine("Gradle properties file is empty: " + Configuration.Intellij.GradlePropertiesFilePath);
-            Environment.Exit(1);
-        }
-
-        for (var i = 0; i < lines.Length; ++i)
-        {
-            if (!lines[i].StartsWith("BuildConfiguration=")) continue;
-
-            lines[i] = "PluginVersion=Debug";
-
-            await File.WriteAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath, lines);
-            return;
-        }
-
-        Console.WriteLine("Plugin build configuration not found in gradle properties file: " +
                           Configuration.Intellij.GradlePropertiesFilePath);
         Environment.Exit(1);
     }

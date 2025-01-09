@@ -26,7 +26,7 @@ await AnsiConsole.Status()
     .StartAsync("Calculating checksum", async _ => await Backend.CalculateChecksum());
 
 await AnsiConsole.Status()
-    .StartAsync("Update kotlin plugin version", async _ => await Intellij.UpdateVersion());
+    .StartAsync("Update kotlin plugin infos", async _ => await Intellij.UpdateInfos());
 await AnsiConsole.Status()
     .StartAsync("Building kotlin plugin", async _ => await Intellij.BuildPlugin());
 AnsiConsole.Status()

@@ -20,6 +20,16 @@ public class Configuration
             "plugin"
         );
 
+        public static readonly string PluginXmlFilePath = Path.Join(
+            PluginFolder,
+            "src",
+            "rider",
+            "main",
+            "resources",
+            "META-INF",
+            "plugin.xml"
+        );
+
         public static readonly string GradlewFilePasth = Path.Join(
             PluginFolder,
             "gradlew.bat"
