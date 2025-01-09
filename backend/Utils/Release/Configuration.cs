@@ -2,7 +2,7 @@
 
 public static class Configuration
 {
-    public const string Version = "0.3.0";
+    public const string Version = "0.4.0";
 
     private static readonly string RootFolder = Path.GetFullPath(Path.Join("..", "..", "..", "..", "..", ".."));
 
