@@ -62,7 +62,7 @@ public class Intellij
         {
             if (!lines[i].StartsWith("BuildConfiguration=")) continue;
 
-            lines[i] = "PluginVersion=Debug";
+            lines[i] = "BuildConfiguration=Debug";
 
             await File.WriteAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath, lines);
             return;
