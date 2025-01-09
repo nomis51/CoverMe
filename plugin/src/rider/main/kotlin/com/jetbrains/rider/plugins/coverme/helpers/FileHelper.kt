@@ -14,6 +14,8 @@ import kotlin.io.path.exists
 class FileHelper {
     companion object {
         fun calculateFileSHA(file: File, algorithm: String = "SHA-256"): String {
+            if(!file.exists()) return ""
+
             val buffer = ByteArray(1024)
             val digest = MessageDigest.getInstance(algorithm)
 
