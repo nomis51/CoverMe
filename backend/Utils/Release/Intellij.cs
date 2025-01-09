@@ -52,17 +52,56 @@ public class Intellij
             Environment.Exit(1);
         }
 
+        var fieldsFound = 0;
+
         for (var i = 0; i < lines.Length; ++i)
         {
-            if (!lines[i].StartsWith("PluginVersion=")) continue;
+            if (fieldsFound == 2)
+            {
+                await File.WriteAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath, lines);
+                return;
+            }
 
-            lines[i] = $"PluginVersion={Configuration.Version}";
+            if (lines[i].StartsWith("PluginVersion="))
+            {
+                lines[i] = $"PluginVersion={Configuration.Version}";
+                ++fieldsFound;
+                continue;
+            }
+
+            if (lines[i].StartsWith("BuildConfiguration="))
+            {
+                lines[i] = "BuildConfiguration=Release";
+                ++fieldsFound;
+                continue;
+            }
+        }
+
+        Console.WriteLine("Plugin version or build configuration not found in gradle properties file: " +
+                          Configuration.Intellij.GradlePropertiesFilePath);
+        Environment.Exit(1);
+    }
+
+    public static async Task Cleanup()
+    {
+        var lines = await File.ReadAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath);
+        if (lines.Length == 0)
+        {
+            Console.WriteLine("Gradle properties file is empty: " + Configuration.Intellij.GradlePropertiesFilePath);
+            Environment.Exit(1);
+        }
+
+        for (var i = 0; i < lines.Length; ++i)
+        {
+            if (!lines[i].StartsWith("BuildConfiguration=")) continue;
+
+            lines[i] = "PluginVersion=Debug";
 
             await File.WriteAllLinesAsync(Configuration.Intellij.GradlePropertiesFilePath, lines);
             return;
         }
 
-        Console.WriteLine("Plugin version not found in gradle properties file: " +
+        Console.WriteLine("Plugin build configuration not found in gradle properties file: " +
                           Configuration.Intellij.GradlePropertiesFilePath);
         Environment.Exit(1);
     }

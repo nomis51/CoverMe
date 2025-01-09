@@ -31,3 +31,5 @@ await AnsiConsole.Status()
     .StartAsync("Building kotlin plugin", async _ => await Intellij.BuildPlugin());
 AnsiConsole.Status()
     .Start("Moving kotlin plugin", _ => Intellij.MoveJarToOutputFolder());
+await AnsiConsole.Status()
+    .StartAsync("Cleaning kotlin plugin", async _ => await Intellij.Cleanup());
