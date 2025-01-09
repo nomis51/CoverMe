@@ -1,8 +1,6 @@
 ﻿using Release;
 using Spectre.Console;
 
-Configuration.Version = "1.0.0";
-
 if (Directory.Exists(Configuration.OutputFolder))
 {
     Directory.Delete(Configuration.OutputFolder, true);

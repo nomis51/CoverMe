@@ -1,8 +1,8 @@
 ﻿namespace Release;
 
-public class Configuration
+public static class Configuration
 {
-    public static string Version = "0.1.0";
+    public const string Version = "0.3.0";
 
     private static readonly string RootFolder = Path.GetFullPath(Path.Join("..", "..", "..", "..", "..", ".."));
 
