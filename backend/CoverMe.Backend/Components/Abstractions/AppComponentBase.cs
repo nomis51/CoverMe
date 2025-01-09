@@ -23,15 +23,38 @@ public abstract class AppComponentBase : ComponentBase
 
     #endregion
 
-    #region Props
+    #region Members
 
-    private static bool IsHeadless => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Headless";
+    protected ProjectSettings? ProjectSettings { get; private set; }
+    protected Solution? Solution { get; private set; }
 
     #endregion
 
-    #region Protected methods
+    #region Props
 
-    protected async Task<ProjectSettings> GetProjectSettings()
+    private static bool IsHeadless => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Headless";
+    protected bool HasProjectSettings => ProjectSettings is not null;
+
+    #endregion
+
+    #region Lifecycle
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ProjectSettings = await GetProjectSettings();
+            if (ProjectSettings is null) return;
+
+            Solution = new Solution(FileSystem, ProjectSettings.ProjectRootPath);
+        }
+    }
+
+    #endregion
+
+    #region Private methods
+
+    private async Task<ProjectSettings?> GetProjectSettings()
     {
         return IsHeadless
             ? new ProjectSettings
@@ -40,12 +63,6 @@ public abstract class AppComponentBase : ComponentBase
                 ChannelId = Guid.NewGuid().ToString("N")
             }
             : await JsRuntime.GetProjectSettings();
-    }
-
-    protected async Task<Solution> GetSolution()
-    {
-        var settings = await GetProjectSettings();
-        return new Solution(FileSystem, settings.ProjectRootPath);
     }
 
     #endregion
