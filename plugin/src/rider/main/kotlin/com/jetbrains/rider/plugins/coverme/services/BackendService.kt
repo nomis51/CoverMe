@@ -14,6 +14,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.zip.ZipInputStream
 
@@ -56,11 +57,6 @@ class BackendService : IProtocolService {
 
     fun handleIpcMessage(message: ProtocolMessage) {
         AppService.getInstance().dispatchMessageToIntellij(message)
-    }
-
-    fun sendMessage(message: ProtocolMessage) {
-        message.channelId = _channelId ?: return
-        _ipcClient?.writeMessage(message)
     }
 
     fun sendMessageAndWaitResponse(message: ProtocolMessage): ProtocolMessage? {
@@ -198,6 +194,10 @@ class BackendService : IProtocolService {
                 }
 
             val process = processBuilder.start()
+
+            val executor = Executors.newFixedThreadPool(2)
+            executor.submit { process.inputStream.bufferedReader().use { it.readLines() } }
+            executor.submit { process.errorStream.bufferedReader().use { it.readLines() } }
 
             Thread {
                 try {
