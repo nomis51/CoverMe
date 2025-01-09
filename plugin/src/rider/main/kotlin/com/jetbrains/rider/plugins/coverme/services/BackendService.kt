@@ -139,21 +139,17 @@ class BackendService : IProtocolService {
                 binFolder.mkdirs()
             }
 
-            val outputFile =
-                File("${binFolder.absolutePath}/${Configuration.BACKEND_ZIP_NAME}")
-            if (!outputFile.exists()) {
-                val fileSha = FileHelper.calculateFileSHA(outputFile)
-
-                if (fileSha != GithubHelper.getLatestBackendChecksum()) {
-                    URL(backendUrl)
-                        .openStream()
-                        .use { input ->
-                            FileOutputStream(outputFile)
-                                .use { output ->
-                                    input.copyTo(output)
-                                }
-                        }
-                }
+            val outputFile = File("${binFolder.absolutePath}/${Configuration.BACKEND_ZIP_NAME}")
+            val fileSha = FileHelper.calculateFileSHA(outputFile)
+            if (!outputFile.exists() || fileSha.isEmpty() || fileSha != GithubHelper.getLatestBackendChecksum()) {
+                URL(backendUrl)
+                    .openStream()
+                    .use { input ->
+                        FileOutputStream(outputFile)
+                            .use { output ->
+                                input.copyTo(output)
+                            }
+                    }
             }
 
             ZipInputStream(outputFile.inputStream())
