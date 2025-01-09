@@ -6,8 +6,8 @@ class Configuration {
 
         const val BACKEND_PORT = "5263"
         const val BACKEND_URL = "http://localhost:$BACKEND_PORT"
-        const val BACKEND_ZIP_NAME = "backend.zip"
-        const val BACKEND_SHA_NAME = "backend.sha"
+        const val BACKEND_ZIP_NAME = "CoverMe.Backend.zip"
+        const val BACKEND_CHECKSUM_NAME = "CoverMe.Backend.checksum"
         const val BACKEND_EXE_NAME = "CoverMe.Backend.exe"
         const val BACKEND_RELEASES_URL = "https://api.github.com/repos/nomis51/CoverMe/releases"
 

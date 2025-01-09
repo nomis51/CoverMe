@@ -1,8 +1,8 @@
 ﻿namespace Release;
 
-public class Configuration
+public static class Configuration
 {
-    public static string Version = "0.1.0";
+    public const string Version = "0.3.0";
 
     private static readonly string RootFolder = Path.GetFullPath(Path.Join("..", "..", "..", "..", "..", ".."));
 
@@ -18,6 +18,16 @@ public class Configuration
         public static readonly string PluginFolder = Path.Join(
             RootFolder,
             "plugin"
+        );
+
+        public static readonly string PluginXmlFilePath = Path.Join(
+            PluginFolder,
+            "src",
+            "rider",
+            "main",
+            "resources",
+            "META-INF",
+            "plugin.xml"
         );
 
         public static readonly string GradlewFilePasth = Path.Join(

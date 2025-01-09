@@ -1,15 +1,13 @@
 <idea-plugin require-restart="true">
     <id>com.jetbrains.rider.plugins.coverme</id>
     <name>CoverMe</name>
-    <version>_PLACEHOLDER_</version>
-    <vendor url="https://project-url">Author</vendor>
-    <idea-version since-build="_PLACEHOLDER_" until-build="_PLACEHOLDER_"/>
+    <version>0.3.0</version>
+    <vendor url="https://github.com/nomis51/CoverMe">nomis51</vendor>
+    <idea-version since-build="2024.3" until-build="2024.3"/>
     <depends>com.intellij.modules.rider</depends>
 
     <description>
-        <![CDATA[
-<p>Sample description</p>
-]]>
+        A simple JetBrains Rider plugin for test coverage
     </description>
 
     <extensions defaultExtensionNs="com.intellij">

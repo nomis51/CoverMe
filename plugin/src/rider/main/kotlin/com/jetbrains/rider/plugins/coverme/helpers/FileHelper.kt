@@ -63,8 +63,6 @@ class FileHelper {
                     LoggingService.getInstance()
                         .info("File lock released")
                 }
-
-                return false
             } catch (e: Exception) {
                 LoggingService.getInstance()
                     .error("Failed to access lock file: ${e.message}")

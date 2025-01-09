@@ -144,7 +144,7 @@ class BackendService : IProtocolService {
             if (!outputFile.exists()) {
                 val fileSha = FileHelper.calculateFileSHA(outputFile)
 
-                if (fileSha != GithubHelper.getLatestBackendSha()) {
+                if (fileSha != GithubHelper.getLatestBackendChecksum()) {
                     URL(backendUrl)
                         .openStream()
                         .use { input ->
