@@ -74,7 +74,7 @@ class AppBrowser : Disposable {
     }
 
     fun initialize(project: Project, channelId: String) {
-        _browser!!.loadURL("http://localhost:${Configuration.BACKEND_PORT}")
+        _browser!!.loadURL(Configuration.BACKEND_URL)
         addHandlers(project, channelId)
     }
 
