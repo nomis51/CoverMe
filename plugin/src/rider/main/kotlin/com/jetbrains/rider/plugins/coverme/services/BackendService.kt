@@ -38,20 +38,18 @@ class BackendService : IProtocolService {
         val url = "${Configuration.BACKEND_URL}/api/channel"
         val request = Request.Builder().url(url).build()
 
-        client.newCall(request)
-            .execute()
-            .use {
-                if (!it.isSuccessful) {
-                    LoggingService.getInstance().error("BackendService: failed to create channel: ${it.message}")
-                } else {
-                    _channelId = it.body!!.string()
-                    LoggingService.getInstance()
-                        .info("BackendService: created channel: $_channelId")
-                    _ipcClient = IpcClient("\\\\.\\pipe\\${_channelId}", ::handleIpcMessage)
-                    AppService.getInstance()
-                        .initializeAppBrowser(_channelId!!)
-                }
+        client.newCall(request).execute().use {
+            if (!it.isSuccessful) {
+                LoggingService.getInstance().error("BackendService: failed to create channel: ${it.message}")
+            } else {
+                _channelId = it.body!!.string()
+                LoggingService.getInstance()
+                    .info("BackendService: created channel: $_channelId")
+                _ipcClient = IpcClient("\\\\.\\pipe\\${_channelId}", ::handleIpcMessage)
+                AppService.getInstance()
+                    .initializeAppBrowser(_channelId!!)
             }
+        }
     }
 
     fun handleIpcMessage(message: ProtocolMessage) {

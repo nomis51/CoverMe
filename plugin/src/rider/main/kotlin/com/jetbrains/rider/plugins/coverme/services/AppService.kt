@@ -14,19 +14,14 @@ class AppService : Disposable {
 
     private lateinit var _project: Project
     private lateinit var _pluginService: PluginService
-    private lateinit var _backendService: BackendService
-    private lateinit var _appBrowser: AppBrowser
+    private val _backendService: BackendService = BackendService()
+    private val _appBrowser: AppBrowser = AppBrowser()
 
     fun initialize(project: Project) {
         _project = project
         _pluginService = PluginService(_project)
-        _backendService = BackendService()
 
         _backendService.createChannel()
-    }
-
-    fun createAppBrowser() {
-        _appBrowser = AppBrowser()
     }
 
     override fun dispose() {
