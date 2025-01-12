@@ -12,7 +12,7 @@ public partial class MainLayout : LayoutComponentBase
     {
         PaletteDark = new PaletteDark
         {
-            Primary = new MudColor("#3574f0"),
+            Primary = new MudColor("#fff"),
         }
     };
 
