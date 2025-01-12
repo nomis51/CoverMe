@@ -60,7 +60,11 @@ public abstract class AppComponentBase : ComponentBase
             ? new ProjectSettings
             {
                 ProjectRootPath = Path.GetFullPath(AppSettings.Intellij.ProjectRootPath),
-                ChannelId = Guid.NewGuid().ToString("N")
+                ChannelId = Guid.NewGuid().ToString("N"),
+                Theme = new IntellijTheme
+                {
+                    Button = new()
+                }
             }
             : await JsRuntime.GetProjectSettings();
     }
