@@ -9,6 +9,7 @@ import com.intellij.ui.jcef.JBCefBrowserBase
 import com.intellij.ui.jcef.JBCefJSQuery
 import com.jetbrains.rider.plugins.coverme.Configuration
 import com.jetbrains.rider.plugins.coverme.Environments
+import com.jetbrains.rider.plugins.coverme.helpers.toHex
 import com.jetbrains.rider.plugins.coverme.models.ipc.abstractions.ProtocolMessage
 import com.jetbrains.rider.plugins.coverme.services.LoggingService
 import org.cef.browser.CefBrowser
@@ -17,6 +18,7 @@ import org.cef.handler.CefLifeSpanHandlerAdapter
 import org.cef.handler.CefLoadHandlerAdapter
 import java.awt.Component
 import javax.swing.JLabel
+import javax.swing.UIManager
 
 
 @Suppress("KotlinConstantConditions")
@@ -82,12 +84,12 @@ class AppBrowser : Disposable {
         _browser!!.jbCefClient.addLoadHandler(object : CefLoadHandlerAdapter() {
             override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
                 super.onLoadEnd(browser, frame, httpStatusCode)
-                injecProjectSettings(project, channelId)
+                injectProjectSettings(project, channelId)
             }
         }, _browser!!.cefBrowser)
     }
 
-    private fun injecProjectSettings(project: Project, channelId: String) {
+    private fun injectProjectSettings(project: Project, channelId: String) {
         ApplicationManager.getApplication().invokeLater {
             try {
                 _jsQuery.let {
@@ -98,6 +100,27 @@ class AppBrowser : Disposable {
                         }
                         window.intellij.PROJECT_ROOT_PATH = "${project.basePath}";
                         window.intellij.CHANNEL_ID = "$channelId";
+                        window.intellij.THEME = {
+                            panel: {
+                                background: "${UIManager.getColor("Panel.background").toHex()}",
+                                foreground: "${UIManager.getColor("Panel.foreground").toHex()}"
+                            },
+                            button: {
+                                background: "${UIManager.getColor("Button.background").toHex()}",
+                                foreground: "${UIManager.getColor("Button.foreground").toHex()}"
+                            },
+                            editor: {
+                                background: "${UIManager.getColor("EditorPane.background").toHex()}",
+                                foreground: "${UIManager.getColor("EditorPane.foreground").toHex()}"
+                            },
+                            textField: {
+                                background: "${UIManager.getColor("TextField.background").toHex()}",
+                                foreground: "${UIManager.getColor("TextField.foreground").toHex()}"
+                            },
+                            colors: {
+                                accent: "${UIManager.getColor("Component.accentColor").toHex()}",
+                            },
+                        };
                      """.trimIndent(), _browser!!.cefBrowser.url, 0
                     )
                 }
