@@ -16,7 +16,6 @@ import java.io.IOException
 import java.net.URL
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.zip.ZipInputStream
 
 @Suppress("KotlinConstantConditions")
 class BackendService : IProtocolService {
@@ -150,29 +149,7 @@ class BackendService : IProtocolService {
                     }
             }
 
-            ZipInputStream(outputFile.inputStream())
-                .use { zipInputStream ->
-                    var entry = zipInputStream.nextEntry
-                    while (entry != null) {
-                        val file = File(
-                            binFolder.absolutePath,
-                            entry.name
-                        )
-
-                        if (entry.isDirectory) {
-                            file.mkdirs()
-                        } else {
-                            file.parentFile.mkdirs()
-                            FileOutputStream(file)
-                                .use { output ->
-                                    zipInputStream.copyTo(output)
-                                }
-                        }
-
-                        zipInputStream.closeEntry()
-                        entry = zipInputStream.nextEntry
-                    }
-                }
+            FileHelper.unzipFile(outputFile, File(binFolder.absolutePath))
 
             return true
         } catch (e: Exception) {

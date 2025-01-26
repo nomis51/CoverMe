@@ -3,18 +3,20 @@ package com.jetbrains.rider.plugins.coverme.helpers
 import com.intellij.util.io.createDirectories
 import com.jetbrains.rider.plugins.coverme.services.LoggingService
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.FileLock
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import java.security.MessageDigest
+import java.util.zip.ZipInputStream
 import kotlin.io.path.exists
 
 class FileHelper {
     companion object {
         fun calculateFileSHA(file: File, algorithm: String = "SHA-256"): String {
-            if(!file.exists()) return ""
+            if (!file.exists()) return ""
 
             val buffer = ByteArray(128 * 1024)
             val digest = MessageDigest.getInstance(algorithm)
@@ -148,6 +150,35 @@ class FileHelper {
                     return FileVisitResult.CONTINUE
                 }
             })
+        }
+
+        fun unzipFile(zipFile: File, outputDir: File) {
+            ZipInputStream(zipFile.inputStream().buffered())
+                .use { zipInputStream ->
+                    var entry = zipInputStream.nextEntry
+                    val buffer = ByteArray(64 * 1024)
+
+                    while (entry != null) {
+                        val file = File(outputDir, entry.name)
+
+                        if (entry.isDirectory) {
+                            file.mkdirs()
+                        } else {
+                            file.parentFile.mkdirs()
+                            FileOutputStream(file)
+                                .buffered()
+                                .use { output ->
+                                    var bytesRead: Int
+                                    while (zipInputStream.read(buffer).also { bytesRead = it } != -1) {
+                                        output.write(buffer, 0, bytesRead)
+                                    }
+                                }
+                        }
+
+                        zipInputStream.closeEntry()
+                        entry = zipInputStream.nextEntry
+                    }
+                }
         }
     }
 }
