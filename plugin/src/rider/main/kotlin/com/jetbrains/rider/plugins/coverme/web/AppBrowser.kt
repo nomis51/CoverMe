@@ -93,6 +93,14 @@ class AppBrowser : Disposable {
         ApplicationManager.getApplication().invokeLater {
             try {
                 _jsQuery.let {
+                    val panelBackground = UIManager.getColor("Panel.background")
+                    val panelForeground = UIManager.getColor("Panel.foreground")
+                    val editorBackground = UIManager.getColor("EditorPane.background")
+                    val editorForeground = UIManager.getColor("EditorPane.foreground")
+                    val textFieldBackground = UIManager.getColor("TextField.background")
+                    val textFieldForeground = UIManager.getColor("TextField.foreground")
+                    val accentColor = UIManager.getColor("Component.accentColor")
+
                     _browser!!.cefBrowser.executeJavaScript(
                         """
                         if(!window.intellij) {
@@ -102,23 +110,22 @@ class AppBrowser : Disposable {
                         window.intellij.CHANNEL_ID = "$channelId";
                         window.intellij.THEME = {
                             panel: {
-                                background: "${UIManager.getColor("Panel.background").toHex()}",
-                                foreground: "${UIManager.getColor("Panel.foreground").toHex()}"
+                                background: "${panelBackground?.toHex() ?: ""}",
+                                foreground: "${panelForeground?.toHex() ?: ""}"
                             },
                             button: {
                                 background: "${UIManager.getColor("Button.background").toHex()}",
-                                foreground: "${UIManager.getColor("Button.foreground").toHex()}"
-                            },
+                                foreground: "${UIManager.getColor("Button.foreground").toHex()}"},
                             editor: {
-                                background: "${UIManager.getColor("EditorPane.background").toHex()}",
-                                foreground: "${UIManager.getColor("EditorPane.foreground").toHex()}"
+                                background: "${editorBackground?.toHex() ?: ""}",
+                                foreground: "${editorForeground?.toHex() ?: ""}"
                             },
                             textField: {
-                                background: "${UIManager.getColor("TextField.background").toHex()}",
-                                foreground: "${UIManager.getColor("TextField.foreground").toHex()}"
+                                background: "${textFieldBackground?.toHex() ?: ""}",
+                                foreground: "${textFieldForeground?.toHex() ?: ""}"
                             },
                             colors: {
-                                accent: "${UIManager.getColor("Component.accentColor").toHex()}",
+                                accent: "${accentColor?.toHex() ?: ""}"
                             },
                         };
                      """.trimIndent(), _browser!!.cefBrowser.url, 0
