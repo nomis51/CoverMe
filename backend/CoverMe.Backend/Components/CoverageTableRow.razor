@@ -7,9 +7,9 @@
                   AlignItems="AlignItems.Center">
             @if (CanBeExpanded)
             {
-                <MudIconButton Size="Size.Small"
-                               OnClick="@(() => OnExpand.InvokeAsync())"
-                               Icon="@Icons.Material.Filled.ChevronRight"/>
+                @* <MudIconButton Size="Size.Small" *@
+                @*                OnClick="@(() => OnExpand.InvokeAsync())" *@
+                @*                Icon="@Icons.Material.Filled.ChevronRight"/> *@
             }
 
             <MudImage Src="@($"/images/{Icon.ToString().ToLower()}.png")"
