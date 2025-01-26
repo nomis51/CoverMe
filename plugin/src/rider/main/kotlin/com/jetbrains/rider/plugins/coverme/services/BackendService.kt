@@ -76,6 +76,7 @@ class BackendService : IProtocolService {
         val ok = FileHelper.lockFileAndPerformOperation(
             "${System.getProperty("user.home")}/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_LOCK_FILE_NAME}",
             operation = {
+
                 if (checkBackendStatus()) return@lockFileAndPerformOperation true
                 if (!downloadBackend()) return@lockFileAndPerformOperation false
                 if (!startBackend()) return@lockFileAndPerformOperation false
@@ -138,9 +139,6 @@ class BackendService : IProtocolService {
 
     private fun downloadBackend(): Boolean {
         try {
-            val backendUrl = GithubHelper.getLatestBackendReleaseUrl()
-            if (backendUrl.isEmpty()) return false
-
             val binFolder = File(
                 System.getProperty("user.home") +
                         "/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_BIN_FOLDER_NAME}/"
@@ -153,6 +151,9 @@ class BackendService : IProtocolService {
             val fileSha = FileHelper.calculateFileSHA(outputFile)
 
             if (!outputFile.exists() || fileSha.isEmpty() || fileSha != GithubHelper.getLatestBackendChecksum()) {
+                val backendUrl = GithubHelper.getLatestBackendReleaseUrl()
+                if (backendUrl.isEmpty()) return false
+
                 FileHelper.downloadFile(backendUrl, outputFile)
             }
 
@@ -196,8 +197,6 @@ class BackendService : IProtocolService {
                         .error("BackendService: failed to waitFor backend: ${e.message}")
                 }
             }.start()
-
-            Thread.sleep(1000)
 
             return true
         } catch (e: Exception) {

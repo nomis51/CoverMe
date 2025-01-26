@@ -6,6 +6,7 @@ import com.jetbrains.rider.plugins.coverme.services.LoggingService
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.File
 
 class GithubHelper {
     companion object {
@@ -47,10 +48,12 @@ class GithubHelper {
                 val releases = getReleases()
             if (releases.isEmpty()) return ""
 
-            return releases.maxByOrNull { it.published_at }!!
+            val url = releases.maxByOrNull { it.published_at }!!
                 .assets
                 .first { it.name == Configuration.BACKEND_ZIP_NAME }
                 .browser_download_url
+
+                return url
             } catch (e: Exception) {
                 LoggingService.getInstance()
                     .error("GithubHelper: failed to get latest backend release url: ${e.message}")
