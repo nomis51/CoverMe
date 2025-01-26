@@ -12,25 +12,16 @@
         <MudStack Spacing="2"
                   Row="true"
                   AlignItems="AlignItems.Center">
-            <MudSelect T="string"
-                       data-testid="tests-projects-select"
-                       Disabled="@IsLoading"
-                       @bind-Value="@SelectedTestsProject"
-                       Variant="Variant.Outlined"
-                       Typo="Typo.caption"
-                       Label="Tests project"
-                       Placeholder="Select a tests project"
-                       Dense="true"
-                       Immediate="true"
-                       Margin="Margin.Dense">
+            <InputSelect @bind-Value="SelectedTestsProject"
+                         class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:ring-0 focus:border-neutral-600 block w-full p-2.5">
                 @foreach (var project in TestsProjects)
                 {
-                    <MudSelectItem T="string"
-                                   Value="@project.FilePath">
+                    <option value="@project.FilePath"
+                            checked="@(project.FilePath == SelectedTestsProject)">
                         @project.Name
-                    </MudSelectItem>
+                    </option>
                 }
-            </MudSelect>
+            </InputSelect>
             <MudTooltip Placement="Placement.Top"
                         Arrow="true"
                         Text="Run coverage">

@@ -21,7 +21,6 @@ public partial class MainLayout : LayoutComponentBase
     {
         PaletteDark = new PaletteDark
         {
-            Primary = new MudColor("#fff"),
         }
     };
 
