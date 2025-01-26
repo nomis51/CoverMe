@@ -88,17 +88,9 @@
         </MudStack>
     </MudStack>
 
-    <MudTextField T="string"
-                  data-testid="filter-tests-textfield"
-                  @bind-Value="@FilterText"
-                  Variant="Variant.Outlined"
-                  Margin="Margin.Dense"
-                  Clearable="true"
-                  Immediate="true"
-                  Label="Filter tests"
-                  Placeholder="Type something..."
-                  AdornmentIcon="@Icons.Material.Outlined.Search"
-                  Disabled="@IsLoading"/>
+    <InputText @bind-Value="@FilterText"
+               class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5"
+               placeholder="Type something..."/>
 
     <CoverageTable Nodes="@FilteredNodes"/>
 </MudStack>
