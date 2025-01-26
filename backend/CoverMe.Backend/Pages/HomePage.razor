@@ -25,31 +25,34 @@
             <IconButton>
                 <PlayArrowIcon Class="size-6 fill-white"/>
             </IconButton>
+            <IconButton>
+                <BuildIcon Class="size-6 fill-white"/>
+            </IconButton>
 
-            <MudTooltip Placement="Placement.Top"
-                        Arrow="true"
-                        Text="Run coverage">
-                <MudIconButton Size="Size.Small"
-                               data-testid="run-coverage-button"
-                               OnClick="@(() => RunCoverage())"
-                               Disabled="@IsLoading"
-                               Color="Color.Default"
-                               DropShadow="false"
-                               Variant="Variant.Filled"
-                               Icon="@Icons.Material.Outlined.PlayArrow"/>
-            </MudTooltip>
-            <MudTooltip Placement="Placement.Top"
-                        Arrow="true"
-                        Text="Build and run coverage">
-                <MudIconButton Size="Size.Small"
-                               data-testid="build-and-run-coverage-button"
-                               OnClick="@(() => RunCoverage(false))"
-                               Disabled="@IsLoading"
-                               Color="Color.Default"
-                               DropShadow="false"
-                               Variant="Variant.Filled"
-                               Icon="@Icons.Material.Outlined.Build"/>
-            </MudTooltip>
+            @* <MudTooltip Placement="Placement.Top" *@
+            @*             Arrow="true" *@
+            @*             Text="Run coverage"> *@
+            @*     <MudIconButton Size="Size.Small" *@
+            @*                    data-testid="run-coverage-button" *@
+            @*                    OnClick="@(() => RunCoverage())" *@
+            @*                    Disabled="@IsLoading" *@
+            @*                    Color="Color.Default" *@
+            @*                    DropShadow="false" *@
+            @*                    Variant="Variant.Filled" *@
+            @*                    Icon="@Icons.Material.Outlined.PlayArrow"/> *@
+            @* </MudTooltip> *@
+            @* <MudTooltip Placement="Placement.Top" *@
+            @*             Arrow="true" *@
+            @*             Text="Build and run coverage"> *@
+            @*     <MudIconButton Size="Size.Small" *@
+            @*                    data-testid="build-and-run-coverage-button" *@
+            @*                    OnClick="@(() => RunCoverage(false))" *@
+            @*                    Disabled="@IsLoading" *@
+            @*                    Color="Color.Default" *@
+            @*                    DropShadow="false" *@
+            @*                    Variant="Variant.Filled" *@
+            @*                    Icon="@Icons.Material.Outlined.Build"/> *@
+            @* </MudTooltip> *@
             @if (IsLoading)
             {
                 <MudProgressCircular Color="Color.Primary"
@@ -62,33 +65,40 @@
         <MudStack Row="true"
                   AlignItems="AlignItems.Center"
                   Justify="Justify.FlexEnd">
-            <MudTooltip Placement="Placement.Top"
-                        Arrow="true"
-                        Text="Save report">
-                <MudMenu Size="Size.Small"
-                         data-testid="save-report-button"
-                         Disabled="@IsLoading"
-                         Dense="true"
-                         Color="Color.Default"
-                         DropShadow="false"
-                         Variant="Variant.Filled"
-                         Icon="@Icons.Material.Outlined.Save">
-                    <MudMenuItem OnClick="@(() => GenerateReport())">Simple report</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => GenerateReport(true))">Detailed report</MudMenuItem>
-                </MudMenu>
-            </MudTooltip>
-            <MudTooltip Placement="Placement.Top"
-                        Arrow="true"
-                        Text="Refresh">
-                <MudIconButton Size="Size.Small"
-                               data-testid="refresh-button"
-                               Disabled="@IsLoading"
-                               OnClick="@Refresh"
-                               Color="Color.Default"
-                               DropShadow="false"
-                               Variant="Variant.Filled"
-                               Icon="@Icons.Material.Outlined.Refresh"/>
-            </MudTooltip>
+            <IconButton>
+                <SaveIcon Class="size-6 fill-white"/>
+            </IconButton>
+            <IconButton>
+                <RefreshIcon Class="size-6 fill-white"/>
+            </IconButton>
+
+            @* <MudTooltip Placement="Placement.Top" *@
+            @*             Arrow="true" *@
+            @*             Text="Save report"> *@
+            @*     <MudMenu Size="Size.Small" *@
+            @*              data-testid="save-report-button" *@
+            @*              Disabled="@IsLoading" *@
+            @*              Dense="true" *@
+            @*              Color="Color.Default" *@
+            @*              DropShadow="false" *@
+            @*              Variant="Variant.Filled" *@
+            @*              Icon="@Icons.Material.Outlined.Save"> *@
+            @*         <MudMenuItem OnClick="@(() => GenerateReport())">Simple report</MudMenuItem> *@
+            @*         <MudMenuItem OnClick="@(() => GenerateReport(true))">Detailed report</MudMenuItem> *@
+            @*     </MudMenu> *@
+            @* </MudTooltip> *@
+            @* <MudTooltip Placement="Placement.Top" *@
+            @*             Arrow="true" *@
+            @*             Text="Refresh"> *@
+            @*     <MudIconButton Size="Size.Small" *@
+            @*                    data-testid="refresh-button" *@
+            @*                    Disabled="@IsLoading" *@
+            @*                    OnClick="@Refresh" *@
+            @*                    Color="Color.Default" *@
+            @*                    DropShadow="false" *@
+            @*                    Variant="Variant.Filled" *@
+            @*                    Icon="@Icons.Material.Outlined.Refresh"/> *@
+            @* </MudTooltip> *@
         </MudStack>
     </MudStack>
 
