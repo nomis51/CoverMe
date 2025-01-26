@@ -11,9 +11,7 @@ import com.jetbrains.rider.plugins.coverme.services.abstractions.IProtocolServic
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.net.URL
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -70,7 +68,7 @@ class BackendService : IProtocolService {
         return _ipcClient?.writeMessageAndWaitResponse(message)
     }
 
-    private fun ensureBackendStarted(): Boolean {
+    private fun ensureBackendStarted(retryCount: Int = 0): Boolean {
         if (Configuration.ENV != Environments.PRODUCTION) return true
 
         if (checkBackendStatus()) return true
@@ -78,6 +76,7 @@ class BackendService : IProtocolService {
         val ok = FileHelper.lockFileAndPerformOperation(
             "${System.getProperty("user.home")}/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_LOCK_FILE_NAME}",
             operation = {
+                if (checkBackendStatus()) return@lockFileAndPerformOperation true
                 if (!downloadBackend()) return@lockFileAndPerformOperation false
                 if (!startBackend()) return@lockFileAndPerformOperation false
 
@@ -88,8 +87,20 @@ class BackendService : IProtocolService {
 
         if (!ok) return false
 
+        var count = 0
         while (!checkBackendStatus()) {
             Thread.sleep(1000)
+            ++count
+
+            if (count >= 10) {
+                if (retryCount >= 3) {
+                    LoggingService.getInstance()
+                        .error("BackendService: failed to start backend after 3 reties over 30 seconds")
+                    return false
+                }
+
+                return ensureBackendStarted(retryCount + 1)
+            }
         }
 
         return true
@@ -130,23 +141,19 @@ class BackendService : IProtocolService {
             val backendUrl = GithubHelper.getLatestBackendReleaseUrl()
             if (backendUrl.isEmpty()) return false
 
-            val binFolder =
-                File(System.getProperty("user.home") + "/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_BIN_FOLDER_NAME}/")
+            val binFolder = File(
+                System.getProperty("user.home") +
+                        "/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_BIN_FOLDER_NAME}/"
+            )
             if (!binFolder.exists()) {
                 binFolder.mkdirs()
             }
 
             val outputFile = File("${binFolder.absolutePath}/${Configuration.BACKEND_ZIP_NAME}")
             val fileSha = FileHelper.calculateFileSHA(outputFile)
+
             if (!outputFile.exists() || fileSha.isEmpty() || fileSha != GithubHelper.getLatestBackendChecksum()) {
-                URL(backendUrl)
-                    .openStream()
-                    .use { input ->
-                        FileOutputStream(outputFile)
-                            .use { output ->
-                                input.copyTo(output)
-                            }
-                    }
+                FileHelper.downloadFile(backendUrl, outputFile)
             }
 
             FileHelper.unzipFile(outputFile, File(binFolder.absolutePath))

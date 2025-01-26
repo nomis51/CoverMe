@@ -6,6 +6,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.RandomAccessFile
+import java.net.URL
 import java.nio.channels.FileLock
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
@@ -178,6 +179,17 @@ class FileHelper {
                         zipInputStream.closeEntry()
                         entry = zipInputStream.nextEntry
                     }
+                }
+        }
+
+        fun downloadFile(url: String, outputFile: File) {
+            URL(url)
+                .openStream()
+                .use { input ->
+                    FileOutputStream(outputFile)
+                        .use { output ->
+                            input.copyTo(output)
+                        }
                 }
         }
     }
