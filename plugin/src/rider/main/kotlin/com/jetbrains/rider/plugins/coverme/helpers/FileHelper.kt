@@ -16,7 +16,7 @@ class FileHelper {
         fun calculateFileSHA(file: File, algorithm: String = "SHA-256"): String {
             if(!file.exists()) return ""
 
-            val buffer = ByteArray(1024)
+            val buffer = ByteArray(128 * 1024)
             val digest = MessageDigest.getInstance(algorithm)
 
             file.inputStream().use { inputStream ->
