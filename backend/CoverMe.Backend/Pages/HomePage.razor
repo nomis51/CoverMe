@@ -3,15 +3,11 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudStack data-testid="home-page"
-          Spacing="1"
-          Class="pa-2">
-    <MudStack Justify="Justify.SpaceBetween"
-              Row="true"
-              AlignItems="AlignItems.Center">
-        <MudStack Spacing="2"
-                  Row="true"
-                  AlignItems="AlignItems.Center">
+<div data-testid="home-page"
+     class="flex flex-col pa-2 gap-1">
+    <div Justify="Justify.SpaceBetween"
+         class="flex flex-row justify-between align-middle">
+        <div class="flex flex-row gap-1 align-middle">
             <InputSelect @bind-Value="SelectedTestsProject"
                          class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:ring-0 focus:border-neutral-600 block w-full p-2.5">
                 @foreach (var project in TestsProjects)
@@ -29,82 +25,25 @@
                 <BuildIcon Class="size-6 fill-white"/>
             </IconButton>
 
-            @* <MudTooltip Placement="Placement.Top" *@
-            @*             Arrow="true" *@
-            @*             Text="Run coverage"> *@
-            @*     <MudIconButton Size="Size.Small" *@
-            @*                    data-testid="run-coverage-button" *@
-            @*                    OnClick="@(() => RunCoverage())" *@
-            @*                    Disabled="@IsLoading" *@
-            @*                    Color="Color.Default" *@
-            @*                    DropShadow="false" *@
-            @*                    Variant="Variant.Filled" *@
-            @*                    Icon="@Icons.Material.Outlined.PlayArrow"/> *@
-            @* </MudTooltip> *@
-            @* <MudTooltip Placement="Placement.Top" *@
-            @*             Arrow="true" *@
-            @*             Text="Build and run coverage"> *@
-            @*     <MudIconButton Size="Size.Small" *@
-            @*                    data-testid="build-and-run-coverage-button" *@
-            @*                    OnClick="@(() => RunCoverage(false))" *@
-            @*                    Disabled="@IsLoading" *@
-            @*                    Color="Color.Default" *@
-            @*                    DropShadow="false" *@
-            @*                    Variant="Variant.Filled" *@
-            @*                    Icon="@Icons.Material.Outlined.Build"/> *@
-            @* </MudTooltip> *@
-            @if (IsLoading)
+            @if (!IsLoading)
             {
-                <MudProgressCircular Color="Color.Primary"
-                                     data-testid="loading-progress-circular"
-                                     Indeterminate="true"
-                                     Size="Size.Small"/>
+                <Spinner/>
             }
-        </MudStack>
+        </div>
 
-        <MudStack Row="true"
-                  AlignItems="AlignItems.Center"
-                  Justify="Justify.FlexEnd">
+        <div class="flex flex-row justify-end align-middle">
             <IconButton>
                 <SaveIcon Class="size-6 fill-white"/>
             </IconButton>
             <IconButton>
                 <RefreshIcon Class="size-6 fill-white"/>
             </IconButton>
-
-            @* <MudTooltip Placement="Placement.Top" *@
-            @*             Arrow="true" *@
-            @*             Text="Save report"> *@
-            @*     <MudMenu Size="Size.Small" *@
-            @*              data-testid="save-report-button" *@
-            @*              Disabled="@IsLoading" *@
-            @*              Dense="true" *@
-            @*              Color="Color.Default" *@
-            @*              DropShadow="false" *@
-            @*              Variant="Variant.Filled" *@
-            @*              Icon="@Icons.Material.Outlined.Save"> *@
-            @*         <MudMenuItem OnClick="@(() => GenerateReport())">Simple report</MudMenuItem> *@
-            @*         <MudMenuItem OnClick="@(() => GenerateReport(true))">Detailed report</MudMenuItem> *@
-            @*     </MudMenu> *@
-            @* </MudTooltip> *@
-            @* <MudTooltip Placement="Placement.Top" *@
-            @*             Arrow="true" *@
-            @*             Text="Refresh"> *@
-            @*     <MudIconButton Size="Size.Small" *@
-            @*                    data-testid="refresh-button" *@
-            @*                    Disabled="@IsLoading" *@
-            @*                    OnClick="@Refresh" *@
-            @*                    Color="Color.Default" *@
-            @*                    DropShadow="false" *@
-            @*                    Variant="Variant.Filled" *@
-            @*                    Icon="@Icons.Material.Outlined.Refresh"/> *@
-            @* </MudTooltip> *@
-        </MudStack>
-    </MudStack>
+        </div>
+    </div>
 
     <InputText @bind-Value="@FilterText"
                class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5"
                placeholder="Type something..."/>
 
     <CoverageTable Nodes="@FilteredNodes"/>
-</MudStack>
+</div>

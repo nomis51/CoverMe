@@ -1,6 +1,5 @@
 ﻿using CoverMe.Backend.Playwright.Tests.Extensions;
 using Microsoft.Playwright;
-using MudBlazor;
 
 namespace CoverMe.Backend.Playwright.Tests.Pages;
 

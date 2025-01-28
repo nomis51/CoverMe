@@ -7,7 +7,13 @@ public partial class IconButton : ComponentBase
     #region Parameters
 
     [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnClick { get; set; } = EventCallback.Empty;
 
     #endregion
 }

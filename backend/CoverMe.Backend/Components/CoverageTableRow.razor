@@ -1,40 +1,49 @@
 ﻿@inherits AppComponentBase
 
-<MudTr data-testid="coverage-table-row">
-    <MudTd Style="@($"padding-left: {Level}rem !important; padding-right: 0 !important")"
-           @ondblclick="@OpenFileAtLine">
-        <MudStack Row="true"
-                  AlignItems="AlignItems.Center">
+<tr data-testid="coverage-table-row">
+    <td style="@($"padding-left: {Level}rem !important; padding-right: 0 !important")"
+        @ondblclick="@OpenFileAtLine">
+        <div class="flex flex-row align-middle">
             @if (CanBeExpanded)
             {
-                @* <MudIconButton Size="Size.Small" *@
-                @*                OnClick="@(() => OnExpand.InvokeAsync())" *@
-                @*                Icon="@Icons.Material.Filled.ChevronRight"/> *@
+                <IconButton OnClick="@OnExpand"
+                            Class="bg-transparent border-none">
+                    <ChildContent>
+                        @if (!IsExpanded)
+                        {
+                            <ChevronRight Class="size-4 fill-white"/>
+                        }
+                        else
+                        {
+                            <ChevronRight Class="size-4 fill-white rotate-90"/>
+                        }
+                    </ChildContent>
+                </IconButton>
             }
 
-            <MudImage Src="@($"/images/{Icon.ToString().ToLower()}.png")"
-                      Class="h-[24px]"
-                      ObjectFit="ObjectFit.Contain"/>
+            <img src="@($"/images/{Icon.ToString().ToLower()}.png")"
+                 alt=""
+                 class="h-[24px] object-contain">
 
-            <MudText Class="select-none text-nowrap"
-                     Style="@(HasFilePath ? "cursor: pointer" : string.Empty)">@Symbol</MudText>
-        </MudStack>
-    </MudTd>
-    <MudTd Class="relative"
-           Style="padding-left: 0 !important; padding-right: 0 !important">
+            <p class="select-none text-nowrap"
+               style="@(HasFilePath ? "cursor: pointer" : string.Empty)">@Symbol</p>
+        </div>
+    </td>
+    <td class="relative"
+        styl="padding-left: 0 !important; padding-right: 0 !important">
         <div class="bg-neutral-500 overflow-hidden relative min-h-[24px] w-full min-w-[50px] rounded">
             <div class="h-full w-full min-h-[24px] rounded"
                  style="max-width: @Coverage%; background-color: @BarColor"></div>
-            <MudText Class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-bold drop-shadow-md"
-                     Style="@($"color: {FontColor}")">
+            <p class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-bold drop-shadow-md"
+               style="@($"color: {FontColor}")">
                 @Coverage%
-            </MudText>
+            </p>
         </div>
-    </MudTd>
+    </td>
     @if (Settings.Interface.ShowStatementsColumn)
     {
-        <MudTd Style="padding-left: 4px !important; padding-right: 0 !important">
-            <MudText Align="Align.Left">@CoveredStatements / @TotalStatements</MudText>
-        </MudTd>
+        <td style="padding-left: 4px !important; padding-right: 0 !important">
+            <p>@CoveredStatements / @TotalStatements</p>
+        </td>
     }
-</MudTr>
+</tr>

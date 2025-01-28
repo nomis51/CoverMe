@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7"/>
-        <PackageReference Include="MudBlazor" Version="7.15.0"/>
     </ItemGroup>
 
     <ItemGroup>
