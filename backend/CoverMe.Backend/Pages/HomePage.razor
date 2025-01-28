@@ -18,10 +18,10 @@
                     </option>
                 }
             </InputSelect>
-            <IconButton>
+            <IconButton OnClick="@(() => RunCoverage())">
                 <PlayArrowIcon Class="size-6 fill-white"/>
             </IconButton>
-            <IconButton>
+            <IconButton OnClick="@(() => RunCoverage(false))">
                 <BuildIcon Class="size-6 fill-white"/>
             </IconButton>
 
@@ -32,16 +32,17 @@
         </div>
 
         <div class="flex flex-row justify-end align-middle">
-            <IconButton>
+            <IconButton OnClick="@(() => GenerateReport())">
                 <SaveIcon Class="size-6 fill-white"/>
             </IconButton>
-            <IconButton>
+            <IconButton OnClick="@(() => Refresh())">
                 <RefreshIcon Class="size-6 fill-white"/>
             </IconButton>
         </div>
     </div>
 
-    <InputText @bind-Value="@FilterText"
+    <InputText Value="@FilterText"
+               @oninput="@(e => FilterText = e.Value?.ToString() ?? string.Empty)"
                class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5"
                placeholder="Type something..."/>
 
