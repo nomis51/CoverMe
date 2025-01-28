@@ -41,10 +41,10 @@
         </div>
     </div>
 
-    <InputText Value="@FilterText"
-               @oninput="@(e => FilterText = e.Value?.ToString() ?? string.Empty)"
-               class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5"
-               placeholder="Type something..."/>
+    <input value="@FilterText"
+           @oninput="@(e => FilterText = e.Value?.ToString() ?? string.Empty)"
+           class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5"
+           placeholder="Type something..."/>
 
     <CoverageTable Nodes="@FilteredNodes"/>
 </div>
