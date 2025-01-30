@@ -6,8 +6,8 @@
 <div data-testid="home-page"
      class="flex flex-col pa-2 gap-1">
     <div Justify="Justify.SpaceBetween"
-         class="flex flex-row justify-between align-middle">
-        <div class="flex flex-row gap-1 align-middle">
+         class="flex flex-row justify-between items-center">
+        <div class="flex flex-row gap-1 items-center">
             <InputSelect @bind-Value="SelectedTestsProject"
                          class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:ring-0 focus:border-neutral-600 block w-full p-2.5">
                 @foreach (var project in TestsProjects)
@@ -25,13 +25,13 @@
                 <BuildIcon Class="size-6 fill-white"/>
             </IconButton>
 
-            @if (!IsLoading)
+            @if (IsLoading)
             {
                 <Spinner/>
             }
         </div>
 
-        <div class="flex flex-row justify-end align-middle">
+        <div class="flex flex-row justify-end items-center">
             <IconButton OnClick="@(() => GenerateReport())">
                 <SaveIcon Class="size-6 fill-white"/>
             </IconButton>

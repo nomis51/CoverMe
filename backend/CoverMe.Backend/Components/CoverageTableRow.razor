@@ -1,13 +1,14 @@
 ﻿@inherits AppComponentBase
 
-<tr data-testid="coverage-table-row">
-    <td style="@($"padding-left: {Level}rem !important; padding-right: 0 !important")"
+<tr data-testid="coverage-table-row"
+    @onclick="OnExpand">
+    <td style="@($"padding-left: {Level}rem;")"
+        class="pr-0 h-7 max-h-7"
         @ondblclick="@OpenFileAtLine">
-        <div class="flex flex-row align-middle">
+        <div class="flex flex-row items-center">
             @if (CanBeExpanded)
             {
-                <IconButton OnClick="@OnExpand"
-                            Class="bg-transparent border-none">
+                <IconButton Class="bg-transparent border-none">
                     <ChildContent>
                         @if (!IsExpanded)
                         {
@@ -20,6 +21,10 @@
                     </ChildContent>
                 </IconButton>
             }
+            else
+            {
+                <div class="w-[28px] h-[28px]"></div>
+            }
 
             <img src="@($"/images/{Icon.ToString().ToLower()}.png")"
                  alt=""
@@ -29,8 +34,7 @@
                style="@(HasFilePath ? "cursor: pointer" : string.Empty)">@Symbol</p>
         </div>
     </td>
-    <td class="relative"
-        styl="padding-left: 0 !important; padding-right: 0 !important">
+    <td class="relative px-0 h-7 max-h-7">
         <div class="bg-neutral-500 overflow-hidden relative min-h-[24px] w-full min-w-[50px] rounded">
             <div class="h-full w-full min-h-[24px] rounded"
                  style="max-width: @Coverage%; background-color: @BarColor"></div>
@@ -42,7 +46,7 @@
     </td>
     @if (Settings.Interface.ShowStatementsColumn)
     {
-        <td style="padding-left: 4px !important; padding-right: 0 !important">
+        <td class="pl-1 pr-0 h-7 max-h-7">
             <p>@CoveredStatements / @TotalStatements</p>
         </td>
     }
