@@ -30,6 +30,7 @@ public partial class HomePage : AppComponentBase
     private bool IsRunningCoverage { get; set; }
     private bool IsGeneratingReport { get; set; }
     private bool IsRefreshing { get; set; }
+    private bool IsSaveMenuOpen { get; set; }
 
     #endregion
 
@@ -90,6 +91,8 @@ public partial class HomePage : AppComponentBase
 
     private async Task GenerateReport(bool detailed = false)
     {
+        IsSaveMenuOpen = false;
+
         if (!HasProjectSettings)
         {
             Logger.LogWarning("Can't generate report, probably running outside of Intellij");

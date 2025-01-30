@@ -35,10 +35,27 @@
         </div>
 
         <div class="flex flex-row justify-end gap-1 items-center">
-            <IconButton OnClick="@(() => GenerateReport())"
-                        Disabled="@IsLoading">
-                <SaveIcon Class="size-6 fill-white"/>
-            </IconButton>
+            <div class="relative">
+                <IconButton OnClick="@(() => IsSaveMenuOpen = !IsSaveMenuOpen)"
+                            Disabled="@IsLoading">
+                    <SaveIcon Class="size-6 fill-white"/>
+                </IconButton>
+                @if (IsSaveMenuOpen)
+                {
+                    <div class="absolute top-100 mt-1 right-0 z-10 drop-shadow-md bg-neutral-800 rounded border border-neutral-700 p-1">
+                        <ul>
+                            <li class="hover:bg-neutral-600 px-2 rounded cursor-pointer whitespace-nowrap"
+                                @onclick="@(() => GenerateReport())">
+                                Save simple report
+                            </li>
+                            <li class="hover:bg-neutral-600 px-2 rounded cursor-pointer whitespace-nowrap"
+                                @onclick="@(() => GenerateReport(true))">
+                                Save detailed report
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
             <IconButton OnClick="@(() => Refresh())"
                         Disabled="@IsLoading">
                 <RefreshIcon Class="size-6 fill-white"/>
