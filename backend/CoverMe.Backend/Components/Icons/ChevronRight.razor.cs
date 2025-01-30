@@ -1,13 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CoverMe.Backend.Components.Icons.Abstractions;
 
 namespace CoverMe.Backend.Components.Icons;
 
-public partial class ChevronRight : ComponentBase
+public partial class ChevronRight : IconBase
 {
-    #region Parameters
-
-    [Parameter]
-    public string? Class { get; set; }
-
-    #endregion
 }

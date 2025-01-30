@@ -1,5 +1,4 @@
-﻿using System.Transactions;
-using CoverMe.Backend.Components.Abstractions;
+﻿using CoverMe.Backend.Components.Abstractions;
 using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Services.Abstractions;
@@ -77,7 +76,7 @@ public partial class HomePage : AppComponentBase
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        
+
         if (firstRender)
         {
             await Refresh();

@@ -3,6 +3,7 @@ html,
 body {
     height: 100%;
     width: 100%;
+    padding: .25rem;
     /*background: transparent !important;*/
     background-color: #323333 !important;
     color: white !important;

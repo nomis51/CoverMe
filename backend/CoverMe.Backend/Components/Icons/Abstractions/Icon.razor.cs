@@ -1,19 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace CoverMe.Backend.Components;
+namespace CoverMe.Backend.Components.Icons.Abstractions;
 
-public partial class IconButton : ComponentBase
+public partial class Icon : ComponentBase
 {
     #region Parameters
-
-    [Parameter]
-    public string Class { get; set; } = string.Empty;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
 
     [Parameter]
-    public EventCallback OnClick { get; set; } = EventCallback.Empty;
+    public string? Class { get; set; }
 
     [Parameter]
     public bool Disabled { get; set; }

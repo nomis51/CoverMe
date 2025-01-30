@@ -10,7 +10,6 @@ using CoverMe.Backend.Core.Models.Process;
 using CoverMe.Backend.Core.Services.Abstractions;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace CoverMe.Backend.Core.Services;
 

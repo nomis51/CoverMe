@@ -2,15 +2,15 @@
 
 namespace CoverMe.Backend.Components.Icons.Abstractions;
 
-public partial class IconBase : ComponentBase
+public class IconBase : ComponentBase
 {
     #region Parameters
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; } = null!;
+    public string? Class { get; set; }
 
     [Parameter]
-    public string? Class { get; set; }
+    public bool Disabled { get; set; }
 
     #endregion
 }

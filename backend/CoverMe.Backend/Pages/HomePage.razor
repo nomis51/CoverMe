@@ -9,7 +9,8 @@
          class="flex flex-row justify-between items-center">
         <div class="flex flex-row gap-1 items-center">
             <InputSelect @bind-Value="SelectedTestsProject"
-                         class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:ring-0 focus:border-neutral-600 block w-full p-2.5">
+                         disabled="@IsLoading"
+                         class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:ring-0 focus:border-neutral-600 block w-full p-2.5 disabled:bg-opacity-30 disabled:text-opacity-30 disabled:cursor-not-allowed">
                 @foreach (var project in TestsProjects)
                 {
                     <option value="@project.FilePath"
@@ -18,10 +19,12 @@
                     </option>
                 }
             </InputSelect>
-            <IconButton OnClick="@(() => RunCoverage())">
+            <IconButton OnClick="@(() => RunCoverage())"
+                        Disabled="@IsLoading">
                 <PlayArrowIcon Class="size-6 fill-white"/>
             </IconButton>
-            <IconButton OnClick="@(() => RunCoverage(false))">
+            <IconButton OnClick="@(() => RunCoverage(false))"
+                        Disabled="@IsLoading">
                 <BuildIcon Class="size-6 fill-white"/>
             </IconButton>
 
@@ -31,19 +34,22 @@
             }
         </div>
 
-        <div class="flex flex-row justify-end items-center">
-            <IconButton OnClick="@(() => GenerateReport())">
+        <div class="flex flex-row justify-end gap-1 items-center">
+            <IconButton OnClick="@(() => GenerateReport())"
+                        Disabled="@IsLoading">
                 <SaveIcon Class="size-6 fill-white"/>
             </IconButton>
-            <IconButton OnClick="@(() => Refresh())">
+            <IconButton OnClick="@(() => Refresh())"
+                        Disabled="@IsLoading">
                 <RefreshIcon Class="size-6 fill-white"/>
             </IconButton>
         </div>
     </div>
 
     <input value="@FilterText"
+           disabled="@IsLoading"
            @oninput="@(e => FilterText = e.Value?.ToString() ?? string.Empty)"
-           class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5"
+           class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5 disabled:bg-opacity-30 disabled:text-opacity-30 disabled:cursor-not-allowed"
            placeholder="Type something..."/>
 
     <CoverageTable Nodes="@FilteredNodes"/>

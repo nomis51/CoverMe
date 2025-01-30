@@ -1,13 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CoverMe.Backend.Components.Icons.Abstractions;
 
 namespace CoverMe.Backend.Components.Icons;
 
-public partial class PlayArrowIcon : ComponentBase
+public partial class PlayArrowIcon : IconBase
 {
-    #region Parameters
-
-    [Parameter]
-    public string? Class { get; set; }
-
-    #endregion
 }
