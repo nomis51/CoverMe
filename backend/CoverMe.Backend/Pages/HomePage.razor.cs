@@ -31,6 +31,7 @@ public partial class HomePage : AppComponentBase
     private bool IsGeneratingReport { get; set; }
     private bool IsRefreshing { get; set; }
     private bool IsSaveMenuOpen { get; set; }
+    public bool IsMoreMenuOpen { get; set; }
 
     #endregion
 
@@ -89,6 +90,12 @@ public partial class HomePage : AppComponentBase
 
     #region Private methods
 
+    private void ShowSettingsPage()
+    {
+        IsMoreMenuOpen = false;
+        // TODO: navigate
+    }
+
     private async Task GenerateReport(bool detailed = false)
     {
         IsSaveMenuOpen = false;
@@ -117,6 +124,7 @@ public partial class HomePage : AppComponentBase
 
     private async Task Refresh()
     {
+        IsMoreMenuOpen = false;
         IsRefreshing = true;
         RetrieveTestsProjects();
         await RetrieveLastCoverage();

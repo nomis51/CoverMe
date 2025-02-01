@@ -18,5 +18,8 @@ public partial class IconButton : ComponentBase
     [Parameter]
     public bool Disabled { get; set; }
 
+    [Parameter]
+    public string Tooltip { get; set; } = string.Empty;
+
     #endregion
 }
