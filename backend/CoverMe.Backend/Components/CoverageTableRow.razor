@@ -1,9 +1,10 @@
-﻿@inherits AppComponentBase
+﻿@using CoverMe.Backend.Extensions
+@inherits AppComponentBase
 
 <tr data-testid="coverage-table-row"
     @onclick="OnExpand">
-    <td style="@($"padding-left: {Level}rem;")"
-        class="pr-0 h-7 max-h-7"
+    <td style="@($"padding-left: {Level}rem; max-width: calc(100% - 80px - {Level}rem)")"
+        class="pr-0 h-7 max-h-7 text-ellipsis overflow-hidden whitespace-nowrap w-auto"
         @ondblclick="@OpenFileAtLine">
         <div class="flex flex-row items-center">
             @if (CanBeExpanded)
@@ -30,11 +31,13 @@
                  alt=""
                  class="h-[24px] object-contain">
 
-            <p class="select-none text-nowrap"
-               style="@(HasFilePath ? "cursor: pointer" : string.Empty)">@Symbol</p>
+            <p class="select-none text-nowrap text-ellipsis overflow-hidden"
+               style="@(HasFilePath ? "cursor: pointer" : string.Empty)">
+                @Symbol.Ellipsis(25)
+            </p>
         </div>
     </td>
-    <td class="relative px-0 h-7 max-h-7">
+    <td class="relative px-0 h-7 max-h-7 w-[80px] min-w-[80px]">
         <div class="bg-neutral-500 overflow-hidden relative min-h-[24px] w-full min-w-[50px] rounded">
             <div class="h-full w-full min-h-[24px] rounded"
                  style="max-width: @Coverage%; background-color: @BarColor"></div>

@@ -636,6 +636,10 @@ video {
   min-height: 24px;
 }
 
+.w-1 {
+  width: 0.25rem;
+}
+
 .w-\[24px\] {
   width: 24px;
 }
@@ -644,12 +648,28 @@ video {
   width: 28px;
 }
 
+.w-\[80px\] {
+  width: 80px;
+}
+
+.w-auto {
+  width: auto;
+}
+
 .w-full {
   width: 100%;
 }
 
 .min-w-\[50px\] {
   min-width: 50px;
+}
+
+.min-w-\[80px\] {
+  min-width: 80px;
+}
+
+.table-fixed {
+  table-layout: fixed;
 }
 
 .border-collapse {

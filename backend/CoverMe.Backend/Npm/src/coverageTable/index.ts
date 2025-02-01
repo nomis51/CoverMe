@@ -23,8 +23,6 @@ export class CoverageTable {
         this.resizableDivs.forEach(div => div.addEventListener("mousedown", this.onMouseDown.bind(this)));
         this.resizableDivs.forEach(div => div.addEventListener("mouseover", this.onMouseOver.bind(this)));
         this.resizableDivs.forEach(div => div.addEventListener("mouseout", this.onMouseOut.bind(this)));
-        document.addEventListener("mousemove", this.onMouseMove.bind(this));
-        document.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 
     private makeResizable(table: HTMLTableElement) {
@@ -62,8 +60,6 @@ export class CoverageTable {
         div.addEventListener("mousedown", this.onMouseDown.bind(this));
         div.addEventListener("mouseover", this.onMouseOver.bind(this));
         div.addEventListener("mouseout", this.onMouseOut.bind(this));
-        document.addEventListener("mousemove", this.onMouseMove.bind(this));
-        document.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 
     private getPaddingDiff(column: HTMLElement): number {
@@ -84,6 +80,9 @@ export class CoverageTable {
         this.pageX = undefined;
         this.currentColumnWidth = undefined;
         this.nextColumnWidth = undefined;
+
+        document.addEventListener("mousemove", this.onMouseMove.bind(this));
+        document.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 
     private onMouseOut(e: MouseEvent) {
@@ -112,8 +111,11 @@ export class CoverageTable {
 
         const padding = this.getPaddingDiff(this.currentColumn!);
         this.currentColumnWidth = this.currentColumn!.offsetWidth - padding;
-        if (!this.nextColumn) return;
+        if (this.nextColumn) {
+            this.nextColumnWidth = this.nextColumn.offsetWidth - padding;
+        }
 
-        this.nextColumnWidth = this.nextColumn.offsetWidth - padding;
+        document.addEventListener("mousemove", this.onMouseMove.bind(this));
+        document.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 }

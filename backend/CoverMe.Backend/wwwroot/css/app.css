@@ -9,6 +9,7 @@ body {
     color: white !important;
     overflow-y: auto;
     overflow-x: hidden !important;
+    font-size: smaller;
 }
 
 /* Blazor error */

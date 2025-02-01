@@ -1,14 +1,14 @@
 ﻿<table data-testid="coverage-table"
        id="@_tableId"
-       Class="coverage-table !bg-transparent border-collapse overflow-hidden">
+       Class="coverage-table !bg-transparent border-collapse overflow-hidden table-fixed">
     <thead>
     <tr>
-        <th Class="text-ellipsis text-start">Symbol</th>
-        <th Class="text-ellipsis text-start">Coverage</th>
+        <th Class="text-start w-auto overflow-hidden text-ellipsis whitespace-nowrap">Symbol</th>
+        <th Class="text-start w-1 min-w-[80px]">Coverage</th>
 
         @if (Settings.Interface.ShowStatementsColumn)
         {
-            <th Class="text-ellipsis whitespace-nowrap text-start">
+            <th Class="whitespace-nowrap text-start">
                 Covered / total statements
             </th>
         }
