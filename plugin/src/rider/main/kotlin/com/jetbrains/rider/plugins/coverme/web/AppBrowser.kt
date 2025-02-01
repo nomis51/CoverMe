@@ -93,14 +93,6 @@ class AppBrowser : Disposable {
         ApplicationManager.getApplication().invokeLater {
             try {
                 _jsQuery.let {
-                    val panelBackground = UIManager.getColor("Panel.background")
-                    val panelForeground = UIManager.getColor("Panel.foreground")
-                    val editorBackground = UIManager.getColor("EditorPane.background")
-                    val editorForeground = UIManager.getColor("EditorPane.foreground")
-                    val textFieldBackground = UIManager.getColor("TextField.background")
-                    val textFieldForeground = UIManager.getColor("TextField.foreground")
-                    val accentColor = UIManager.getColor("Component.accentColor")
-
                     _browser!!.cefBrowser.executeJavaScript(
                         """
                         if(!window.intellij) {
@@ -108,26 +100,6 @@ class AppBrowser : Disposable {
                         }
                         window.intellij.PROJECT_ROOT_PATH = "${project.basePath}";
                         window.intellij.CHANNEL_ID = "$channelId";
-                        window.intellij.THEME = {
-                            panel: {
-                                background: "${panelBackground?.toHex() ?: ""}",
-                                foreground: "${panelForeground?.toHex() ?: ""}"
-                            },
-                            button: {
-                                background: "${UIManager.getColor("Button.background").toHex()}",
-                                foreground: "${UIManager.getColor("Button.foreground").toHex()}"},
-                            editor: {
-                                background: "${editorBackground?.toHex() ?: ""}",
-                                foreground: "${editorForeground?.toHex() ?: ""}"
-                            },
-                            textField: {
-                                background: "${textFieldBackground?.toHex() ?: ""}",
-                                foreground: "${textFieldForeground?.toHex() ?: ""}"
-                            },
-                            colors: {
-                                accent: "${accentColor?.toHex() ?: ""}"
-                            },
-                        };
                      """.trimIndent(), _browser!!.cefBrowser.url, 0
                     )
                 }
