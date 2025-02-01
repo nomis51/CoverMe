@@ -3,23 +3,13 @@ html,
 body {
     height: 100%;
     width: 100%;
-    background: transparent !important;
+    padding: .25rem;
+    /*background: transparent !important;*/
+    background-color: #323333 !important;
+    color: white !important;
     overflow-y: auto;
     overflow-x: hidden !important;
-}
-
-/* CoverageTable */
-.coverage-table th {
-    background-color: transparent !important;
-    /*padding: 0 8px !important;*/
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-
-}
-
-.coverage-table td {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    font-size: smaller;
 }
 
 /* Blazor error */

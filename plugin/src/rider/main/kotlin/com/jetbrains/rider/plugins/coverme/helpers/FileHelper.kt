@@ -3,20 +3,24 @@ package com.jetbrains.rider.plugins.coverme.helpers
 import com.intellij.util.io.createDirectories
 import com.jetbrains.rider.plugins.coverme.services.LoggingService
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.RandomAccessFile
+import java.net.URL
 import java.nio.channels.FileLock
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import java.security.MessageDigest
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 import kotlin.io.path.exists
 
 class FileHelper {
     companion object {
         fun calculateFileSHA(file: File, algorithm: String = "SHA-256"): String {
-            if(!file.exists()) return ""
+            if (!file.exists()) return ""
 
-            val buffer = ByteArray(1024)
+            val buffer = ByteArray(128 * 1024)
             val digest = MessageDigest.getInstance(algorithm)
 
             file.inputStream().use { inputStream ->
@@ -148,6 +152,44 @@ class FileHelper {
                     return FileVisitResult.CONTINUE
                 }
             })
+        }
+
+        fun unzipFile(zipFile: File, outputDir: File) {
+            ZipInputStream(zipFile.inputStream().buffered()).use { zipInputStream ->
+                val buffer = ByteArray(64 * 1024)
+
+                var entry: ZipEntry? = zipInputStream.nextEntry
+                while (entry != null) {
+                    val outputFile = File(outputDir, entry.name)
+
+                    if (entry.isDirectory) {
+                        outputFile.mkdirs()
+                    } else {
+                        outputFile.parentFile.mkdirs()
+
+                        FileOutputStream(outputFile).buffered().use { output ->
+                            var bytesRead: Int
+                            while (zipInputStream.read(buffer).also { bytesRead = it } != -1) {
+                                output.write(buffer, 0, bytesRead)
+                            }
+                        }
+                    }
+
+                    zipInputStream.closeEntry()
+                    entry = zipInputStream.nextEntry
+                }
+            }
+        }
+
+        fun downloadFile(url: String, outputFile: File) {
+            URL(url)
+                .openStream()
+                .use { input ->
+                    FileOutputStream(outputFile)
+                        .use { output ->
+                            input.copyTo(output)
+                        }
+                }
         }
     }
 }

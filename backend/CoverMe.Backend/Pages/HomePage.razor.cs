@@ -1,5 +1,4 @@
-﻿using System.Transactions;
-using CoverMe.Backend.Components.Abstractions;
+﻿using CoverMe.Backend.Components.Abstractions;
 using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Services.Abstractions;
@@ -31,6 +30,7 @@ public partial class HomePage : AppComponentBase
     private bool IsRunningCoverage { get; set; }
     private bool IsGeneratingReport { get; set; }
     private bool IsRefreshing { get; set; }
+    private bool IsSaveMenuOpen { get; set; }
 
     #endregion
 
@@ -77,7 +77,7 @@ public partial class HomePage : AppComponentBase
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        
+
         if (firstRender)
         {
             await Refresh();
@@ -91,6 +91,8 @@ public partial class HomePage : AppComponentBase
 
     private async Task GenerateReport(bool detailed = false)
     {
+        IsSaveMenuOpen = false;
+
         if (!HasProjectSettings)
         {
             Logger.LogWarning("Can't generate report, probably running outside of Intellij");
