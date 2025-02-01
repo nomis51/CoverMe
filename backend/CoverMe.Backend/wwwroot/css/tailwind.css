@@ -594,6 +594,10 @@ video {
   display: flex;
 }
 
+.\!table {
+  display: table !important;
+}
+
 .table {
   display: table;
 }
@@ -646,6 +650,10 @@ video {
 
 .min-w-\[50px\] {
   min-width: 50px;
+}
+
+.border-collapse {
+  border-collapse: collapse;
 }
 
 .-translate-x-1\/2 {

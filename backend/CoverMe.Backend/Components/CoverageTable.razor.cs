@@ -1,20 +1,33 @@
 ﻿using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Models.Settings;
 using CoverMe.Backend.Core.Services.Abstractions;
+using CoverMe.Backend.Extensions.JavaScript;
 using Microsoft.AspNetCore.Components;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
+using Microsoft.JSInterop;
 
 namespace CoverMe.Backend.Components;
 
-public partial class CoverageTable : ComponentBase
+public partial class CoverageTable : ComponentBase, IDisposable
 {
+    #region Constants
+
+    private readonly string _tableId = Guid.NewGuid().ToString("N");
+
+    #endregion
+
     #region Parameters
 
     [Parameter]
+
     public List<CoverageNode> Nodes { get; set; } = [];
 
     #endregion
 
     #region Services
+
+    [Inject]
+    protected IJSRuntime JsRuntime { get; set; } = null!;
 
     [Inject]
     protected ISettingsService SettingsService { get; set; } = null!;
@@ -32,6 +45,20 @@ public partial class CoverageTable : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         await RetrieveSettings();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        await JsRuntime.InitializeResizableTable(_tableId);
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+
+        _ = JsRuntime.DisposeResizableTable();
     }
 
     #endregion

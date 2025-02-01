@@ -1,5 +1,6 @@
 ﻿<table data-testid="coverage-table"
-       Class="coverage-table !bg-transparent">
+       id="@_tableId"
+       Class="coverage-table !bg-transparent border-collapse overflow-hidden">
     <thead>
     <tr>
         <th Class="text-ellipsis text-start">Symbol</th>
@@ -7,7 +8,9 @@
 
         @if (Settings.Interface.ShowStatementsColumn)
         {
-            <th Class="text-ellipsis whitespace-nowrap">Covered / total statements</th>
+            <th Class="text-ellipsis whitespace-nowrap text-start">
+                Covered / total statements
+            </th>
         }
     </tr>
     </thead>
