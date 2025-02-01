@@ -170,7 +170,7 @@ public class Backend
 
     #endregion
 
-    #region Private mthods
+    #region Private methods
 
     private static void AddDirectoryToZip(ZipArchive zipArchive, string entryPath, string sourceFolder)
     {
