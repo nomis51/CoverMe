@@ -681,6 +681,10 @@ video {
   min-width: 80px;
 }
 
+.max-w-\[100px\] {
+  max-width: 100px;
+}
+
 .table-fixed {
   table-layout: fixed;
 }
@@ -752,6 +756,10 @@ video {
 
 .whitespace-nowrap {
   white-space: nowrap;
+}
+
+.text-wrap {
+  text-wrap: wrap;
 }
 
 .text-nowrap {
