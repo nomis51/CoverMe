@@ -7,16 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CoverMe.Backend.Core\CoverMe.Backend.Core.csproj"/>
+        <ProjectReference Include="..\CoverMe.Backend.Core\CoverMe.Backend.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Controllers\"/>
+        <Folder Include="Controllers\" />
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-        <Exec Command="yarn" WorkingDirectory="Npm"/>
-        <Exec Command="yarn build" WorkingDirectory="Npm"/>
+        <Exec Command="yarn" WorkingDirectory="Npm" />
+        <Exec Command="yarn build" WorkingDirectory="Npm" />
     </Target>
 
 </Project>
