@@ -3,7 +3,6 @@ using CoverMe.Backend.Core.Models.Settings;
 using CoverMe.Backend.Core.Services.Abstractions;
 using CoverMe.Backend.Extensions.JavaScript;
 using Microsoft.AspNetCore.Components;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.JSInterop;
 
 namespace CoverMe.Backend.Components;
