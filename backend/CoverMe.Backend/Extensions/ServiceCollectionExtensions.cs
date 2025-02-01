@@ -9,7 +9,6 @@ using CoverMe.Backend.Core.Models.AppSettings;
 using CoverMe.Backend.Core.Services;
 using CoverMe.Backend.Core.Services.Abstractions;
 using CoverMe.Backend.HostedServices;
-using MudBlazor.Services;
 using Serilog;
 
 namespace CoverMe.Backend.Extensions;
@@ -33,7 +32,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddAppServices(this IServiceCollection services)
     {
         services.AddSerilog();
-        services.AddMudServices();
         services.AddScoped<IFileSystem, FileSystem>();
         services.AddSingleton<AppSettings>();
         services.AddSingleton<IProcessHelper, ProcessHelper>();

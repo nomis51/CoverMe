@@ -1,7 +1,9 @@
 ﻿import {Intellij} from "./intellij";
+import {CoverageTable} from "./coverageTable";
 
 const FEATURES = [
-    Intellij
+    Intellij,
+    CoverageTable,
 ];
 const NAMESPACE = "coverme";
 

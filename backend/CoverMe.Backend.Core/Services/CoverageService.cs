@@ -1,4 +1,6 @@
 ﻿using System.IO.Abstractions;
+using System.Net;
+using System.Text.RegularExpressions;
 using CoverMe.Backend.Core.Enums.Coverage;
 using CoverMe.Backend.Core.Enums.Process;
 using CoverMe.Backend.Core.Extensions;
@@ -10,15 +12,19 @@ using CoverMe.Backend.Core.Models.Process;
 using CoverMe.Backend.Core.Services.Abstractions;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace CoverMe.Backend.Core.Services;
 
-public class CoverageService : ICoverageService
+public partial class CoverageService : ICoverageService
 {
     #region Constants
 
     private const string ReportsFolderName = "reports";
+
+    [GeneratedRegex(@"\b(?:\w+\.)+(\w+)", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    private static partial Regex CleanTypeRegex();
+
+    private static readonly Regex RegCleanType = CleanTypeRegex();
 
     #endregion
 
@@ -406,19 +412,14 @@ public class CoverageService : ICoverageService
         Dictionary<int, string> fileIndices
     )
     {
-        var name = method.GetAttributeValue("name", string.Empty);
-        var nameIndex = name.IndexOf("(", StringComparison.Ordinal);
+        var name = MapEncodedCharacters(method.GetAttributeValue("name", string.Empty));
+        var nameIndex = name.IndexOf('(');
         var methodName = nameIndex < 0 ? name : name[..nameIndex];
         var arguments = ParseArguments(name);
-        var returnTypeIndex = name.LastIndexOf(":", StringComparison.Ordinal);
-        var returnType =
-            MapFullyQualifiedTypeToAlias(
-                returnTypeIndex < 0
-                    ? string.Empty
-                    : name[(returnTypeIndex + 1)..]
-                        .Split(".", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-                        .LastOrDefault() ?? string.Empty
-            );
+        var returnTypeIndex = name.LastIndexOf(':');
+        var returnType = returnTypeIndex < 0
+            ? string.Empty
+            : RegCleanType.Replace(name[(returnTypeIndex + 1)..], "$1");
 
         var firstStatement = method.ChildNodes
             .FirstOrDefault(e => e.Name == "statement");
@@ -452,36 +453,28 @@ public class CoverageService : ICoverageService
 
     private static string ParseArguments(string name)
     {
-        var arguments = name.Split("(", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-            .Skip(1)
-            .SelectMany(e => e.Split(")", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-                .SelectMany(q => q.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
-            );
+        var openParenthesisIndex = name.IndexOf('(');
+        if (openParenthesisIndex < 0) return string.Empty;
+
+        var closeParenthesisIndex = name.LastIndexOf(')');
+        if (closeParenthesisIndex < 0 || closeParenthesisIndex <= openParenthesisIndex) return string.Empty;
+
+        var arguments = name[(openParenthesisIndex + 1)..closeParenthesisIndex].Split(',');
 
         return string.Join(
             ", ",
             arguments.Select(e =>
-                    e.Split('.', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-                        .LastOrDefault() ?? string.Empty
+                RegCleanType.Replace(
+                    e,
+                    "$1"
                 )
-                .Where(e => !string.IsNullOrEmpty(e))
-                .Select(MapFullyQualifiedTypeToAlias)
+            )
         );
     }
 
-    private static string MapFullyQualifiedTypeToAlias(string fullyQualifiedTypeName)
+    private static string MapEncodedCharacters(string value)
     {
-        return fullyQualifiedTypeName switch
-        {
-            "Int32" => "int",
-            "Int64" => "long",
-            "String" => "string",
-            "Double" => "double",
-            "Boolean" => "bool",
-            "Object" => "object",
-            "Void" => "void",
-            _ => fullyQualifiedTypeName
-        };
+        return WebUtility.HtmlDecode(value);
     }
 
     #endregion

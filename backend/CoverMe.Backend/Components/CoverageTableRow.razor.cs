@@ -40,6 +40,9 @@ public partial class CoverageTableRow : AppComponentBase
     [Parameter]
     public EventCallback OnExpand { get; set; } = EventCallback.Empty;
 
+    [Parameter]
+    public bool IsExpanded { get; set; }
+
     #endregion
 
     #region Services

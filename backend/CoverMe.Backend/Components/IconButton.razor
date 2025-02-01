@@ -1,0 +1,6 @@
+﻿<button type="button"
+        disabled="@Disabled"
+        @onclick="@(() => OnClick.InvokeAsync())"
+        class="bg-neutral-800 hover:bg-neutral-700 disabled:bg-opacity-30 disabled:text-opacity-10 disabled:cursor-not-allowed border-none rounded p-1.5 @Class">
+    @ChildContent
+</button>
