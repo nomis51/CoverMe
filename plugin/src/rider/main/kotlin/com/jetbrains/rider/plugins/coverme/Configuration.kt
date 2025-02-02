@@ -4,7 +4,7 @@ class Configuration {
     companion object {
         const val ENV = Environments.PRODUCTION
 
-        const val BACKEND_PORT = "5263"
+        private const val BACKEND_PORT = "5263"
         const val BACKEND_URL = "http://localhost:$BACKEND_PORT"
         const val BACKEND_ZIP_NAME = "CoverMe.Backend.zip"
         const val BACKEND_CHECKSUM_NAME = "CoverMe.Backend.checksum"

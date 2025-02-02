@@ -31,15 +31,11 @@
                  alt=""
                  class="h-[24px] object-contain">
 
-            <div class="group relative w-max">
-                <p class="select-none text-nowrap text-ellipsis overflow-hidden"
-                   style="@(HasFilePath ? "cursor: pointer" : string.Empty)">
-                    @Symbol.Ellipsis(25)
-                </p>
-                <span class="rounded bg-neutral-800 border border-neutral-600 p-1 -bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none absolute max-w-[100px] text-wrap opacity-0 transition-opacity group-hover:opacity-100">
-                    @Symbol
-                </span>
-            </div>
+            <p class="select-none text-nowrap text-ellipsis overflow-hidden"
+               style="@(HasFilePath ? "cursor: pointer" : string.Empty)"
+               title="@Symbol">
+                @Symbol.Ellipsis(25)
+            </p>
         </div>
     </td>
     <td class="relative px-0 h-7 max-h-7 w-[80px] min-w-[80px]">
