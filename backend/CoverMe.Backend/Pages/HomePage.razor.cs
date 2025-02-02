@@ -128,7 +128,12 @@ public partial class HomePage : AppComponentBase
         IsRefreshing = true;
         RetrieveTestsProjects();
         await RetrieveLastCoverage();
-        IsRefreshing = false;
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(500);
+            IsRefreshing = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private async Task RetrieveLastCoverage()
