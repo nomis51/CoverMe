@@ -1,11 +1,7 @@
-﻿<div class="group relative w-max">
-    <button type="button"
-            disabled="@Disabled"
-            @onclick="@(() => OnClick.InvokeAsync())"
-            class="bg-neutral-800 hover:bg-neutral-700 disabled:bg-opacity-30 disabled:text-opacity-10 disabled:cursor-not-allowed border-none rounded p-1.5 @Class">
-        @ChildContent
-    </button>
-    <span class="rounded bg-neutral-800 border border-neutral-600 p-1 -bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none absolute w-max opacity-0 transition-opacity group-hover:opacity-100">
-      @Tooltip
-    </span>
-</div>
+﻿<button type="button"
+        title="@Tooltip"
+        disabled="@Disabled"
+        @onclick="@(() => OnClick.InvokeAsync())"
+        class="bg-neutral-800 hover:bg-neutral-700 disabled:bg-opacity-30 disabled:text-opacity-10 disabled:cursor-not-allowed border-none rounded p-1.5 @Class">
+    @ChildContent
+</button>
