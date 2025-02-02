@@ -126,8 +126,10 @@ public partial class HomePage : AppComponentBase
     {
         IsMoreMenuOpen = false;
         IsRefreshing = true;
+
         RetrieveTestsProjects();
         await RetrieveLastCoverage();
+
         _ = Task.Run(async () =>
         {
             await Task.Delay(500);
