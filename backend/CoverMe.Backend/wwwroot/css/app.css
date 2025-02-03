@@ -4,12 +4,28 @@ body {
     height: 100%;
     width: 100%;
     padding: .25rem;
-    /*background: transparent !important;*/
-    background-color: #323333 !important;
+    background: transparent !important;
+    /*background-color: #323333 !important;*/
     color: white !important;
     overflow-y: auto;
     overflow-x: hidden !important;
-    font-size: smaller;
+    font-size: small;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* Blazor error */

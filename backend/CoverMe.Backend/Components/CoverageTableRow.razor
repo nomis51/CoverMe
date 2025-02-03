@@ -32,8 +32,9 @@
                  class="h-[24px] object-contain">
 
             <p class="select-none text-nowrap text-ellipsis overflow-hidden"
-               style="@(HasFilePath ? "cursor: pointer" : string.Empty)">
-                @Symbol.Ellipsis(25)
+               style="@(HasFilePath ? "cursor: pointer" : string.Empty)"
+               title="@(Symbol.Length > MaxSymbolLength ? Symbol : string.Empty)">
+                @Symbol.Ellipsis(MaxSymbolLength)
             </p>
         </div>
     </td>

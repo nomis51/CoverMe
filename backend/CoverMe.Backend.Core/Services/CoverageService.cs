@@ -26,6 +26,9 @@ public partial class CoverageService : ICoverageService
 
     private static readonly Regex RegCleanType = CleanTypeRegex();
 
+    [GeneratedRegex("\\.[c]*ctor")]
+    private static partial Regex RegexMethodConstructor();
+
     #endregion
 
     #region Members
@@ -413,8 +416,7 @@ public partial class CoverageService : ICoverageService
     )
     {
         var name = MapEncodedCharacters(method.GetAttributeValue("name", string.Empty));
-        var nameIndex = name.IndexOf('(');
-        var methodName = nameIndex < 0 ? name : name[..nameIndex];
+        var methodName = ParseMethodName(name);
         var arguments = ParseArguments(name);
         var returnTypeIndex = name.LastIndexOf(':');
         var returnType = returnTypeIndex < 0
@@ -449,6 +451,13 @@ public partial class CoverageService : ICoverageService
             });
 
         return filePath;
+    }
+
+    private static string ParseMethodName(string name)
+    {
+        var nameIndex = name.IndexOf('(');
+        var methodName = nameIndex < 0 ? name : name[..nameIndex];
+        return RegexMethodConstructor().Replace(methodName, "ctor");
     }
 
     private static string ParseArguments(string name)

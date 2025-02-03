@@ -8,6 +8,12 @@ namespace CoverMe.Backend.Components;
 
 public partial class CoverageTableRow : AppComponentBase
 {
+    #region Constants
+
+    private int MaxSymbolLength = 25;
+
+    #endregion
+
     #region Parameters
 
     [Parameter]

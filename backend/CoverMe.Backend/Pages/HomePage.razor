@@ -5,92 +5,11 @@
 
 <div data-testid="home-page"
      class="flex flex-col pa-2 gap-1">
-    <div Justify="Justify.SpaceBetween"
-         class="flex flex-row justify-between items-center">
-        <div class="flex flex-row gap-1 items-center">
-            <InputSelect @bind-Value="SelectedTestsProject"
-                         disabled="@IsLoading"
-                         class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:ring-0 focus:border-neutral-600 block w-full p-2.5 disabled:bg-opacity-30 disabled:text-opacity-30 disabled:cursor-not-allowed">
-                @foreach (var project in TestsProjects)
-                {
-                    <option value="@project.FilePath"
-                            checked="@(project.FilePath == SelectedTestsProject)">
-                        @project.Name
-                    </option>
-                }
-            </InputSelect>
-            <IconButton OnClick="@(() => RunCoverage())"
-                        Disabled="@IsLoading"
-                        Tooltip="Run coverage">
-                <PlayArrowIcon Class="size-6 fill-white"/>
-            </IconButton>
-            <IconButton OnClick="@(() => RunCoverage(false))"
-                        Disabled="@IsLoading"
-                        Tooltip="Build and run coverage">
-                <BuildIcon Class="size-6 fill-white"/>
-            </IconButton>
-
-            @if (IsLoading)
-            {
-                <Spinner/>
-            }
-        </div>
-
-        <div class="flex flex-row justify-end gap-1 items-center">
-            <div class="relative">
-                <IconButton OnClick="@(() => IsSaveMenuOpen = !IsSaveMenuOpen)"
-                            Disabled="@IsLoading"
-                            Tooltip="Save report">
-                    <SaveIcon Class="size-6 fill-white"/>
-                </IconButton>
-                @if (IsSaveMenuOpen)
-                {
-                    <div class="absolute top-100 mt-1 right-0 z-10 drop-shadow-md bg-neutral-800 rounded border border-neutral-700 p-1">
-                        <ul>
-                            <li class="hover:bg-neutral-600 px-2 rounded cursor-pointer whitespace-nowrap"
-                                @onclick="@(() => GenerateReport())">
-                                Save simple report
-                            </li>
-                            <li class="hover:bg-neutral-600 px-2 rounded cursor-pointer whitespace-nowrap"
-                                @onclick="@(() => GenerateReport(true))">
-                                Save detailed report
-                            </li>
-                        </ul>
-                    </div>
-                }
-            </div>
-            <div class="relative">
-                <IconButton OnClick="@(() => IsMoreMenuOpen = !IsMoreMenuOpen)"
-                            Disabled="@IsLoading"
-                            Tooltip="More">
-                    <MoreIcon Class="size-6 fill-white"/>
-                </IconButton>
-
-                @if (IsMoreMenuOpen)
-                {
-                    <div class="absolute top-100 mt-1 right-0 z-10 drop-shadow-md bg-neutral-800 rounded border border-neutral-700 p-1">
-                        <ul>
-                            <li class="hover:bg-neutral-600 px-2 rounded cursor-pointer whitespace-nowrap"
-                                @onclick="@(() => { })">
-                                Settings
-                            </li>
-                            <li class="hover:bg-neutral-600 px-2 rounded cursor-pointer whitespace-nowrap"
-                                @onclick="@Refresh">
-                                Refresh
-                            </li>
-                        </ul>
-                    </div>
-                }
-            </div>
-
-        </div>
-    </div>
-
-    <input value="@FilterText"
-           disabled="@IsLoading"
-           @oninput="@(e => FilterText = e.Value?.ToString() ?? string.Empty)"
-           class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5 disabled:bg-opacity-30 disabled:text-opacity-30 disabled:cursor-not-allowed"
-           placeholder="Type something..."/>
-
-    <CoverageTable Nodes="@FilteredNodes"/>
+    <Navbar FilterText="@FilterText"
+            OnRefreshCoverage="@(() => { })"
+            OnRunCoverage="@(e => { })"
+            OnFilterTextChanged="@(e => {  })"/>
+    <CoverageTable @ref="@CoverageTableRef"
+                   IsLoading="@IsLoading"
+                   FilterText="@FilterText"/>
 </div>
