@@ -109,35 +109,6 @@ public partial class CoverageTable : AppComponentBase, IDisposable
 
     #region Private methods
 
-    private async Task RunCoverage(bool noBuild = true)
-    {
-        if (!HasProjectSettings)
-        {
-            Logger.LogWarning("Can't run coverage, probably running outside of Intellij");
-            return;
-        }
-
-        var selectedProject = TestsProjects.FirstOrDefault(e => e.FilePath == SelectedTestsProject);
-        if (selectedProject is null) return;
-
-        Nodes = await CoverageService.RunCoverage(Solution!, selectedProject, new CoverageOptions
-        {
-            Rebuild = !noBuild,
-            HideAutoProperties = true,
-        });
-    }
-
-    private async Task RetrieveLastCoverage()
-    {
-        if (!HasProjectSettings)
-        {
-            Logger.LogWarning("Can't retrieve last coverage, probably running outside of Intellij");
-            return;
-        }
-
-        Nodes = await CoverageService.ParseLastCoverage(Solution!);
-    }
-
     private async Task RetrieveSettings()
     {
         Settings = await SettingsService.GetSettingsAsync();

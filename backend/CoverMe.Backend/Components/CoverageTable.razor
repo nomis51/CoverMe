@@ -6,36 +6,35 @@
     <thead>
     <tr>
         <th Class="text-start w-auto overflow-hidden text-ellipsis whitespace-nowrap">Symbol</th>
-        <th Class="text-start w-1 min-w-[80px]">Coverage</>
+        <th Class="text-start w-1 min-w-[80px]">Coverage</th>
 
-        @if (Settings.Interface.)
-            {
+        @if (Settings.Interface.ShowStatementsColumn)
+        {
             <th Class="whitespace-nowrap text-start">
                 Covered / total statements
-        </th>
+            </th>
         }
     </tr>
     </thead>
     <tbody>
-    @for (var i = 0; i <.
-    Count; i++
-    )
+    @for (var i = 0; i < Nodes.Count; i++)
     {
-    var
-    i1 = i;
+        var i1 = i;
         if (!IsVisible(i1)) continue;
 
-    var node = Nodes[i1];
+        var node = Nodes[i1];
 
-    <Coverage="@node.Coverage"
-        CoveredStatements="@node."
-        TotalStatements="@node.TotalStatements"
-        Icon="@node.Icon"
-    FilePath="@node.FilePath"
-    Line="@node.LineNumber"
-    CanBeExpanded="@(i1)"
-    IsExpanded="@node.IsExpanded"
-    OnExpand="@(() =>)"/>
+        <CoverageTableRow Level="@node.Level"
+                          Symbol="@node.Symbol"
+                          Coverage="@node.Coverage"
+                          CoveredStatements="@node.CoveredStatements"
+                          TotalStatements="@node.TotalStatements"
+                          Icon="@node.Icon"
+                          FilePath="@node.FilePath"
+                          Line="@node.LineNumber"
+                          CanBeExpanded="@CanBeExpanded(i1)"
+                          IsExpanded="@node.IsExpanded"
+                          OnExpand="@(() => ToggleExpand(i1))"/>
     }
     </tbody>
 </table>
