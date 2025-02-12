@@ -1,4 +1,5 @@
 ﻿using CoverMe.Backend.Components.Abstractions;
+using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Models.Settings;
 using CoverMe.Backend.Core.Services.Abstractions;
@@ -22,9 +23,6 @@ public partial class CoverageTable : AppComponentBase, IDisposable
     public List<CoverageNode> Nodes { get; set; } = [];
 
     [Parameter]
-    public string FilterText { get; set; } = string.Empty;
-
-    [Parameter]
     public bool IsLoading { get; set; }
 
     #endregion
@@ -34,53 +32,11 @@ public partial class CoverageTable : AppComponentBase, IDisposable
     [Inject]
     protected ISettingsService SettingsService { get; set; } = null!;
 
-    [Inject]
-    protected ICoverageService CoverageService { get; set; } = null!;
-
-    [Inject]
-    protected ILogger<CoverageTable> Logger { get; set; } = null!;
-
     #endregion
 
     #region Members
 
     private Settings Settings { get; set; } = null!;
-
-    #endregion
-
-    #region Props
-
-    private List<CoverageNode> FilteredNodes
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(FilterText)) return Nodes;
-
-            var result = new List<CoverageNode>();
-            var matchedLevels = new HashSet<int>();
-
-            for (var i = Nodes.Count - 1; i >= 0; --i)
-            {
-                var node = Nodes[i];
-
-                if (node.Symbol.Contains(FilterText, StringComparison.OrdinalIgnoreCase) &&
-                    !Nodes.Any(x => x.Level == node.Level + 1 &&
-                                    result.Contains(x)))
-                {
-                    matchedLevels.Add(node.Level);
-                    result.Add(node);
-                }
-                else if (matchedLevels.Contains(node.Level + 1))
-                {
-                    matchedLevels.Add(node.Level);
-                    result.Add(node);
-                }
-            }
-
-            result.Reverse();
-            return result;
-        }
-    }
 
     #endregion
 

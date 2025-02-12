@@ -3,6 +3,7 @@ using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Services.Abstractions;
 using Microsoft.AspNetCore.Components;
+using TaskExtensions = CoverMe.Backend.Extensions.TaskExtensions;
 
 namespace CoverMe.Backend.Components;
 
@@ -11,7 +12,8 @@ public partial class Navbar : AppComponentBase
     #region Parameters
 
     [Parameter]
-    public EventCallback<CoverageOptions> OnRunCoverage { get; set; } = EventCallback<CoverageOptions>.Empty;
+    public EventCallback<(CoverageOptions Options, Project Project)> OnRunCoverage { get; set; } =
+        EventCallback<(CoverageOptions Options, Project Project)>.Empty;
 
     [Parameter]
     public EventCallback OnRefreshCoverage { get; set; } = EventCallback.Empty;
@@ -55,17 +57,38 @@ public partial class Navbar : AppComponentBase
 
     #endregion
 
+    #region Lifecycle
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Task.Run(async () =>
+            {
+                await TaskExtensions.WaitUntil(
+                    () => HasProjectSettings,
+                    async () => await InvokeAsync(async () => await Refresh())
+                );
+            });
+        }
+    }
+
+    #endregion
+
     #region Private methods
 
     private async Task RunCoverage(bool noBuild = true)
     {
-        await OnRunCoverage.InvokeAsync(new CoverageOptions
+        var project = TestsProjects.FirstOrDefault(e => e.FilePath == SelectedTestsProject);
+        if (project is null) return;
+
+        await OnRunCoverage.InvokeAsync((new CoverageOptions
         {
             Rebuild = !noBuild,
             HideAutoProperties = true,
             Filter = FilterText,
             ParserExcluded = "",
-        });
+        }, project));
     }
 
     private void RetrieveTestsProjects()

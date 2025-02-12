@@ -5,7 +5,12 @@ using CoverMe.Backend.Helpers;
 LoggingHelper.ConfigureLogging();
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseContentRoot(AppContext.BaseDirectory);
+
+if (builder.Environment.IsProduction())
+{
+    builder.Host.UseContentRoot(AppContext.BaseDirectory);
+}
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddControllers();
