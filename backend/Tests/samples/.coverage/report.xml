@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root CoveredStatements="23" TotalStatements="36" CoveragePercent="64" ReportType="DetailedXml" DotCoverVersion="2024.3.5">
+  <FileIndices>
+    <File Index="1" Name="C:\Users\nomis51\GitHub\CoverMe\backend\Tests\samples\TestApp.Core\Feature2.cs" ChecksumAlgorithm="SHA256" Checksum="B0F357C448A2F073E0FDAC1E12B0FEB804BF3243903900389972415A18D143DC" />
+    <File Index="2" Name="C:\Users\nomis51\GitHub\CoverMe\backend\Tests\samples\TestApp\Feature.cs" ChecksumAlgorithm="SHA256" Checksum="B178A337C9F3BDF6D04F2D84859AB693B813F679ED4108A78F10E45F4BE79A0F" />
+  </FileIndices>
+  <Assembly Name="TestApp" CoveredStatements="17" TotalStatements="24" CoveragePercent="71">
+    <Namespace Name="TestApp" CoveredStatements="17" TotalStatements="24" CoveragePercent="71">
+      <Type Name="Feature" CoveredStatements="17" TotalStatements="24" CoveragePercent="71">
+        <Type Name="&lt;&gt;c" CoveredStatements="0" TotalStatements="1" CoveragePercent="0">
+          <Method Name="&lt;DoSomething&gt;b__0_0(System.Collections.Generic.List&lt;System.Int32&gt;):System.Collections.Generic.IEnumerable&lt;System.Int32&gt;" CoveredStatements="0" TotalStatements="1" CoveragePercent="0">
+            <Statement FileIndex="2" Line="12" Column="38" EndLine="12" EndColumn="39" Covered="False" />
+          </Method>
+        </Type>
+        <Method Name="Do&lt;T&gt;(T):T" CoveredStatements="5" TotalStatements="5" CoveragePercent="100">
+          <Statement FileIndex="2" Line="25" Column="5" EndLine="25" EndColumn="6" Covered="True" />
+          <Statement FileIndex="2" Line="26" Column="9" EndLine="26" EndColumn="26" Covered="True" />
+          <Statement FileIndex="2" Line="26" Column="27" EndLine="26" EndColumn="42" Covered="True" />
+          <Statement FileIndex="2" Line="28" Column="9" EndLine="28" EndColumn="22" Covered="True" />
+          <Statement FileIndex="2" Line="29" Column="5" EndLine="29" EndColumn="6" Covered="True" />
+        </Method>
+        <Method Name="DoSomething(System.Collections.Generic.List&lt;System.Collections.Generic.List&lt;System.Int32&gt;&gt;,System.Collections.Generic.Dictionary&lt;System.String,System.Collections.Generic.List&lt;System.Int32&gt;&gt;):System.Collections.Generic.List&lt;System.Int32&gt;" CoveredStatements="3" TotalStatements="3" CoveragePercent="100">
+          <Statement FileIndex="2" Line="11" Column="5" EndLine="11" EndColumn="6" Covered="True" />
+          <Statement FileIndex="2" Line="12" Column="9" EndLine="13" EndColumn="23" Covered="True" />
+          <Statement FileIndex="2" Line="14" Column="5" EndLine="14" EndColumn="6" Covered="True" />
+        </Method>
+        <Method Name="GetSomeObject():TestApp.SomeObject" CoveredStatements="3" TotalStatements="3" CoveragePercent="100">
+          <Statement FileIndex="2" Line="17" Column="5" EndLine="17" EndColumn="6" Covered="True" />
+          <Statement FileIndex="2" Line="18" Column="9" EndLine="21" EndColumn="11" Covered="True" />
+          <Statement FileIndex="2" Line="22" Column="5" EndLine="22" EndColumn="6" Covered="True" />
+        </Method>
+        <Method Name="Multiply(System.Int32,System.Int32):System.Int32" CoveredStatements="0" TotalStatements="3" CoveragePercent="0">
+          <Statement FileIndex="2" Line="47" Column="5" EndLine="47" EndColumn="6" Covered="False" />
+          <Statement FileIndex="2" Line="48" Column="9" EndLine="48" EndColumn="22" Covered="False" />
+          <Statement FileIndex="2" Line="49" Column="5" EndLine="49" EndColumn="6" Covered="False" />
+        </Method>
+        <Method Name="Subtract(System.Int32,System.Int32):System.Int32" CoveredStatements="0" TotalStatements="3" CoveragePercent="0">
+          <Statement FileIndex="2" Line="42" Column="5" EndLine="42" EndColumn="6" Covered="False" />
+          <Statement FileIndex="2" Line="43" Column="9" EndLine="43" EndColumn="22" Covered="False" />
+          <Statement FileIndex="2" Line="44" Column="5" EndLine="44" EndColumn="6" Covered="False" />
+        </Method>
+        <Method Name="Sum(System.Int32,System.Int32):System.Int32" CoveredStatements="6" TotalStatements="6" CoveragePercent="100">
+          <Statement FileIndex="2" Line="32" Column="5" EndLine="32" EndColumn="6" Covered="True" />
+          <Statement FileIndex="2" Line="33" Column="9" EndLine="33" EndColumn="20" Covered="True" />
+          <Statement FileIndex="2" Line="34" Column="9" EndLine="34" EndColumn="10" Covered="True" />
+          <Statement FileIndex="2" Line="35" Column="13" EndLine="35" EndColumn="26" Covered="True" />
+          <Statement FileIndex="2" Line="38" Column="9" EndLine="38" EndColumn="22" Covered="True" />
+          <Statement FileIndex="2" Line="39" Column="5" EndLine="39" EndColumn="6" Covered="True" />
+        </Method>
+      </Type>
+    </Namespace>
+  </Assembly>
+  <Assembly Name="TestApp.Core" CoveredStatements="6" TotalStatements="12" CoveragePercent="50">
+    <Namespace Name="TestApp.Core" CoveredStatements="6" TotalStatements="12" CoveragePercent="50">
+      <Type Name="Feature2" CoveredStatements="6" TotalStatements="12" CoveragePercent="50">
+        <Method Name="Multiply(System.Int32,System.Int32):System.Int32" CoveredStatements="0" TotalStatements="3" CoveragePercent="0">
+          <Statement FileIndex="1" Line="21" Column="5" EndLine="21" EndColumn="6" Covered="False" />
+          <Statement FileIndex="1" Line="22" Column="9" EndLine="22" EndColumn="22" Covered="False" />
+          <Statement FileIndex="1" Line="23" Column="5" EndLine="23" EndColumn="6" Covered="False" />
+        </Method>
+        <Method Name="Subtract(System.Int32,System.Int32):System.Int32" CoveredStatements="0" TotalStatements="3" CoveragePercent="0">
+          <Statement FileIndex="1" Line="16" Column="5" EndLine="16" EndColumn="6" Covered="False" />
+          <Statement FileIndex="1" Line="17" Column="9" EndLine="17" EndColumn="22" Covered="False" />
+          <Statement FileIndex="1" Line="18" Column="5" EndLine="18" EndColumn="6" Covered="False" />
+        </Method>
+        <Method Name="Sum(System.Int32,System.Int32):System.Int32" CoveredStatements="6" TotalStatements="6" CoveragePercent="100">
+          <Statement FileIndex="1" Line="6" Column="5" EndLine="6" EndColumn="6" Covered="True" />
+          <Statement FileIndex="1" Line="7" Column="9" EndLine="7" EndColumn="20" Covered="True" />
+          <Statement FileIndex="1" Line="8" Column="9" EndLine="8" EndColumn="10" Covered="True" />
+          <Statement FileIndex="1" Line="9" Column="13" EndLine="9" EndColumn="26" Covered="True" />
+          <Statement FileIndex="1" Line="12" Column="9" EndLine="12" EndColumn="22" Covered="True" />
+          <Statement FileIndex="1" Line="13" Column="5" EndLine="13" EndColumn="6" Covered="True" />
+        </Method>
+      </Type>
+    </Namespace>
+  </Assembly>
+</Root>

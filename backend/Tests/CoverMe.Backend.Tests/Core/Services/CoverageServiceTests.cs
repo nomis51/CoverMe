@@ -148,7 +148,7 @@ public class CoverageServiceTests
         // Assert
         task.ShouldNotBeNull();
         var result = await (Task<List<CoverageNode>>)task!;
-        result.Count.ShouldBe(74);
+        result.Count.ShouldBe(16);
     }
 
     [Fact]
@@ -168,9 +168,9 @@ public class CoverageServiceTests
         result[0].Level.ShouldBe(0);
         result[0].FilePath.ShouldBe(string.Empty);
         result[0].Icon.ShouldBe(CoverageNodeIcon.Solution);
-        result[0].Coverage.ShouldBe(5);
-        result[0].CoveredStatements.ShouldBe(15);
-        result[0].TotalStatements.ShouldBe(331);
+        result[0].Coverage.ShouldBe(64);
+        result[0].CoveredStatements.ShouldBe(23);
+        result[0].TotalStatements.ShouldBe(36);
         result[0].IsExpanded.ShouldBe(false);
         result[0].LineNumber.ShouldBe(0);
     }

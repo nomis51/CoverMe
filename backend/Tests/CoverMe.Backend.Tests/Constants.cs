@@ -47,6 +47,7 @@ public static class Constants
 
     public static string SamplesReportFilePath { get; } = Path.Join(
         SamplesSolution.FolderPath,
+        ".coverage",
         "report.xml"
     );
 }
