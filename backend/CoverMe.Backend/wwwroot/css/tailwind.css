@@ -725,8 +725,16 @@ video {
   justify-content: space-between;
 }
 
+.gap-0 {
+    gap: 0px;
+}
+
 .gap-1 {
   gap: 0.25rem;
+}
+
+.self-center {
+    align-self: center;
 }
 
 .overflow-hidden {
@@ -821,6 +829,10 @@ video {
 
 .text-start {
   text-align: start;
+}
+
+.align-middle {
+    vertical-align: middle;
 }
 
 .text-sm {
