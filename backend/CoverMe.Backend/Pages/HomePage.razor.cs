@@ -13,6 +13,9 @@ public partial class HomePage : AppComponentBase
     #region Services
 
     [Inject]
+    protected NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
     protected ICoverageService CoverageService { get; set; } = null!;
 
 
@@ -145,6 +148,11 @@ public partial class HomePage : AppComponentBase
                 await InvokeAsync(StateHasChanged);
             }
         });
+    }
+
+    private void GotoSettings()
+    {
+        NavigationManager.NavigateTo("/settings");
     }
 
     private void Refresh()

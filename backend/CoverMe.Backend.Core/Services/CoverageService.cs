@@ -142,12 +142,7 @@ public partial class CoverageService : ICoverageService
 
     public Task<string> GenerateReport(Solution solution, bool detailed = false)
     {
-        if (detailed)
-        {
-            return GenerateDetailedReport(solution);
-        }
-
-        return GenerateSimpleReport(solution);
+        return detailed ? GenerateDetailedReport(solution) : GenerateSimpleReport(solution);
     }
 
     #endregion
