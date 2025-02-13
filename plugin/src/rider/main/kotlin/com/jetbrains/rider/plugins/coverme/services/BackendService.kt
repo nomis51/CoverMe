@@ -33,7 +33,7 @@ class BackendService : IProtocolService {
         }
 
         val client = OkHttpClient()
-        val url = "${Configuration.BACKEND_URL}/api/channel"
+        val url = "${AppService.getInstance().getBackendUrl()}/api/channel"
         val request = Request.Builder().url(url).build()
 
         client.newCall(request)
@@ -114,7 +114,7 @@ class BackendService : IProtocolService {
             .readTimeout(3, TimeUnit.SECONDS)
             .writeTimeout(3, TimeUnit.SECONDS)
             .build()
-        val url = "${Configuration.BACKEND_URL}/api/health-check"
+        val url = "${AppService.getInstance().getBackendUrl()}/api/health-check"
         val request = Request.Builder()
             .url(url)
             .build()
@@ -172,7 +172,7 @@ class BackendService : IProtocolService {
         try {
             val exeFilePath =
                 System.getProperty("user.home") + "/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_BIN_FOLDER_NAME}/${Configuration.BACKEND_EXE_NAME}"
-            val processBuilder = ProcessBuilder(exeFilePath, "--urls", Configuration.BACKEND_URL)
+            val processBuilder = ProcessBuilder(exeFilePath, "--urls", AppService.getInstance().getBackendUrl())
                 .directory(File(System.getProperty("user.home") + "/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_BIN_FOLDER_NAME}/"))
                 .apply {
                     environment()["ASPNETCORE_ENVIRONMENT"] = "Production"
