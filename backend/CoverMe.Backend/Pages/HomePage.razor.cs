@@ -113,7 +113,6 @@ public partial class HomePage : AppComponentBase
                     {
                         Rebuild = !noBuild,
                         Filter = FilterText,
-                        HideAutoProperties = true,
                     }
                 );
             }
@@ -203,7 +202,6 @@ public partial class HomePage : AppComponentBase
                     new CoverageOptions
                     {
                         Filter = FilterText,
-                        HideAutoProperties = true,
                         Rebuild = false
                     }
                 );

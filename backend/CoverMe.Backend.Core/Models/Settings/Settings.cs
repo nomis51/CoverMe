@@ -2,7 +2,7 @@
 
 public class Settings
 {
-    public int BackendPort { get; set; } = 5263;
-    public string ProjectFilter { get; set; } = "";
-    public string TestsFilter { get; set; } = "";
+    public BackendSettings Backend { get; set; } = new();
+    public CoverageSettings Coverage { get; set; } = new();
+    public UiSettings Ui { get; set; } = new();
 }
