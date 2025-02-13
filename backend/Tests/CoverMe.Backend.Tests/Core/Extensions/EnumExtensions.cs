@@ -1,6 +1,6 @@
 ﻿using CoverMe.Backend.Core.Enums.Ipc;
 using CoverMe.Backend.Core.Extensions;
-using FluentAssertions;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Extensions;
 
@@ -19,7 +19,7 @@ public class EnumExtensions
         var result = value.Description();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [InlineData("openFileAtLine", IpcMessageType.OpenFileAtLine)]
@@ -33,7 +33,7 @@ public class EnumExtensions
         var result = description.FromDescription<IpcMessageType>();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     #endregion

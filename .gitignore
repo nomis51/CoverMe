@@ -49,3 +49,4 @@ backend/Tests/CoverMe.Backend.Tests/.tests
 backend/Tests/samples/.idea/coverme
 backend/CoverMe.Backend.sln.DotSettings.user
 backend/.idea/coverme
+backend/Tests/CoverMe.Backend.Tests/.coverage

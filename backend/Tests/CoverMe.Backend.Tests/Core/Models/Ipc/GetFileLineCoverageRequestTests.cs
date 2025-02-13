@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using CoverMe.Backend.Core.Models.Ipc;
-using FluentAssertions;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Models.Ipc;
 
@@ -26,8 +26,8 @@ public class GetFileLineCoverageRequestTests
         var serialized = JsonSerializer.Serialize(sut);
 
         // Assert
-        serialized.Should()
-            .Be($"{{\"filePath\":\"{filePath}\",\"line\":{line},\"projectRootPath\":\"{projectRootPath}\"}}");
+        serialized.ShouldBe(
+            $"{{\"filePath\":\"{filePath}\",\"line\":{line},\"projectRootPath\":\"{projectRootPath}\"}}");
     }
 
     #endregion

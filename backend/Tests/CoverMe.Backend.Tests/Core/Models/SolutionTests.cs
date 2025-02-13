@@ -1,7 +1,7 @@
 ﻿using System.IO.Abstractions;
 using CoverMe.Backend.Core.Models;
-using FluentAssertions;
 using NSubstitute;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Models;
 
@@ -25,9 +25,9 @@ public class SolutionTests
         var solution = new Solution(fileSystem, path);
 
         // Assert
-        solution.FilePath.Should().Be($"{path}SomeSolution.sln");
-        solution.Name.Should().Be("SomeSolution");
-        solution.FolderPath.Should().Be(path);
+        solution.FilePath.ShouldBe($"{path}SomeSolution.sln");
+        solution.Name.ShouldBe("SomeSolution");
+        solution.FolderPath.ShouldBe(path);
     }
 
     [Fact]

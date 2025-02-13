@@ -13,6 +13,9 @@ public partial class HomePage : AppComponentBase
     #region Services
 
     [Inject]
+    protected NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
     protected ICoverageService CoverageService { get; set; } = null!;
 
 
@@ -110,7 +113,6 @@ public partial class HomePage : AppComponentBase
                     {
                         Rebuild = !noBuild,
                         Filter = FilterText,
-                        HideAutoProperties = true,
                     }
                 );
             }
@@ -147,6 +149,11 @@ public partial class HomePage : AppComponentBase
         });
     }
 
+    private void GotoSettings()
+    {
+        NavigationManager.NavigateTo("/settings");
+    }
+
     private void Refresh()
     {
         _ = TaskExtensions.WaitUntil(() => HasProjectSettings, () =>
@@ -165,7 +172,7 @@ public partial class HomePage : AppComponentBase
         {
             try
             {
-                Projects = CoverageService.GetTestsProjects(Solution);
+                Projects = await CoverageService.GetTestsProjects(Solution);
 
                 if (Projects.Count > 0 && string.IsNullOrEmpty(SelectedProjectFilePath))
                 {
@@ -195,7 +202,6 @@ public partial class HomePage : AppComponentBase
                     new CoverageOptions
                     {
                         Filter = FilterText,
-                        HideAutoProperties = true,
                         Rebuild = false
                     }
                 );

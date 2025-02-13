@@ -2,5 +2,7 @@
 
 public class Settings
 {
-    public InterfaceSettings Interface { get; set; } = new();
+    public BackendSettings Backend { get; set; } = new();
+    public CoverageSettings Coverage { get; set; } = new();
+    public UiSettings Ui { get; set; } = new();
 }

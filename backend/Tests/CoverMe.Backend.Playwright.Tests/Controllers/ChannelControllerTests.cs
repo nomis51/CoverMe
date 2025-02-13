@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using Shouldly;
 
 namespace CoverMe.Backend.Playwright.Tests.Controllers;
 
@@ -19,7 +19,7 @@ public class ChannelControllerTests : PageTest
         await Expect(response).ToBeOKAsync();
 
         var result = await response.TextAsync();
-        result.Should().NotBeNullOrEmpty();
+        result.ShouldNotBeNullOrEmpty();
     }
 
     #endregion

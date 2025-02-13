@@ -1,5 +1,5 @@
 ﻿using CoverMe.Backend.Core.Models;
-using FluentAssertions;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Models;
 
@@ -18,9 +18,9 @@ public class ProjectTests
         var project = new Project(csprojFilePath);
 
         // Assert
-        project.FilePath.Should().Be(csprojFilePath);
-        project.Name.Should().Be("Project");
-        project.FolderPath.Should().Be(path);
+        project.FilePath.ShouldBe(csprojFilePath);
+        project.Name.ShouldBe("Project");
+        project.FolderPath.ShouldBe(path);
     }
 
     #endregion

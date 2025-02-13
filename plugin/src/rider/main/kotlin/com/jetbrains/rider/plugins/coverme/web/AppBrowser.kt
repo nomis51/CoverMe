@@ -11,6 +11,7 @@ import com.jetbrains.rider.plugins.coverme.Configuration
 import com.jetbrains.rider.plugins.coverme.Environments
 import com.jetbrains.rider.plugins.coverme.helpers.toHex
 import com.jetbrains.rider.plugins.coverme.models.ipc.abstractions.ProtocolMessage
+import com.jetbrains.rider.plugins.coverme.services.AppService
 import com.jetbrains.rider.plugins.coverme.services.LoggingService
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
@@ -76,7 +77,7 @@ class AppBrowser : Disposable {
     }
 
     fun initialize(project: Project, channelId: String) {
-        _browser!!.loadURL(Configuration.BACKEND_URL)
+        _browser!!.loadURL(AppService.getInstance().getBackendUrl())
         addHandlers(project, channelId)
     }
 

@@ -38,6 +38,7 @@ public partial class CoverageService : ICoverageService
     private readonly ILogger<CoverageService> _logger;
     private readonly IFileSystem _fileSystem;
     private readonly IProcessHelper _processHelper;
+    private readonly ISettingsService _settingsService;
 
     #endregion
 
@@ -48,7 +49,8 @@ public partial class CoverageService : ICoverageService
         IFileSystem fileSystem,
         ICacheManager<Dictionary<int, bool?>?> linesCoverageCache,
         ICacheManager<List<CoverageNode>> coverageTreeCache,
-        IProcessHelper processHelper
+        IProcessHelper processHelper,
+        ISettingsService settingsService
     )
     {
         _logger = logger;
@@ -56,19 +58,21 @@ public partial class CoverageService : ICoverageService
         _linesCoverageCache = linesCoverageCache;
         _coverageTreeCache = coverageTreeCache;
         _processHelper = processHelper;
+        _settingsService = settingsService;
     }
 
     #endregion
 
     #region Public methods
 
-    public List<Project> GetTestsProjects(Solution solution, string searchPattern = "*.Tests.csproj")
+    public async Task<List<Project>> GetTestsProjects(Solution solution)
     {
         try
         {
+            var settings = await _settingsService.GetSettingsAsync();
             var files = _fileSystem.Directory.EnumerateFiles(
                 solution.FolderPath,
-                searchPattern,
+                settings.Coverage.ProjectFilter,
                 SearchOption.AllDirectories
             );
 
@@ -102,14 +106,18 @@ public partial class CoverageService : ICoverageService
             $"{Guid.NewGuid():N}.xml"
         );
 
+        var settings = await _settingsService.GetSettingsAsync();
+
         var response = await _processHelper.DotCoverCli(new DotCoverCliOptions
         {
             Command = DotCoverCommand.CoverDotnet,
             ReportType = DotCoverReportType.DetailedXml,
-            HideAutoProperties = options.HideAutoProperties,
+            HideAutoProperties = settings.Coverage.HideAutoProperties,
             NoBuild = !options.Rebuild,
             OutputPath = reportFilePath,
-            ProjectFolderPath = project.FolderPath
+            ProjectFolderPath = project.FolderPath,
+            CoverageFilter = settings.Coverage.CoverageFilter,
+            TestsFilter = settings.Coverage.TestsFilter,
         });
         if (response.ExitCode != 0) return [];
 
@@ -142,12 +150,7 @@ public partial class CoverageService : ICoverageService
 
     public Task<string> GenerateReport(Solution solution, bool detailed = false)
     {
-        if (detailed)
-        {
-            return GenerateDetailedReport(solution);
-        }
-
-        return GenerateSimpleReport(solution);
+        return detailed ? GenerateDetailedReport(solution) : GenerateSimpleReport(solution);
     }
 
     #endregion
@@ -215,7 +218,10 @@ public partial class CoverageService : ICoverageService
         return response.ExitCode != 0 ? string.Empty : tempFolder;
     }
 
-    private async Task<List<CoverageNode>> GetCoverageTree(string reportFilePath, CoverageOptions options)
+    private async Task<List<CoverageNode>> GetCoverageTree(
+        string reportFilePath,
+        CoverageOptions options
+    )
     {
         return await _coverageTreeCache.GetOrSetAsync(
             reportFilePath,
@@ -330,7 +336,7 @@ public partial class CoverageService : ICoverageService
     )
     {
         var name = assembly.GetAttributeValue<string>("name", string.Empty);
-        if (options.ParserExcludedRegex.IsMatch(name)) return;
+        if (!Regex.IsMatch(name, options.Filter)) return;
 
         nodes.Add(new CoverageNode(level, name, CoverageNodeIcon.Assembly, CoverageNodeType.Assembly)
         {
@@ -363,7 +369,7 @@ public partial class CoverageService : ICoverageService
     )
     {
         var name = @namespace.GetAttributeValue("name", string.Empty);
-        if (options.ParserExcludedRegex.IsMatch(name)) return;
+        if (!Regex.IsMatch(name, options.Filter)) return;
 
         nodes.Add(new CoverageNode(level, name, CoverageNodeIcon.Namespace, CoverageNodeType.Namespace)
         {
@@ -389,7 +395,7 @@ public partial class CoverageService : ICoverageService
     )
     {
         var name = type.GetAttributeValue("name", string.Empty);
-        if (options.ParserExcludedRegex.IsMatch(name)) return;
+        if (!Regex.IsMatch(name, options.Filter)) return;
 
         var node = new CoverageNode(level, name, CoverageNodeIcon.Type, CoverageNodeType.Type)
         {

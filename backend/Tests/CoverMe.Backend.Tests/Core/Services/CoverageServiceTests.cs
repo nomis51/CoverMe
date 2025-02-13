@@ -7,11 +7,12 @@ using CoverMe.Backend.Core.Managers.Abstractions;
 using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Models.Process;
+using CoverMe.Backend.Core.Models.Settings;
 using CoverMe.Backend.Core.Services;
 using CoverMe.Backend.Core.Services.Abstractions;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Services;
 
@@ -24,6 +25,7 @@ public class CoverageServiceTests
     private readonly ILogger<CoverageService> _logger;
     private readonly ICacheManager<Dictionary<int, bool?>> _linesCoverageCache;
     private readonly ICacheManager<List<CoverageNode>> _coverageTreeCache;
+    private readonly ISettingsService _settingsService;
     private readonly ICoverageService _sut;
 
     #endregion
@@ -37,7 +39,11 @@ public class CoverageServiceTests
         _logger = Substitute.For<ILogger<CoverageService>>();
         _linesCoverageCache = Substitute.For<ICacheManager<Dictionary<int, bool?>>>();
         _coverageTreeCache = Substitute.For<ICacheManager<List<CoverageNode>>>();
-        _sut = new CoverageService(_logger, _fileSystem, _linesCoverageCache!, _coverageTreeCache, _processHelper);
+        _settingsService = Substitute.For<ISettingsService>();
+        _settingsService.GetSettingsAsync()
+            .Returns(new Settings());
+        _sut = new CoverageService(_logger, _fileSystem, _linesCoverageCache!, _coverageTreeCache, _processHelper,
+            _settingsService);
     }
 
     #endregion
@@ -45,7 +51,7 @@ public class CoverageServiceTests
     #region Tests
 
     [Fact]
-    public void GetTestProjects_ShouldReturnProjects_WhenSessionExists()
+    public async Task GetTestProjects_ShouldReturnProjects_WhenSessionExists()
     {
         // Arrange
         var expectedProjects = new List<Project>
@@ -55,14 +61,14 @@ public class CoverageServiceTests
         };
 
         // Act
-        var result = _sut.GetTestsProjects(Constants.SamplesSolution);
+        var result = await _sut.GetTestsProjects(Constants.SamplesSolution);
 
         // Assert
-        result.Should().BeEquivalentTo(expectedProjects);
+        result.ShouldBeEquivalentTo(expectedProjects);
     }
 
     [Fact]
-    public void GetTestsProjects_ShouldLogExceptionAndReturnEmptyList_WhenPathIsInvalid()
+    public async Task GetTestsProjects_ShouldLogExceptionAndReturnEmptyList_WhenPathIsInvalid()
     {
         // Arrange
         const string path = "C:/Users/Tests/Some/Solution/Folder/";
@@ -74,29 +80,37 @@ public class CoverageServiceTests
             ]);
 
         // Act
-        var result = _sut.GetTestsProjects(new Solution(fileSystem, path));
+        var result = await _sut.GetTestsProjects(new Solution(fileSystem, path));
 
         // Assert
-        result.Should().BeEmpty();
+        result.ShouldBeEmpty();
 
         _logger.Received()
             .LogError(Arg.Any<Exception>(), "Failed to get tests projects");
     }
 
     [Fact]
-    public void GetTestsProjects_ShouldReturnEmptyList_WhenSearchPatternMatchNothing()
+    public async Task GetTestsProjects_ShouldReturnEmptyList_WhenSearchPatternMatchNothing()
     {
         // Arrange
+        _settingsService.GetSettingsAsync()
+            .Returns(new Settings
+            {
+                Coverage =
+                {
+                    ProjectFilter = "*.Invalid.Tests.csproj"
+                }
+            });
 
         // Act
-        var result = _sut.GetTestsProjects(Constants.SamplesSolution, "*.Oops.csproj");
+        var result = await _sut.GetTestsProjects(Constants.SamplesSolution);
 
         // Assert
-        result.Should().BeEmpty();
+        result.ShouldBeEmpty();
     }
 
     [Fact]
-    public void GetTestsProjects_ShouldReturnOnlyMatchingTestsProjects()
+    public async Task GetTestsProjects_ShouldReturnOnlyMatchingTestsProjects()
     {
         // Arrange
         const int expectedCount = 1;
@@ -104,18 +118,26 @@ public class CoverageServiceTests
         var expectedProjects = new[]
         {
             Constants.SamplesTestAppOtherTestsProject,
-        };
+        }.ToList();
+        _settingsService.GetSettingsAsync()
+            .Returns(new Settings
+            {
+                Coverage =
+                {
+                    ProjectFilter = searchPattern
+                }
+            });
 
         // Act
-        var result = _sut.GetTestsProjects(Constants.SamplesSolution, searchPattern);
+        var result = await _sut.GetTestsProjects(Constants.SamplesSolution);
 
         // Assert
-        result.Should().HaveCount(expectedCount);
-        result.Should().BeEquivalentTo(expectedProjects);
+        result.Count.ShouldBe(expectedCount);
+        result.ShouldBeEquivalentTo(expectedProjects);
     }
 
     [Fact]
-    public async Task ParseCoverage_ShouldShouldReturnNodes()
+    public async Task ParseCoverage_ShouldReturnNodes()
     {
         // Arrange
         var sut = GetMethod_ParseCoverage();
@@ -124,9 +146,9 @@ public class CoverageServiceTests
         var task = sut.Invoke(_sut, [Constants.SamplesReportFilePath, new CoverageOptions()]);
 
         // Assert
-        task.Should().NotBeNull();
+        task.ShouldNotBeNull();
         var result = await (Task<List<CoverageNode>>)task!;
-        result.Should().HaveCount(11);
+        result.Count.ShouldBe(16);
     }
 
     [Fact]
@@ -139,18 +161,18 @@ public class CoverageServiceTests
         var task = sut.Invoke(_sut, [Constants.SamplesReportFilePath, new CoverageOptions()]);
 
         // Assert
-        task.Should().NotBeNull();
+        task.ShouldNotBeNull();
         var result = await (Task<List<CoverageNode>>)task!;
 
-        result[0].Symbol.Should().Be("Solution");
-        result[0].Level.Should().Be(0);
-        result[0].FilePath.Should().Be(string.Empty);
-        result[0].Icon.Should().Be(CoverageNodeIcon.Solution);
-        result[0].Coverage.Should().Be(5);
-        result[0].CoveredStatements.Should().Be(15);
-        result[0].TotalStatements.Should().Be(331);
-        result[0].IsExpanded.Should().Be(false);
-        result[0].LineNumber.Should().Be(0);
+        result[0].Symbol.ShouldBe("Solution");
+        result[0].Level.ShouldBe(0);
+        result[0].FilePath.ShouldBe(string.Empty);
+        result[0].Icon.ShouldBe(CoverageNodeIcon.Solution);
+        result[0].Coverage.ShouldBe(64);
+        result[0].CoveredStatements.ShouldBe(23);
+        result[0].TotalStatements.ShouldBe(36);
+        result[0].IsExpanded.ShouldBe(false);
+        result[0].LineNumber.ShouldBe(0);
     }
 
     [Fact]
@@ -163,14 +185,14 @@ public class CoverageServiceTests
         var task = sut.Invoke(_sut, [Constants.SamplesReportFilePath, new CoverageOptions()]);
 
         // Assert
-        task.Should().NotBeNull();
+        task.ShouldNotBeNull();
         var result = await (Task<List<CoverageNode>>)task!;
 
         foreach (var node in result)
         {
             if (node.Type is not CoverageNodeType.MethodPropertyField and not CoverageNodeType.Type) continue;
 
-            node.FilePath.Should().NotBeNullOrEmpty();
+            node.FilePath.ShouldNotBeNullOrEmpty();
 
             try
             {
@@ -193,7 +215,7 @@ public class CoverageServiceTests
         var task = sut.Invoke(_sut, [Constants.SamplesReportFilePath, new CoverageOptions()]);
 
         // Assert
-        task.Should().NotBeNull();
+        task.ShouldNotBeNull();
         var result = await (Task<List<CoverageNode>>)task!;
 
         foreach (var node in result)
@@ -202,11 +224,11 @@ public class CoverageServiceTests
 
             if (node.Type is CoverageNodeType.Type)
             {
-                node.LineNumber.Should().Be(1);
+                node.LineNumber.ShouldBe(1);
             }
             else
             {
-                node.LineNumber.Should().BeGreaterThan(0);
+                node.LineNumber.ShouldBeGreaterThan(0);
             }
         }
     }
@@ -221,7 +243,7 @@ public class CoverageServiceTests
         var task = sut.Invoke(_sut, [Constants.SamplesReportFilePath, new CoverageOptions()]);
 
         // Assert
-        task.Should().NotBeNull();
+        task.ShouldNotBeNull();
         var result = await (Task<List<CoverageNode>>)task!;
 
         for (var i = 0; i < result.Count; ++i)
@@ -231,21 +253,21 @@ public class CoverageServiceTests
 
             if (node.Icon is CoverageNodeIcon.Solution || previousNode is null)
             {
-                node.Level.Should().Be(0);
+                node.Level.ShouldBe(0);
                 continue;
             }
 
             if (previousNode.Icon < node.Icon)
             {
-                node.Level.Should().Be(previousNode.Level + 1);
+                node.Level.ShouldBe(previousNode.Level + 1);
             }
             else if (previousNode.Icon > node.Icon)
             {
-                node.Level.Should().Be(previousNode.Level - ((int)previousNode.Icon - 1));
+                node.Level.ShouldBe(previousNode.Level - ((int)previousNode.Icon - 1));
             }
             else
             {
-                node.Level.Should().Be(previousNode.Level);
+                node.Level.ShouldBe(previousNode.Level);
             }
         }
     }
@@ -273,7 +295,7 @@ public class CoverageServiceTests
         );
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
 
         await _processHelper
             .Received()

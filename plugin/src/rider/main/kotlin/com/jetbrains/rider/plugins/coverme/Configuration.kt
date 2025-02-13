@@ -4,8 +4,12 @@ class Configuration {
     companion object {
         const val ENV = Environments.PRODUCTION
 
-        private const val BACKEND_PORT = "5263"
-        const val BACKEND_URL = "http://localhost:$BACKEND_PORT"
+        const val DEFAULT_BACKEND_PORT = 5263
+        private const val BACKEND_URL = "http://localhost:%d"
+        fun getBackendUrl(port: Int): String {
+            return BACKEND_URL.format(port)
+        }
+
         const val BACKEND_ZIP_NAME = "CoverMe.Backend.zip"
         const val BACKEND_CHECKSUM_NAME = "CoverMe.Backend.checksum"
         const val BACKEND_EXE_NAME = "CoverMe.Backend.exe"
@@ -17,5 +21,6 @@ class Configuration {
         const val APP_LOGS_FOLDER_NAME = "logs"
         const val APP_BIN_FOLDER_NAME = "bin"
         const val APP_LOCK_FILE_NAME = ".lock"
+        const val APP_CONFIG_FILE_NAME = "config.json"
     }
 }
