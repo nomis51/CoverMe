@@ -2,5 +2,7 @@
 
 public class Settings
 {
-    public InterfaceSettings Interface { get; set; } = new();
+    public int BackendPort { get; set; } = 5263;
+    public string ProjectFilter { get; set; } = "";
+    public string TestsFilter { get; set; } = "";
 }
