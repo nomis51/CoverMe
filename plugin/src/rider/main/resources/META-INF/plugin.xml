@@ -1,7 +1,7 @@
 <idea-plugin require-restart="true">
     <id>com.jetbrains.rider.plugins.coverme</id>
     <name>CoverMe</name>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <vendor url="https://github.com/nomis51/CoverMe">nomis51</vendor>
     <idea-version since-build="2024.3" until-build="2024.3"/>
     <depends>com.intellij.modules.rider</depends>

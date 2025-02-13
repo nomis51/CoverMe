@@ -10,7 +10,7 @@ public class IpcServer : IIpcServer
 {
     #region Constants
 
-    private int AutoExitDelay = 10_000;
+    private const int AutoExitDelay = 10_000;
 
     #endregion
 
