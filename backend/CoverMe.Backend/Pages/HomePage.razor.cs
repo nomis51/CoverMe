@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using CoverMe.Backend.Components;
+﻿using CoverMe.Backend.Components;
 using CoverMe.Backend.Components.Abstractions;
 using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
@@ -15,6 +14,10 @@ public partial class HomePage : AppComponentBase
 
     [Inject]
     protected ICoverageService CoverageService { get; set; } = null!;
+
+
+    [Inject]
+    protected IIntellijService IntellijService { get; set; } = null!;
 
     #endregion
 
@@ -121,6 +124,27 @@ public partial class HomePage : AppComponentBase
 
     private void GenerateReport(bool detailed)
     {
+        IsSaveMenuOpen = false;
+
+        if (Solution is null) return;
+        if (!HasProjectSettings) return;
+
+        IsLoading = true;
+        Task.Run(async () =>
+        {
+            try
+            {
+                var outputFolder = await CoverageService.GenerateReport(Solution, detailed);
+                if (string.IsNullOrEmpty(outputFolder)) return;
+
+                IntellijService.SaveReport(ProjectSettings!.ChannelId, outputFolder);
+            }
+            finally
+            {
+                IsLoading = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        });
     }
 
     private void Refresh()
