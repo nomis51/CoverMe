@@ -1,5 +1,5 @@
 ﻿using CoverMe.Backend.Core.Models.Coverage;
-using FluentAssertions;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Models.Coverage;
 
@@ -16,8 +16,8 @@ public class CoverageOptionsTests
         var sut = new CoverageOptions();
 
         // Assert
-        sut.Rebuild.Should().BeFalse();
-        sut.Filter.Should().BeEmpty();
+        sut.Rebuild.ShouldBeFalse();
+        sut.Filter.ShouldBeEmpty();
     }
 
     #endregion

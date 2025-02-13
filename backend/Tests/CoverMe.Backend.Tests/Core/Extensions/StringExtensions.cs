@@ -1,5 +1,5 @@
 ﻿using CoverMe.Backend.Core.Extensions;
-using FluentAssertions;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Extensions;
 
@@ -20,7 +20,7 @@ public class StringExtensions
         var result = path.ConvertPathToUnix();
 
         // Assert
-        result.Should().Be(expectedPath);
+        result.ShouldBe(expectedPath);
     }
 
     [InlineData("path/to/file.cs", @"path\to\file.cs")]
@@ -36,7 +36,7 @@ public class StringExtensions
         var result = path.ConvertPathToWindows();
 
         // Assert
-        result.Should().Be(expectedPath);
+        result.ShouldBe(expectedPath);
     }
 
     #endregion

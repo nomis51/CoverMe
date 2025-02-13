@@ -1,6 +1,6 @@
 ﻿using CoverMe.Backend.Core.Enums.Coverage;
 using CoverMe.Backend.Core.Models.Coverage;
-using FluentAssertions;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Models.Coverage;
 
@@ -21,11 +21,11 @@ public class CoverageNodeTests
         var sut = new CoverageNode(level, symbol, icon, type);
 
         // Assert
-        sut.Level.Should().Be(level);
-        sut.Symbol.Should().Be(symbol);
-        sut.Icon.Should().Be(icon);
-        sut.Type.Should().Be(type);
-        sut.FilePath.Should().BeEmpty();
+        sut.Level.ShouldBe(level);
+        sut.Symbol.ShouldBe(symbol);
+        sut.Icon.ShouldBe(icon);
+        sut.Type.ShouldBe(type);
+        sut.FilePath.ShouldBeEmpty();
     }
 
     #endregion

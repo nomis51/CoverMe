@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 using CoverMe.Backend.Core.Managers;
-using FluentAssertions;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Managers;
 
@@ -21,7 +21,7 @@ public class CacheManagerTests
         // Arrange
         const string key = "key1";
         const int value = 42;
-        ExistsInCache(key, value).Should().BeFalse();
+        ExistsInCache(key, value).ShouldBeFalse();
         AddToCache(key, value);
 
         // Act
@@ -32,7 +32,7 @@ public class CacheManagerTests
         });
 
         // Assert
-        result.Should().Be(value);
+        result.ShouldBe(value);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class CacheManagerTests
         // Arrange
         const string key = "key1";
         const int value = 42;
-        ExistsInCache(key, value).Should().BeFalse();
+        ExistsInCache(key, value).ShouldBeFalse();
         var flag = false;
 
         // Act
@@ -52,9 +52,9 @@ public class CacheManagerTests
         });
 
         // Assert
-        result.Should().Be(value);
-        ExistsInCache(key, value).Should().BeTrue();
-        flag.Should().BeTrue();
+        result.ShouldBe(value);
+        ExistsInCache(key, value).ShouldBeTrue();
+        flag.ShouldBeTrue();
     }
 
     [Fact]
@@ -86,8 +86,8 @@ public class CacheManagerTests
 
         // Assert
         await Task.WhenAll(task1, task2);
-        ExistsInCache(key, 1).Should().BeTrue();
-        flag.Should().Be(1);
+        ExistsInCache(key, 1).ShouldBeTrue();
+        flag.ShouldBe(1);
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class CacheManagerTests
         _sut.Remove(key);
 
         // Assert
-        ExistsInCache(key, value).Should().BeFalse();
+        ExistsInCache(key, value).ShouldBeFalse();
     }
 
     [Fact]
@@ -119,8 +119,8 @@ public class CacheManagerTests
         _sut.RemoveAll();
 
         // Assert
-        ExistsInCache(key1, value).Should().BeFalse();
-        ExistsInCache(key2, value).Should().BeFalse();
+        ExistsInCache(key1, value).ShouldBeFalse();
+        ExistsInCache(key2, value).ShouldBeFalse();
     }
 
     #endregion
@@ -142,7 +142,7 @@ public class CacheManagerTests
             .GetField("_values", BindingFlags.NonPublic | BindingFlags.Instance)!
             .GetValue(_sut)!;
 
-        values.TryAdd(key, value).Should().BeTrue();
+        values.TryAdd(key, value).ShouldBeTrue();
     }
 
     #endregion

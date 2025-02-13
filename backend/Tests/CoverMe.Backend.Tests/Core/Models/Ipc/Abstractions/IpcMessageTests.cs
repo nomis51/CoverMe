@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using CoverMe.Backend.Core.Models.Ipc.Abstractions;
-using FluentAssertions;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Models.Ipc.Abstractions;
 
@@ -17,7 +17,7 @@ public class IpcMessageTests
         var sut = new IpcMessage();
 
         // Assert
-        sut.Id.Should().NotBeEmpty();
+        sut.Id.ShouldNotBeEmpty();
     }
 
     [Fact]
@@ -28,8 +28,8 @@ public class IpcMessageTests
         var sut = new IpcMessage();
 
         // Assert
-        sut.HasData.Should().BeFalse();
-        sut.Data.Should().BeNull();
+        sut.HasData.ShouldBeFalse();
+        sut.Data.ShouldBeNull();
     }
 
     [Fact]
@@ -45,10 +45,10 @@ public class IpcMessageTests
         var sut = new IpcMessage(id, channelId, type, data);
 
         // Assert
-        sut.Id.Should().Be(id);
-        sut.ChannelId.Should().Be(channelId);
-        sut.Type.Should().Be(type);
-        sut.Data.Should().Be(data);
+        sut.Id.ShouldBe(id);
+        sut.ChannelId.ShouldBe(channelId);
+        sut.Type.ShouldBe(type);
+        sut.Data.ShouldBe(data);
     }
 
     [Fact]
@@ -63,10 +63,10 @@ public class IpcMessageTests
         var sut = new IpcMessage(channelId, type, data);
 
         // Assert
-        sut.Id.Should().NotBeEmpty();
-        sut.ChannelId.Should().Be(channelId);
-        sut.Type.Should().Be(type);
-        sut.Data.Should().Be(data);
+        sut.Id.ShouldNotBeEmpty();
+        sut.ChannelId.ShouldBe(channelId);
+        sut.Type.ShouldBe(type);
+        sut.Data.ShouldBe(data);
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class IpcMessageTests
         var sut = new IpcMessage("channelId", "type", serializedData);
 
         // Assert
-        sut.GetData<List<string>>().Should().BeEquivalentTo(data);
+        sut.GetData<List<string>>().ShouldBeEquivalentTo(data);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class IpcMessageTests
         var actual = sut.ToString();
 
         // Assert
-        actual.Should().Be(expected);
+        actual.ShouldBe(expected);
     }
 
     #endregion

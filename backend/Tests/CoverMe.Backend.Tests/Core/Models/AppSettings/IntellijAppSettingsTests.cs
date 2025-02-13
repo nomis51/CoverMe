@@ -1,6 +1,6 @@
 ﻿using CoverMe.Backend.Core.Models.AppSettings;
-using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Shouldly;
 
 namespace CoverMe.Backend.Tests.Core.Models.AppSettings;
 
@@ -23,7 +23,7 @@ public class IntellijAppSettingsTests
         var sut = new IntellijAppSettings(configuration);
 
         // Assert
-        sut.ProjectRootPath.Should().Be("SomePath");
+        sut.ProjectRootPath.ShouldBe("SomePath");
     }
 
     #endregion
