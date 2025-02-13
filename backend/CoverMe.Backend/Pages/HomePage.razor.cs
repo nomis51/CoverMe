@@ -172,7 +172,7 @@ public partial class HomePage : AppComponentBase
         {
             try
             {
-                Projects = CoverageService.GetTestsProjects(Solution);
+                Projects = await CoverageService.GetTestsProjects(Solution);
 
                 if (Projects.Count > 0 && string.IsNullOrEmpty(SelectedProjectFilePath))
                 {

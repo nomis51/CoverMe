@@ -10,4 +10,6 @@ public class DotCoverCliOptions
     public required string ProjectFolderPath { get; init; }
     public bool HideAutoProperties { get; init; } = true;
     public bool NoBuild { get; init; } = true;
+    public string CoverageFilter { get; set; } = string.Empty;
+    public string TestsFilter { get; set; } = string.Empty;
 }

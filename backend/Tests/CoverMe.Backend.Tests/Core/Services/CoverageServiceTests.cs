@@ -7,6 +7,7 @@ using CoverMe.Backend.Core.Managers.Abstractions;
 using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Models.Process;
+using CoverMe.Backend.Core.Models.Settings;
 using CoverMe.Backend.Core.Services;
 using CoverMe.Backend.Core.Services.Abstractions;
 using FluentAssertions;
@@ -24,6 +25,7 @@ public class CoverageServiceTests
     private readonly ILogger<CoverageService> _logger;
     private readonly ICacheManager<Dictionary<int, bool?>> _linesCoverageCache;
     private readonly ICacheManager<List<CoverageNode>> _coverageTreeCache;
+    private readonly ISettingsService _settingsService;
     private readonly ICoverageService _sut;
 
     #endregion
@@ -37,7 +39,11 @@ public class CoverageServiceTests
         _logger = Substitute.For<ILogger<CoverageService>>();
         _linesCoverageCache = Substitute.For<ICacheManager<Dictionary<int, bool?>>>();
         _coverageTreeCache = Substitute.For<ICacheManager<List<CoverageNode>>>();
-        _sut = new CoverageService(_logger, _fileSystem, _linesCoverageCache!, _coverageTreeCache, _processHelper);
+        _settingsService = Substitute.For<ISettingsService>();
+        _settingsService.GetSettingsAsync()
+            .Returns(new Settings());
+        _sut = new CoverageService(_logger, _fileSystem, _linesCoverageCache!, _coverageTreeCache, _processHelper,
+            _settingsService);
     }
 
     #endregion
@@ -45,7 +51,7 @@ public class CoverageServiceTests
     #region Tests
 
     [Fact]
-    public void GetTestProjects_ShouldReturnProjects_WhenSessionExists()
+    public async Task GetTestProjects_ShouldReturnProjects_WhenSessionExists()
     {
         // Arrange
         var expectedProjects = new List<Project>
@@ -55,14 +61,14 @@ public class CoverageServiceTests
         };
 
         // Act
-        var result = _sut.GetTestsProjects(Constants.SamplesSolution);
+        var result = await _sut.GetTestsProjects(Constants.SamplesSolution);
 
         // Assert
         result.Should().BeEquivalentTo(expectedProjects);
     }
 
     [Fact]
-    public void GetTestsProjects_ShouldLogExceptionAndReturnEmptyList_WhenPathIsInvalid()
+    public async Task GetTestsProjects_ShouldLogExceptionAndReturnEmptyList_WhenPathIsInvalid()
     {
         // Arrange
         const string path = "C:/Users/Tests/Some/Solution/Folder/";
@@ -74,7 +80,7 @@ public class CoverageServiceTests
             ]);
 
         // Act
-        var result = _sut.GetTestsProjects(new Solution(fileSystem, path));
+        var result = await _sut.GetTestsProjects(new Solution(fileSystem, path));
 
         // Assert
         result.Should().BeEmpty();
@@ -84,19 +90,27 @@ public class CoverageServiceTests
     }
 
     [Fact]
-    public void GetTestsProjects_ShouldReturnEmptyList_WhenSearchPatternMatchNothing()
+    public async Task GetTestsProjects_ShouldReturnEmptyList_WhenSearchPatternMatchNothing()
     {
         // Arrange
+        _settingsService.GetSettingsAsync()
+            .Returns(new Settings
+            {
+                Coverage =
+                {
+                    ProjectFilter = "*.Invalid.Tests.csproj"
+                }
+            });
 
         // Act
-        var result = _sut.GetTestsProjects(Constants.SamplesSolution, "*.Oops.csproj");
+        var result = await _sut.GetTestsProjects(Constants.SamplesSolution);
 
         // Assert
         result.Should().BeEmpty();
     }
 
     [Fact]
-    public void GetTestsProjects_ShouldReturnOnlyMatchingTestsProjects()
+    public async Task GetTestsProjects_ShouldReturnOnlyMatchingTestsProjects()
     {
         // Arrange
         const int expectedCount = 1;
@@ -105,9 +119,17 @@ public class CoverageServiceTests
         {
             Constants.SamplesTestAppOtherTestsProject,
         };
+        _settingsService.GetSettingsAsync()
+            .Returns(new Settings
+            {
+                Coverage =
+                {
+                    ProjectFilter = searchPattern
+                }
+            });
 
         // Act
-        var result = _sut.GetTestsProjects(Constants.SamplesSolution, searchPattern);
+        var result = await _sut.GetTestsProjects(Constants.SamplesSolution);
 
         // Assert
         result.Should().HaveCount(expectedCount);
@@ -115,7 +137,7 @@ public class CoverageServiceTests
     }
 
     [Fact]
-    public async Task ParseCoverage_ShouldShouldReturnNodes()
+    public async Task ParseCoverage_ShouldReturnNodes()
     {
         // Arrange
         var sut = GetMethod_ParseCoverage();
@@ -126,7 +148,7 @@ public class CoverageServiceTests
         // Assert
         task.Should().NotBeNull();
         var result = await (Task<List<CoverageNode>>)task!;
-        result.Should().HaveCount(11);
+        result.Should().HaveCount(74);
     }
 
     [Fact]

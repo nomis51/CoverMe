@@ -9,7 +9,6 @@ using CoverMe.Backend.Core.Managers.Abstractions;
 using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Models.Process;
-using CoverMe.Backend.Core.Models.Settings;
 using CoverMe.Backend.Core.Services.Abstractions;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
@@ -66,13 +65,14 @@ public partial class CoverageService : ICoverageService
 
     #region Public methods
 
-    public List<Project> GetTestsProjects(Solution solution, string searchPattern = "*.Tests.csproj")
+    public async Task<List<Project>> GetTestsProjects(Solution solution)
     {
         try
         {
+            var settings = await _settingsService.GetSettingsAsync();
             var files = _fileSystem.Directory.EnumerateFiles(
                 solution.FolderPath,
-                searchPattern,
+                settings.Coverage.ProjectFilter,
                 SearchOption.AllDirectories
             );
 
@@ -115,13 +115,15 @@ public partial class CoverageService : ICoverageService
             HideAutoProperties = settings.Coverage.HideAutoProperties,
             NoBuild = !options.Rebuild,
             OutputPath = reportFilePath,
-            ProjectFolderPath = project.FolderPath
+            ProjectFolderPath = project.FolderPath,
+            CoverageFilter = settings.Coverage.CoverageFilter,
+            TestsFilter = settings.Coverage.TestsFilter,
         });
         if (response.ExitCode != 0) return [];
 
         _coverageTreeCache.RemoveAll();
         _linesCoverageCache.RemoveAll();
-        return await GetCoverageTree(reportFilePath, settings);
+        return await GetCoverageTree(reportFilePath, options);
     }
 
     public async Task<List<CoverageNode>> ParseLastCoverage(Solution solution, CoverageOptions? options = null)
@@ -129,9 +131,8 @@ public partial class CoverageService : ICoverageService
         var filePath = GetLastCoverageFilePath(solution);
         if (string.IsNullOrEmpty(filePath)) return [];
 
-        var settings = await _settingsService.GetSettingsAsync();
         options ??= new CoverageOptions();
-        return await GetCoverageTree(filePath, settings);
+        return await GetCoverageTree(filePath, options);
     }
 
     public async Task<bool?> IsLineCovered(string projectRootPath, string filePath, int line)
@@ -219,12 +220,12 @@ public partial class CoverageService : ICoverageService
 
     private async Task<List<CoverageNode>> GetCoverageTree(
         string reportFilePath,
-        Settings settings
+        CoverageOptions options
     )
     {
         return await _coverageTreeCache.GetOrSetAsync(
             reportFilePath,
-            () => ParseCoverage(reportFilePath, settings)!
+            () => ParseCoverage(reportFilePath, options)!
         );
     }
 
@@ -286,7 +287,7 @@ public partial class CoverageService : ICoverageService
         return string.IsNullOrEmpty(latestFileInfo.FullName) ? string.Empty : latestFileInfo.FullName;
     }
 
-    private async Task<List<CoverageNode>> ParseCoverage(string filePath, Settings settings)
+    private async Task<List<CoverageNode>> ParseCoverage(string filePath, CoverageOptions options)
     {
         var data = await _fileSystem.File.ReadAllTextAsync(filePath);
         if (string.IsNullOrEmpty(data)) return [];
@@ -320,7 +321,7 @@ public partial class CoverageService : ICoverageService
 
         foreach (var assembly in assemblies)
         {
-            ParseAssembly(assembly, nodes, fileIndices, settings);
+            ParseAssembly(assembly, nodes, fileIndices, options);
         }
 
         return nodes;
@@ -330,12 +331,12 @@ public partial class CoverageService : ICoverageService
         HtmlNode assembly,
         List<CoverageNode> nodes,
         Dictionary<int, string> fileIndices,
-        Settings settings,
+        CoverageOptions options,
         int level = 1
     )
     {
         var name = assembly.GetAttributeValue<string>("name", string.Empty);
-        if (!Regex.IsMatch(name, settings.Coverage.CoverageFilter)) return;
+        if (!Regex.IsMatch(name, options.Filter)) return;
 
         nodes.Add(new CoverageNode(level, name, CoverageNodeIcon.Assembly, CoverageNodeType.Assembly)
         {
@@ -348,14 +349,14 @@ public partial class CoverageService : ICoverageService
 
         foreach (var @namespace in namespaces)
         {
-            ParseNamespace(@namespace, nodes, level + 1, fileIndices, settings);
+            ParseNamespace(@namespace, nodes, level + 1, fileIndices, options);
         }
 
         var types = assembly.ChildNodes.Where(e => e.Name == "type");
 
         foreach (var type in types)
         {
-            ParseType(type, nodes, level + 1, fileIndices, settings);
+            ParseType(type, nodes, level + 1, fileIndices, options);
         }
     }
 
@@ -364,11 +365,11 @@ public partial class CoverageService : ICoverageService
         List<CoverageNode> nodes,
         int level,
         Dictionary<int, string> fileIndices,
-        Settings settings
+        CoverageOptions options
     )
     {
         var name = @namespace.GetAttributeValue("name", string.Empty);
-        if (!Regex.IsMatch(name, settings.Coverage.CoverageFilter)) return;
+        if (!Regex.IsMatch(name, options.Filter)) return;
 
         nodes.Add(new CoverageNode(level, name, CoverageNodeIcon.Namespace, CoverageNodeType.Namespace)
         {
@@ -381,7 +382,7 @@ public partial class CoverageService : ICoverageService
 
         foreach (var type in types)
         {
-            ParseType(type, nodes, level + 1, fileIndices, settings);
+            ParseType(type, nodes, level + 1, fileIndices, options);
         }
     }
 
@@ -390,11 +391,11 @@ public partial class CoverageService : ICoverageService
         List<CoverageNode> nodes,
         int level,
         Dictionary<int, string> fileIndices,
-        Settings settings
+        CoverageOptions options
     )
     {
         var name = type.GetAttributeValue("name", string.Empty);
-        if (!Regex.IsMatch(name, settings.Coverage.CoverageFilter)) return;
+        if (!Regex.IsMatch(name, options.Filter)) return;
 
         var node = new CoverageNode(level, name, CoverageNodeIcon.Type, CoverageNodeType.Type)
         {
