@@ -1,0 +1,2 @@
+dotnet dotcover cover-dotnet --ReportType=HTML --Output=./.coverage/report.html --HideAutoProperties --Filters="+:module=CoverMe.Backend;+:module=CoverMe.Backend.Core" -- test --filter "FullyQualifiedName~CoverMe.Tests|FullyQualifiedName~CoverMe.Backend.Tests"
+Invoke-Item ./.coverage/report.html
