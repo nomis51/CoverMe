@@ -2,7 +2,7 @@ package com.jetbrains.rider.plugins.coverme
 
 class Configuration {
     companion object {
-        const val ENV = Environments.DEBUG
+        const val ENV = Environments.PRODUCTION
 
         const val DEFAULT_BACKEND_PORT = 5263
         private const val BACKEND_URL = "http://localhost:%d"
