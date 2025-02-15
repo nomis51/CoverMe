@@ -1,5 +1,4 @@
 ﻿using CoverMe.Backend.Components.Abstractions;
-using CoverMe.Backend.Core.Models;
 using CoverMe.Backend.Core.Models.Coverage;
 using CoverMe.Backend.Core.Models.Settings;
 using CoverMe.Backend.Core.Services.Abstractions;
@@ -59,6 +58,7 @@ public partial class CoverageTable : AppComponentBase, IDisposable
         GC.SuppressFinalize(this);
 
         _ = JsRuntime.DisposeResizableTable();
+        Settings = null!;
     }
 
     #endregion

@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp.NopeTests", "Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp.Core", "TestApp.Core\TestApp.Core.csproj", "{CCE3ABBE-7B64-493C-B4F3-29B942193FD8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp.ConsoleApp", "TestApp.ConsoleApp\TestApp.ConsoleApp.csproj", "{9122226C-50C1-4051-8C5B-8F1A950666D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{CCE3ABBE-7B64-493C-B4F3-29B942193FD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCE3ABBE-7B64-493C-B4F3-29B942193FD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCE3ABBE-7B64-493C-B4F3-29B942193FD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9122226C-50C1-4051-8C5B-8F1A950666D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9122226C-50C1-4051-8C5B-8F1A950666D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9122226C-50C1-4051-8C5B-8F1A950666D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9122226C-50C1-4051-8C5B-8F1A950666D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9AE27454-1D84-487F-A1C8-1D3B227F9120} = {D6AD78CF-CE2A-4AD4-AADE-DD738F6F97FA}

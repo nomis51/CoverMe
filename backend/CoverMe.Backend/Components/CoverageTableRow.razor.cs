@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace CoverMe.Backend.Components;
 
-public partial class CoverageTableRow : AppComponentBase
+public partial class CoverageTableRow : AppComponentBase, IDisposable
 {
     #region Constants
 
-    private int MaxSymbolLength = 25;
+    private int _maxSymbolLength = 25;
 
     #endregion
 
@@ -94,6 +94,12 @@ public partial class CoverageTableRow : AppComponentBase
     protected override async Task OnInitializedAsync()
     {
         await RetrieveSettings();
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        Settings = null!;
     }
 
     #endregion

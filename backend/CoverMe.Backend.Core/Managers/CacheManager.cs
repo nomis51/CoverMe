@@ -14,16 +14,16 @@ public class CacheManager<T> : ICacheManager<T>
 
     #region Public methods
 
-    public async Task<T> GetOrSetAsync(string key, Func<Task<T?>> setter)
+    public async Task<T> GetOrSetAsync(string key, Func<Task<T>> setter)
     {
-        if (_values.TryGetValue(key, out var value)) return value;
+        if (_values.TryGetValue(key, out var value)) return value!;
 
         var semaphore = _semaphores.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
         await semaphore.WaitAsync();
 
         try
         {
-            if (_values.TryGetValue(key, out value)) return value;
+            if (_values.TryGetValue(key, out value)) return value!;
 
             value = await setter();
             _values[key] = value;

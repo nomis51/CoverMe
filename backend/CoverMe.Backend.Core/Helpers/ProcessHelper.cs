@@ -105,7 +105,7 @@ public class ProcessHelper : IProcessHelper
             }
             else
             {
-                _logger.LogInformation("DotCover CLI: {Output}", response.Output);
+                _logger.LogTrace("DotCover CLI: {Output}", response.Output);
             }
 
             return _isDotCoverCliInstalled;
@@ -173,7 +173,7 @@ public class ProcessHelper : IProcessHelper
             }
             else
             {
-                _logger.LogInformation("Report Generator: {Output}", response.Output);
+                _logger.LogTrace("Report Generator: {Output}", response.Output);
             }
 
             return _isReportGeneratorInstalled;
@@ -192,7 +192,7 @@ public class ProcessHelper : IProcessHelper
     {
         var argumentsStr = string.Join(" ", arguments);
 
-        _logger.LogInformation(
+        _logger.LogTrace(
             "ProcessHelper: Executed: Command={Command}; Arguments={Arguments}; WorkingDirectory={WorkingDirectory};",
             command,
             argumentsStr,
@@ -218,7 +218,7 @@ public class ProcessHelper : IProcessHelper
         var error = await process.StandardError.ReadToEndAsync();
         await process.WaitForExitAsync();
 
-        _logger.LogInformation(
+        _logger.LogTrace(
             "ProcessHelper: Executed: Command={Command}; Arguments={Arguments}; WorkingDirectory={WorkingDirectory}; ExitCode={ExitCode}; Output={Output}; Error={Error};",
             command,
             argumentsStr,
