@@ -69,7 +69,7 @@ public class IpcServer : IIpcServer
 
     public bool RemoveChannel(string channelId)
     {
-        _logger.LogInformation("IPC: Removing channel {Id}", channelId);
+        _logger.LogTrace("IPC: Removing channel {Id}", channelId);
         var ok = _channels.TryRemove(channelId, out var channel);
         if (!ok)
         {
@@ -78,7 +78,7 @@ public class IpcServer : IIpcServer
         }
 
         channel!.Dispose();
-        _logger.LogInformation("IPC: Removed channel {Id}", channelId);
+        _logger.LogTrace("IPC: Removed channel {Id}", channelId);
 
         CheckIfExitRequired();
 
@@ -87,7 +87,7 @@ public class IpcServer : IIpcServer
 
     public void RemoveAllChannels()
     {
-        _logger.LogInformation("IPC: Removing all channels");
+        _logger.LogTrace("IPC: Removing all channels");
         foreach (var (id, _) in _channels)
         {
             RemoveChannel(id);
@@ -96,6 +96,8 @@ public class IpcServer : IIpcServer
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
+
         _channelsCancellationTokenSource.Cancel();
         RemoveAllChannels();
     }
