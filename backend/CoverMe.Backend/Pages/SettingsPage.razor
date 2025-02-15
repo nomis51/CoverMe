@@ -1,16 +1,92 @@
 ﻿@page "/settings"
 <PageTitle>Settings</PageTitle>
 
-<div class="flex flex-col gap-0">
+<div class="flex flex-col gap-6">
     <div class="flex flex-row gap-1 align-middle">
-        <IconButton OnClick="@(() => { })"
+        <IconButton OnClick="@(() => NavigationManager.NavigateTo("/"))"
                     Tooltip="Go back">
-            <MoreIcon Class="size-6 fill-white"/>
+            <ArrowBackIcon Class="size-6 fill-white"/>
         </IconButton>
         <h6 class="font-bold self-center">Settings</h6>
     </div>
 
-    <div class="flex flex-col gap-1">
-        settings content here
+    <div class="flex flex-col gap-2">
+        <h6 class="font-bold">Coverage settings</h6>
+
+        <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+                <label>Coverage filter (dotCover filter)</label>
+                <input value="@Settings.Coverage.CoverageFilter"
+                       disabled="@IsLoading"
+                       @oninput="@(e =>
+                                 {
+                                     Settings.Coverage.CoverageFilter = e.Value?.ToString() ?? string.Empty;
+                                     Save();
+                                 })"
+                       class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5 disabled:bg-opacity-30 disabled:text-opacity-30 disabled:cursor-not-allowed"
+                       placeholder="e.g. -:module=*.Tests"/>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label>Tests filter</label>
+                <input value="@Settings.Coverage.TestsFilter"
+                       disabled="@IsLoading"
+                       @oninput="@(e =>
+                                 {
+                                     Settings.Coverage.TestsFilter = e.Value?.ToString() ?? string.Empty;
+                                     Save();
+                                 })"
+                       class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5 disabled:bg-opacity-30 disabled:text-opacity-30 disabled:cursor-not-allowed"
+                       placeholder="e.g. FullyQualifiedName~.Tests"/>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label>Projects filter</label>
+                <input value="@Settings.Coverage.ProjectsFilter"
+                       disabled="@IsLoading"
+                       @oninput="@(e =>
+                                 {
+                                     Settings.Coverage.ProjectsFilter = e.Value?.ToString() ?? string.Empty;
+                                     Save();
+                                 })"
+                       class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5 disabled:bg-opacity-30 disabled:text-opacity-30 disabled:cursor-not-allowed"
+                       placeholder="e.g. *.Tests.csproj"/>
+            </div>
+
+            <div class="flex flex-row gap-1 align-middle items-center">
+                <input checked="@Settings.Coverage.HideAutoProperties"
+                       class="self-center"
+                       type="checkbox"
+                       disabled="@IsLoading"
+                       @oninput="@(e =>
+                                 {
+                                     Settings.Coverage.HideAutoProperties = (bool?)e.Value ?? false;
+                                     Save();
+                                 })"/>
+                <label class="self-center">Hide auto properties</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <h6 class="font-bold">Backend settings</h6>
+
+        <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+                <label>Backend port (requires restart)</label>
+                <input value="@Settings.Backend.BackendPort"
+                       type="number"
+                       min="1"
+                       max="65000"
+                       disabled="@IsLoading"
+                       @oninput="@(e =>
+                                 {
+                                     Settings.Backend.BackendPort = (int?)e.Value ?? 5263;
+                                     Save();
+                                 })"
+                       class="bg-neutral-800 border border-neutral-700 text-white text-sm rounded focus:outline-none focus:ring-0 focus:border-neutral-600 block w-full p-2.5 disabled:bg-opacity-30 disabled:text-opacity-30 disabled:cursor-not-allowed"
+                       placeholder="e.g. 5263"/>
+            </div>
+        </div>
     </div>
 </div>

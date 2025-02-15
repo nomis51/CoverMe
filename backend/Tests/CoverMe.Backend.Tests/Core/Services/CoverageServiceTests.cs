@@ -98,7 +98,7 @@ public class CoverageServiceTests
             {
                 Coverage =
                 {
-                    ProjectFilter = "*.Invalid.Tests.csproj"
+                    ProjectsFilter = "*.Invalid.Tests.csproj"
                 }
             });
 
@@ -124,7 +124,7 @@ public class CoverageServiceTests
             {
                 Coverage =
                 {
-                    ProjectFilter = searchPattern
+                    ProjectsFilter = searchPattern
                 }
             });
 

@@ -72,7 +72,7 @@ public partial class CoverageService : ICoverageService
             var settings = await _settingsService.GetSettingsAsync();
             var files = _fileSystem.Directory.EnumerateFiles(
                 solution.FolderPath,
-                settings.Coverage.ProjectFilter,
+                settings.Coverage.ProjectsFilter,
                 SearchOption.AllDirectories
             );
 
