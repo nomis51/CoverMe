@@ -40,6 +40,7 @@ public class HeadlessIpcManager : IIpcManager
                 break;
 
             case IpcMessageType.OpenFileAtLine:
+            case IpcMessageType.SaveReport:
             default:
                 _logger.LogInformation("Headless IPC: Unknown message type {MessageType}", message.MessageType);
                 break;

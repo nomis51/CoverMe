@@ -63,7 +63,8 @@ public class IpcChannel : IIpcChannel
             _pipeLock.Dispose();
             _pipe.Dispose();
             _reader.Dispose();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             _logger.LogError(e, "IPC Channel {Id}: Failed to dispose", Id);
         }
@@ -86,7 +87,7 @@ public class IpcChannel : IIpcChannel
             {
                 if (!e.Message.Contains("Pipe is broken")) throw;
 
-                _logger.LogInformation("IPC Channel {Id}: Pipe closed or disconnected", Id);
+                _logger.LogTrace("IPC Channel {Id}: Pipe closed or disconnected", Id);
                 break;
             }
             catch (Exception e)

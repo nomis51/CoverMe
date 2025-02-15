@@ -42,7 +42,7 @@ public class IpcServer : IIpcServer
 
     public string CreateChannel()
     {
-        _logger.LogInformation("IPC: Creating channel");
+        _logger.LogTrace("IPC: Creating channel");
         ResetAutoExit();
 
         var id = Guid.NewGuid().ToString("N");
@@ -63,7 +63,7 @@ public class IpcServer : IIpcServer
         channel.MessageReceived += Channel_OnMessageReceived;
         StartChannel(channel);
 
-        _logger.LogInformation("IPC: Created channel {Id}", id);
+        _logger.LogTrace("IPC: Created channel {Id}", id);
         return id;
     }
 
@@ -109,7 +109,7 @@ public class IpcServer : IIpcServer
         if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Production") return;
         if (_exitTask is null || _exitCancellationTokenSource is null) return;
 
-        _logger.LogInformation("Resetting auto exit");
+        _logger.LogTrace("Resetting auto exit");
         _exitCancellationTokenSource.Cancel();
         _exitCancellationTokenSource.Dispose();
         _exitTask = null;
@@ -117,25 +117,25 @@ public class IpcServer : IIpcServer
 
     private void CheckIfExitRequired()
     {
-        _logger.LogInformation("No more channels, checking if exit is required");
+        _logger.LogTrace("No more channels, checking if exit is required");
         if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Production") return;
         if (_channels.Count != 0 || _exitTask is not null) return;
 
         _exitCancellationTokenSource = new CancellationTokenSource();
         _exitTask = Task.Run(async () =>
         {
-            _logger.LogInformation("No more channels, exiting in {Time}s", AutoExitDelay / 1000);
+            _logger.LogTrace("No more channels, exiting in {Time}s", AutoExitDelay / 1000);
             await Task.Delay(AutoExitDelay, _exitCancellationTokenSource.Token);
             if (_exitCancellationTokenSource.IsCancellationRequested) return;
 
-            _logger.LogInformation("No more channels, exiting");
+            _logger.LogTrace("No more channels, exiting");
             Environment.Exit(0);
         }, _exitCancellationTokenSource.Token);
     }
 
     private void StartChannel(IIpcChannel channel)
     {
-        _logger.LogInformation("IPC: Starting channel {Id}", channel.Id);
+        _logger.LogTrace("IPC: Starting channel {Id}", channel.Id);
         Task.Run(async () =>
         {
             await channel.StartAsync(_channelsCancellationTokenSource.Token);
@@ -147,7 +147,7 @@ public class IpcServer : IIpcServer
     {
         if (!_channels.TryGetValue(message.ChannelId, out var channel)) return;
 
-        _logger.LogInformation("IPC [{ChannelId}]: Received message {Message}", message.ChannelId, message);
+        _logger.LogTrace("IPC [{ChannelId}]: Received message {Message}", message.ChannelId, message);
         _ipcManager.HandleMessageAsync(message, channel);
     }
 
@@ -155,7 +155,7 @@ public class IpcServer : IIpcServer
     {
         if (!_channels.TryGetValue(message.ChannelId, out var channel)) return;
 
-        _logger.LogInformation("IPC [{ChannelId}]: Sending message {Message}", message.ChannelId, message);
+        _logger.LogTrace("IPC [{ChannelId}]: Sending message {Message}", message.ChannelId, message);
         channel.SendMessageAsync(message);
     }
 

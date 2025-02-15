@@ -105,7 +105,7 @@ public class ProcessHelper : IProcessHelper
             }
             else
             {
-                _logger.LogInformation("DotCover CLI: {Output}", response.Output);
+                _logger.LogTrace("DotCover CLI: {Output}", response.Output);
             }
 
             return _isDotCoverCliInstalled;
@@ -173,7 +173,7 @@ public class ProcessHelper : IProcessHelper
             }
             else
             {
-                _logger.LogInformation("Report Generator: {Output}", response.Output);
+                _logger.LogTrace("Report Generator: {Output}", response.Output);
             }
 
             return _isReportGeneratorInstalled;
