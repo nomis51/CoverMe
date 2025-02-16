@@ -8,7 +8,7 @@ import com.intellij.ui.content.ContentFactory
 
 class CoverMeToolWindowFactory : ToolWindowFactory, DumbAware {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val window = CoverMeToolWindow()
+        val window = CoverMeToolWindow(project)
         val content = ContentFactory.getInstance()
             .createContent(window.content, null, false)
         toolWindow.contentManager

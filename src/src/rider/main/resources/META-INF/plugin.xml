@@ -16,7 +16,7 @@
                     anchor="right"
                     doNotActivateOnStart="true"
                     secondary="false"
-                    icon="File"/>
+                    icon="AllIcons.RunConfigurations.TrackCoverage"/>
         <!--        <codeInsight.lineMarkerProvider language="C#"-->
         <!--                                        implementationClass="com.jetbrains.rider.plugins.coverme.lineMarkers.CoverageLineMarkerProvider"/>-->
     </extensions>
