@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent
 import javax.swing.JTree
 
 class CoverageTable {
-    private val _rootNode: CoverageTreeNode = CoverageTreeNode("Total", CoverageData("Total", 0, 0))
+    private val _rootNode: CoverageTreeNode = CoverageTreeNode("Total", CoverageData("Total", 0, 0, 0, 0))
     private val _columns = arrayOf(
         object : ColumnInfo<Any, String>("Symbol") {
             override fun valueOf(o: Any): String {
@@ -28,7 +28,8 @@ class CoverageTable {
         },
         object : ColumnInfo<Any, String>("Uncovered") {
             override fun valueOf(o: Any): String {
-                return (o as CoverageTreeNode).data.uncovered.toString()
+                val node = o as CoverageTreeNode
+                return "${node.data.uncoveredLines}/${node.data.totalLines}"
             }
         }
     )

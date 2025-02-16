@@ -38,7 +38,7 @@ class CoverMeToolWindow {
         content.add(treeTable.getComponent(), BorderLayout.CENTER)
 
         val data = arrayOf(
-            CoverageData("Circle(int)", 95, 3), CoverageData("Square(int)", 67, 18)
+            CoverageData("Circle(int)", 95, 3, 10, 0), CoverageData("Square(int)", 67, 18, 20, 1)
         )
         treeTable.updateData(data)
     }
