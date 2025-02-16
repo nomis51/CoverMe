@@ -6,13 +6,14 @@ import com.intellij.ui.components.JBTextField
 import com.jetbrains.rider.plugins.coverme.ui.components.IconButton
 import java.awt.BorderLayout
 import java.awt.FlowLayout
-import javax.swing.JButton
+import javax.swing.JLabel
 import javax.swing.JPanel
 
 class CoverMeToolWindow {
     val content: JPanel = JPanel(BorderLayout())
 
     init {
+        val topPanel = JPanel(BorderLayout())
         val toolbarPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val testProjectSelect = ComboBox<String>()
         toolbarPanel.add(testProjectSelect)
@@ -23,16 +24,17 @@ class CoverMeToolWindow {
             }
         toolbarPanel.add(runCoverageButton)
 
-        val buildAndRunCoverageButton = JButton()
-        toolbarPanel.add(buildAndRunCoverageButton)
-
-        content.add(toolbarPanel, BorderLayout.NORTH)
+        topPanel.add(toolbarPanel, BorderLayout.NORTH)
 
         val txtFilter = JBTextField()
             .apply {
                 emptyText.text = "Type to filter..."
             }
+        topPanel.add(txtFilter, BorderLayout.CENTER)
 
-        content.add(txtFilter, BorderLayout.CENTER)
+        content.add(topPanel, BorderLayout.NORTH)
+
+        val label = JLabel("content")
+        content.add(label, BorderLayout.CENTER)
     }
 }
