@@ -9,6 +9,11 @@ plugins {
     alias(libs.plugins.kotlinJvm)
     id("org.jetbrains.intellij.platform") version "2.0.0-beta5"     // See https://github.com/JetBrains/intellij-platform-gradle-plugin/releases
     id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 }
 
 val isWindows = Os.isFamily(Os.FAMILY_WINDOWS)
@@ -37,7 +42,8 @@ repositories {
 tasks.wrapper {
     gradleVersion = "8.8"
     distributionType = Wrapper.DistributionType.ALL
-    distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
+    distributionUrl =
+        "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
 version = extra["PluginVersion"] as String
@@ -105,7 +111,7 @@ val testDotNet by tasks.registering {
     doLast {
         exec {
             executable("dotnet")
-            args("test","${DotnetSolution}","--logger","GitHubActions")
+            args("test", "${DotnetSolution}", "--logger", "GitHubActions")
             workingDir(rootDir)
         }
     }
@@ -122,7 +128,8 @@ tasks.buildPlugin {
         val changelogText = file("${rootDir}/CHANGELOG.md").readText()
         val changelogMatches = Regex("(?s)(-.+?)(?=##|$)").findAll(changelogText)
         val changeNotes = changelogMatches.map {
-            it.groups[1]!!.value.replace("(?s)- ".toRegex(), "\u2022 ").replace("`", "").replace(",", "%2C").replace(";", "%3B")
+            it.groups[1]!!.value.replace("(?s)- ".toRegex(), "\u2022 ").replace("`", "").replace(",", "%2C")
+                .replace(";", "%3B")
         }.take(1).joinToString()
 
         val executable: String by setBuildTool.get().extra
@@ -171,10 +178,10 @@ tasks.prepareSandbox {
 
     val outputFolder = "${rootDir}/src/dotnet/${DotnetPluginId}/bin/${DotnetPluginId}.Rider/${BuildConfiguration}"
     val dllFiles = listOf(
-            "$outputFolder/${DotnetPluginId}.dll",
-            "$outputFolder/${DotnetPluginId}.pdb",
+        "$outputFolder/${DotnetPluginId}.dll",
+        "$outputFolder/${DotnetPluginId}.pdb",
 
-            // TODO: add additional assemblies
+        // TODO: add additional assemblies
     )
 
     dllFiles.forEach({ f ->
@@ -198,7 +205,15 @@ tasks.publishPlugin {
     doLast {
         exec {
             executable("dotnet")
-            args("nuget","push","output/${DotnetPluginId}.${version}.nupkg","--api-key","${PublishToken}","--source","https://plugins.jetbrains.com")
+            args(
+                "nuget",
+                "push",
+                "output/${DotnetPluginId}.${version}.nupkg",
+                "--api-key",
+                "${PublishToken}",
+                "--source",
+                "https://plugins.jetbrains.com"
+            )
             workingDir(rootDir)
         }
     }
