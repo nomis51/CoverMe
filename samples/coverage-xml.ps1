@@ -1,0 +1,1 @@
+dotnet dotcover cover-dotnet --ReportType=DetailedXML --Output=./.coverage/report.xml --HideAutoProperties --Filters="-:module=testhost;-:module=*.Tests;-:module=*.NopeTests" -- test --filter "FullyQualifiedName~.Tests|FullyQualifiedName~.NopeTests"

@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.coverme.toolWindow
+package com.jetbrains.rider.plugins.coverme.ui.toolWindow
 
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project

@@ -11,13 +11,13 @@
     </description>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.jetbrains.rider.plugins.coverme.toolWindow.CoverMeToolWindowFactory"
+        <toolWindow factoryClass="com.jetbrains.rider.plugins.coverme.ui.toolWindow.CoverMeToolWindowFactory"
                     id="CoverMe"
                     anchor="right"
                     doNotActivateOnStart="true"
                     secondary="false"
-                    icon="AllIcons.RunConfigurations.TrackCoverage"/>
-<!--        <codeInsight.lineMarkerProvider language="C#"-->
-<!--                                        implementationClass="com.jetbrains.rider.plugins.coverme.lineMarkers.CoverageLineMarkerProvider"/>-->
+                    icon="AllIcons.RunConfigurations.TEst"/>
+        <!--        <codeInsight.lineMarkerProvider language="C#"-->
+        <!--                                        implementationClass="com.jetbrains.rider.plugins.coverme.lineMarkers.CoverageLineMarkerProvider"/>-->
     </extensions>
 </idea-plugin>
