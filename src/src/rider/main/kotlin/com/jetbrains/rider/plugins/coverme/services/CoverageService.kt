@@ -14,7 +14,7 @@ class CoverageService(private val _project: Project) {
             CoverageData("Sum(int,int)", 58, 4, 13, 2),
             CoverageData("Substract(int,int)", 89, 4, 13, 2),
             CoverageData("Feature2", 54, 4, 13, 1),
-            CoverageData("Divide(int,int)", 78, 4, 13, 2),
+            CoverageData("Divide(int,int)", 8, 4, 13, 2),
         )
     }
 }
