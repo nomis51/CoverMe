@@ -2,11 +2,11 @@ package com.jetbrains.rider.plugins.coverme.helpers
 
 import com.intellij.openapi.components.Service
 import com.jetbrains.rdclient.util.idea.toIOFile
+import com.jetbrains.rider.plugins.coverme.enums.process.DotCoverCliCommand
+import com.jetbrains.rider.plugins.coverme.enums.process.DotCoverCliReportType
 import com.jetbrains.rider.plugins.coverme.models.process.DotCoverCliOptions
 import com.jetbrains.rider.plugins.coverme.models.process.ProcessResponse
 import com.jetbrains.rider.plugins.coverme.models.process.ReportGeneratorOptions
-import enums.process.DotCoverCliCommand
-import enums.process.DotCoverCliReportType
 import kotlinx.coroutines.sync.Semaphore
 import java.io.File
 
@@ -46,6 +46,7 @@ class ProcessHelper {
 
         arguments.add("--")
         arguments.add("dotnet")
+        arguments.add("test")
 
         if (options.noBuild) {
             arguments.add("--no-build")
@@ -129,7 +130,7 @@ class ProcessHelper {
 
     private fun execute(command: String, arguments: Array<String>, workingDirectory: String): ProcessResponse {
         val process = ProcessBuilder(command, *arguments).directory(workingDirectory.toIOFile())
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+            .redirectInput(ProcessBuilder.Redirect.INHERIT)
             .redirectError(ProcessBuilder.Redirect.INHERIT)
             .start()
 

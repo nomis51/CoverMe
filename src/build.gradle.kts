@@ -14,6 +14,12 @@ plugins {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("org.jsoup:jsoup:1.16.1")
+
+    testImplementation(kotlin("test"))
+    testImplementation("io.mockk:mockk:1.13.7")
+    testImplementation("com.jetbrains.intellij.idea:ideaIC:2024.3")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
 val isWindows = Os.isFamily(Os.FAMILY_WINDOWS)
@@ -37,6 +43,10 @@ repositories {
         defaultRepositories()
         jetbrainsRuntime()
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.wrapper {
@@ -78,7 +88,8 @@ val setBuildTool by tasks.registering {
                 workingDir(rootDir)
             }
 
-            val directory = stdout.toString().trim()
+            val directory = stdout.toString()
+                .trim()
             if (directory.isNotEmpty()) {
                 val files = FileNameFinder().getFileNames("${directory}\\MSBuild", "**/MSBuild.exe")
                 extra["executable"] = files.get(0)
@@ -128,9 +139,13 @@ tasks.buildPlugin {
         val changelogText = file("${rootDir}/CHANGELOG.md").readText()
         val changelogMatches = Regex("(?s)(-.+?)(?=##|$)").findAll(changelogText)
         val changeNotes = changelogMatches.map {
-            it.groups[1]!!.value.replace("(?s)- ".toRegex(), "\u2022 ").replace("`", "").replace(",", "%2C")
+            it.groups[1]!!.value.replace("(?s)- ".toRegex(), "\u2022 ")
+                .replace("`", "")
+                .replace(",", "%2C")
                 .replace(";", "%3B")
-        }.take(1).joinToString()
+        }
+            .take(1)
+            .joinToString()
 
         val executable: String by setBuildTool.get().extra
         val arguments = (setBuildTool.get().extra["args"] as List<String>).toMutableList()
@@ -168,9 +183,13 @@ tasks.patchPluginXml {
     val changelogText = file("${rootDir}/CHANGELOG.md").readText()
     val changelogMatches = Regex("(?s)(-.+?)(?=##|\$)").findAll(changelogText)
 
-    changeNotes.set(changelogMatches.map {
-        it.groups[1]!!.value.replace("(?s)\r?\n".toRegex(), "<br />\n")
-    }.take(1).joinToString())
+    changeNotes.set(
+        changelogMatches.map {
+            it.groups[1]!!.value.replace("(?s)\r?\n".toRegex(), "<br />\n")
+        }
+            .take(1)
+            .joinToString()
+    )
 }
 
 tasks.prepareSandbox {
@@ -226,11 +245,12 @@ val riderModel: Configuration by configurations.creating {
 
 artifacts {
     add(riderModel.name, provider {
-        intellijPlatform.platformPath.resolve("lib/rd/rider-model.jar").also {
-            check(it.isFile) {
-                "rider-model.jar is not found at $riderModel"
+        intellijPlatform.platformPath.resolve("lib/rd/rider-model.jar")
+            .also {
+                check(it.isFile) {
+                    "rider-model.jar is not found at $riderModel"
+                }
             }
-        }
     }) {
         builtBy(Constants.Tasks.INITIALIZE_INTELLIJ_PLATFORM_PLUGIN)
     }

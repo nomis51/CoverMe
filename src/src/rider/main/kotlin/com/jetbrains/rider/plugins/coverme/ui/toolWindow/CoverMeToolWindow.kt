@@ -5,6 +5,8 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.components.JBTextField
+import com.jetbrains.rider.plugins.coverme.models.coverage.CoverageOptions
+import com.jetbrains.rider.plugins.coverme.models.coverage.TestProject
 import com.jetbrains.rider.plugins.coverme.services.CoverageService
 import com.jetbrains.rider.plugins.coverme.ui.components.CoverageTable
 import com.jetbrains.rider.plugins.coverme.ui.components.IconButton
@@ -40,7 +42,10 @@ class CoverMeToolWindow(project: Project) {
         val treeTable = CoverageTable()
         content.add(treeTable.getComponent(), BorderLayout.CENTER)
 
-        val data = _coverageService.runCoverage()
-        treeTable.updateData(data.toTypedArray())
+        val data = _coverageService.runCoverage(
+            TestProject("C:\\Users\\nomis51\\GitHub\\CoverMe\\samples\\TestApp.Tests\\TestApp.Tests.csproj"),
+            CoverageOptions(false, "")
+        )
+//         treeTable.updateData(data.toTypedArray())
     }
 }

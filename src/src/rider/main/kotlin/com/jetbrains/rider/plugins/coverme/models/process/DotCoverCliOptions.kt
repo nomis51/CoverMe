@@ -1,7 +1,7 @@
 package com.jetbrains.rider.plugins.coverme.models.process
 
-import enums.process.DotCoverCliCommand
-import enums.process.DotCoverCliReportType
+import com.jetbrains.rider.plugins.coverme.enums.process.DotCoverCliCommand
+import com.jetbrains.rider.plugins.coverme.enums.process.DotCoverCliReportType
 
 class DotCoverCliOptions(
     val command: DotCoverCliCommand,
