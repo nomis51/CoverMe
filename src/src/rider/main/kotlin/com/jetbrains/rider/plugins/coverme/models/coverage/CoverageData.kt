@@ -5,5 +5,8 @@ data class CoverageData(
     val coverage: Int,
     val uncoveredLines: Int,
     val totalLines: Int,
-    val level: Int
-)
+) {
+    var filePath: String = ""
+    var lineNumber: Int = 1
+    var level: Int = 0
+}
