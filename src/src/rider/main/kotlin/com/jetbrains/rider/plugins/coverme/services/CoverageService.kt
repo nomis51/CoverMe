@@ -132,7 +132,7 @@ class CoverageService(private val _project: Project) {
         statements.forEach { statement ->
             val fileIndex = statement.attr("FileIndex")
                 .toInt()
-            val file = files.first {
+            val file = files.firstOrNull {
                 it.attr("Index")
                     .toInt() == fileIndex
             }
@@ -254,7 +254,7 @@ class CoverageService(private val _project: Project) {
         options: CoverageOptions
     ) {
         val name = assembly.attr("Name")
-        if (!Regex(options.filter).containsMatchIn(name)) return;
+        if (!Regex(options.filter).containsMatchIn(name)) return
 
         val node = CoverageData(
             name,
@@ -309,7 +309,7 @@ class CoverageService(private val _project: Project) {
         var skippedNamespace = true
 
         if (name != assemblyName) {
-            if (!Regex(options.filter).containsMatchIn(name)) return;
+            if (!Regex(options.filter).containsMatchIn(name)) return
 
             skippedNamespace = false
             val node = CoverageData(
@@ -349,7 +349,7 @@ class CoverageService(private val _project: Project) {
         level: Int
     ) {
         val name = type.attr("Name")
-        if (!Regex(options.filter).containsMatchIn(name)) return;
+        if (!Regex(options.filter).containsMatchIn(name)) return
 
         val node = CoverageData(
             name,
@@ -397,7 +397,7 @@ class CoverageService(private val _project: Project) {
             )
 
         val firstStatement = method.children()
-            .first {
+            .firstOrNull {
                 it.tagName() == "Statement"
             }
 
