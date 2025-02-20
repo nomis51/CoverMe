@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.components.JBTextField
 import com.jetbrains.rider.plugins.coverme.models.coverage.CoverageOptions
-import com.jetbrains.rider.plugins.coverme.models.coverage.TestProject
 import com.jetbrains.rider.plugins.coverme.services.CoverageService
 import com.jetbrains.rider.plugins.coverme.ui.components.CoverageTable
 import com.jetbrains.rider.plugins.coverme.ui.components.IconButton
@@ -29,23 +28,44 @@ class CoverMeToolWindow(project: Project) {
         }
         toolbarPanel.add(runCoverageButton)
 
-        topPanel.add(toolbarPanel, BorderLayout.NORTH)
+        topPanel.add(
+            toolbarPanel,
+            BorderLayout.NORTH
+        )
 
         val txtFilter = JBTextField().apply {
             emptyText.text = "Type to filter..."
         }
-        topPanel.add(txtFilter, BorderLayout.CENTER)
+        topPanel.add(
+            txtFilter,
+            BorderLayout.CENTER
+        )
 
-        content.add(topPanel, BorderLayout.NORTH)
+        content.add(
+            topPanel,
+            BorderLayout.NORTH
+        )
 
         // table
         val treeTable = CoverageTable()
-        content.add(treeTable.getComponent(), BorderLayout.CENTER)
-
-        val data = _coverageService.runCoverage(
-            TestProject("C:\\Users\\nomis51\\GitHub\\CoverMe\\samples\\TestApp.Tests\\TestApp.Tests.csproj"),
-            CoverageOptions(false, "")
+        content.add(
+            treeTable.getComponent(),
+            BorderLayout.CENTER
         )
-//         treeTable.updateData(data.toTypedArray())
+
+//        val data = _coverageService.runCoverage(
+//            TestProject("C:\\Users\\nomis51\\GitHub\\CoverMe\\samples\\TestApp.Tests\\TestApp.Tests.csproj"),
+//            CoverageOptions(
+//                false,
+//                ""
+//            )
+//        )
+        val data = _coverageService.parseLastCoverage(
+            CoverageOptions(
+                false,
+                ""
+            )
+        )
+        treeTable.updateData(data.toTypedArray())
     }
 }

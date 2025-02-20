@@ -20,7 +20,11 @@ class ProcessHelper {
     fun dotCoverCli(options: DotCoverCliOptions): ProcessResponse {
         if (!_isDotCoverCliInstalled) {
             if (!ensureDotCoverCliInstalled()) {
-                return ProcessResponse(1, "", "Failed to install dotCover CLI")
+                return ProcessResponse(
+                    1,
+                    "",
+                    "Failed to install dotCover CLI"
+                )
             }
         }
 
@@ -37,22 +41,27 @@ class ProcessHelper {
                     else -> throw UnsupportedOperationException()
                 }
             }",
-            "--Output=${options.outputPath}"
+            "--Output=\"${options.outputPath}\""
         )
 
         if (options.hideAutoProperties) {
             arguments.add("--HideAutoProperties")
         }
 
+        if (options.coverageFilter.isNotEmpty()) {
+            arguments.add("--Filters=\"${options.coverageFilter}\"")
+        }
+
         arguments.add("--")
-        arguments.add("dotnet")
         arguments.add("test")
 
         if (options.noBuild) {
             arguments.add("--no-build")
         }
 
-        arguments.add("\"${options.projectFolderPath}\"")
+        if (options.testsFilter.isNotEmpty()) {
+            arguments.add("--filter \"${options.testsFilter}\"")
+        }
 
         return execute(
             "dotnet",
@@ -64,7 +73,11 @@ class ProcessHelper {
     fun reportGenerator(options: ReportGeneratorOptions): ProcessResponse {
         if (!_isReportGeneratorInstalled) {
             if (!ensureReportGeneratorInstalled()) {
-                return ProcessResponse(1, "", "Failed to install report generator")
+                return ProcessResponse(
+                    1,
+                    "",
+                    "Failed to install report generator"
+                )
             }
         }
 
@@ -128,8 +141,15 @@ class ProcessHelper {
         }
     }
 
-    private fun execute(command: String, arguments: Array<String>, workingDirectory: String): ProcessResponse {
-        val process = ProcessBuilder(command, *arguments).directory(workingDirectory.toIOFile())
+    private fun execute(
+        command: String,
+        arguments: Array<String>,
+        workingDirectory: String
+    ): ProcessResponse {
+        val process = ProcessBuilder(
+            command,
+            *arguments
+        ).directory(workingDirectory.toIOFile())
             .redirectInput(ProcessBuilder.Redirect.INHERIT)
             .redirectError(ProcessBuilder.Redirect.INHERIT)
             .start()
@@ -147,7 +167,9 @@ class ProcessHelper {
             }
 
         return ProcessResponse(
-            process.exitValue(), outputLines.joinToString(), errorLines.joinToString()
+            process.exitValue(),
+            outputLines.joinToString(),
+            errorLines.joinToString()
         )
     }
 }

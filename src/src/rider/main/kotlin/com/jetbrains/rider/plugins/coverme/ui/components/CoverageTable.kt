@@ -14,22 +14,36 @@ import java.awt.event.MouseEvent
 import javax.swing.JTree
 
 class CoverageTable {
-    private val _rootNode: CoverageTreeNode = CoverageTreeNode("Total", CoverageData("Total", 0, 0, 0, 0))
-    private val _columns = arrayOf(object : ColumnInfo<Any, String>("Symbol") {
-        override fun valueOf(o: Any): String {
-            return (o as CoverageTreeNode).data.symbol
-        }
-    }, object : ColumnInfo<Any, String>("Coverage (%)") {
-        override fun valueOf(o: Any): String {
-            return "${(o as CoverageTreeNode).data.coverage}%"
-        }
-    }, object : ColumnInfo<Any, String>("Uncovered") {
-        override fun valueOf(o: Any): String {
-            val node = o as CoverageTreeNode
-            return "${node.data.uncoveredLines}/${node.data.totalLines}"
-        }
-    })
-    private val _treeTableModel: CoverageTreeTableModel = CoverageTreeTableModel(_rootNode, _columns)
+    private val _rootNode: CoverageTreeNode = CoverageTreeNode(
+        "Solution",
+        CoverageData(
+            "Solution",
+            0,
+            0,
+            0
+        )
+    )
+    private val _columns = arrayOf(
+        object : ColumnInfo<Any, String>("Symbol") {
+            override fun valueOf(o: Any): String {
+                return (o as CoverageTreeNode).data.symbol
+            }
+        },
+        object : ColumnInfo<Any, String>("Coverage (%)") {
+            override fun valueOf(o: Any): String {
+                return "${(o as CoverageTreeNode).data.coverage}%"
+            }
+        },
+        object : ColumnInfo<Any, String>("Uncovered") {
+            override fun valueOf(o: Any): String {
+                val node = o as CoverageTreeNode
+                return "${node.data.uncoveredLines}/${node.data.totalLines}"
+            }
+        })
+    private val _treeTableModel: CoverageTreeTableModel = CoverageTreeTableModel(
+        _rootNode,
+        _columns
+    )
     private val _treeTable: TreeTable = TreeTable(_treeTableModel)
 
     init {
@@ -68,30 +82,35 @@ class CoverageTable {
         val nodes = mutableListOf<CoverageTreeNode>()
 
         data.forEach {
-            val node = CoverageTreeNode(it.symbol, it)
+            val node = CoverageTreeNode(
+                it.symbol,
+                it
+            )
             nodes.add(node)
         }
 
         _rootNode.removeAllChildren()
 
         val levelNodes = mutableListOf<CoverageTreeNode>()
+        _rootNode.data = nodes[0].data
 
-        nodes.forEach { node ->
-            val level = node.data.level
+        nodes.drop(1)
+            .forEach { node ->
+                val level = node.data.level
 
-            if (level == 0) {
-                _rootNode.add(node)
-            } else {
-                val parent = levelNodes[level - 1]
-                parent.add(node)
+                if (level == 0) {
+                    _rootNode.add(node)
+                } else {
+                    val parent = levelNodes[level - 1]
+                    parent.add(node)
+                }
+
+                if (level >= levelNodes.size) {
+                    levelNodes.add(node)
+                } else {
+                    levelNodes[level] = node
+                }
             }
-
-            if (level >= levelNodes.size) {
-                levelNodes.add(node)
-            } else {
-                levelNodes[level] = node
-            }
-        }
 
         _treeTableModel.setRoot(_rootNode)
         _treeTableModel.reload()

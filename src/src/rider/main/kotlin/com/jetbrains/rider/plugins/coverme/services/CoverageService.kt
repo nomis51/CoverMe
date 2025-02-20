@@ -155,15 +155,15 @@ class CoverageService(private val _project: Project) {
 
     private fun getLastCoverageFilePath(): String {
         val reportsFolder = "${_project.basePath}/.idea/coverme/reports"
-        if (File(reportsFolder).exists()) return ""
+        if (!File(reportsFolder).exists()) return ""
 
         val lastFile = Files.walk(File(reportsFolder).toPath())
             .filter {
                 it.toFile().isFile
             }
             .sorted { a, b ->
-                a.getLastModifiedTime()
-                    .compareTo(b.getLastModifiedTime())
+                b.getLastModifiedTime()
+                    .compareTo(a.getLastModifiedTime())
             }
             .findFirst()
         if (lastFile.isEmpty) return ""
@@ -223,14 +223,14 @@ class CoverageService(private val _project: Project) {
         val filesIndices = mutableMapOf<Int, String>()
 
         files.forEach {
-            val index = it.attr("index")
+            val index = it.attr("Index")
                 .toInt()
-            filesIndices[index] = it.attr("name")
+            filesIndices[index] = it.attr("Name")
         }
 
         val assemblies = root.children()
             .filter { e ->
-                e.tagName() == "assembly"
+                e.tagName() == "Assembly"
             }
 
         assemblies.forEach { assembly ->
@@ -238,8 +238,7 @@ class CoverageService(private val _project: Project) {
                 assembly,
                 nodes,
                 filesIndices,
-                options,
-                1
+                options
             )
         }
 
@@ -250,10 +249,9 @@ class CoverageService(private val _project: Project) {
         assembly: org.jsoup.nodes.Element,
         nodes: MutableList<CoverageData>,
         filesIndices: Map<Int, String>,
-        options: CoverageOptions,
-        level: Int
+        options: CoverageOptions
     ) {
-        val name = assembly.attr("name")
+        val name = assembly.attr("Name")
         if (!Regex(options.filter).containsMatchIn(name)) return;
 
         val node = CoverageData(
@@ -265,26 +263,27 @@ class CoverageService(private val _project: Project) {
             assembly.attr("TotalStatements")
                 .toInt(),
         )
-        node.level = level
+        node.level = 1
         nodes.add(node)
 
         val namespaces = assembly.children()
             .filter { e ->
-                e.tagName() == "namespace"
+                e.tagName() == "Namespace"
             }
         namespaces.forEach { namespace ->
             parseNamespace(
+                name,
                 namespace,
                 nodes,
                 filesIndices,
                 options,
-                level + 1
+                2
             )
         }
 
         val types = assembly.children()
             .filter { e ->
-                e.tagName() == "type"
+                e.tagName() == "Type"
             }
         types.forEach { type ->
             parseType(
@@ -292,36 +291,40 @@ class CoverageService(private val _project: Project) {
                 nodes,
                 filesIndices,
                 options,
-                level + 1
+                2
             )
         }
     }
 
     private fun parseNamespace(
+        assemblyName: String,
         namespace: org.jsoup.nodes.Element,
         nodes: MutableList<CoverageData>,
         filesIndices: Map<Int, String>,
         options: CoverageOptions,
         level: Int
     ) {
-        val name = namespace.attr("name")
-        if (!Regex(options.filter).containsMatchIn(name)) return;
+        val name = namespace.attr("Name")
 
-        val node = CoverageData(
-            name,
-            namespace.attr("CoveragePercent")
-                .toInt(),
-            namespace.attr("CoveredStatements")
-                .toInt(),
-            namespace.attr("TotalStatements")
-                .toInt(),
-        )
-        node.level = level
-        nodes.add(node)
+        if (name != assemblyName) {
+            if (!Regex(options.filter).containsMatchIn(name)) return;
+
+            val node = CoverageData(
+                name,
+                namespace.attr("CoveragePercent")
+                    .toInt(),
+                namespace.attr("CoveredStatements")
+                    .toInt(),
+                namespace.attr("TotalStatements")
+                    .toInt(),
+            )
+            node.level = level
+            nodes.add(node)
+        }
 
         val types = namespace.children()
             .filter { e ->
-                e.tagName() == "type"
+                e.tagName() == "Type"
             }
         types.forEach { type ->
             parseType(
@@ -341,7 +344,7 @@ class CoverageService(private val _project: Project) {
         options: CoverageOptions,
         level: Int
     ) {
-        val name = type.attr("name")
+        val name = type.attr("Name")
         if (!Regex(options.filter).containsMatchIn(name)) return;
 
         val node = CoverageData(
@@ -358,7 +361,7 @@ class CoverageService(private val _project: Project) {
 
         val methods = type.children()
             .filter { e ->
-                e.tagName() == "method"
+                e.tagName() == "Method"
             }
         methods.forEach { method ->
             node.filePath = parseMethod(
@@ -376,14 +379,13 @@ class CoverageService(private val _project: Project) {
         filesIndices: Map<Int, String>,
         level: Int
     ): String {
-        val name = mapEncodedCharacters(method.attr("name"))
+        val name = mapEncodedCharacters(method.attr("Name"))
         val methodName = parseMethodName(name)
         val arguments = parseArguments(name)
         val returnTypeIndex = name.lastIndexOf(":")
         val returnType = if (returnTypeIndex == -1) "" else _regCleanType
             .replace(
                 name.substring(
-                    0,
                     returnTypeIndex
                 ),
                 "$1"
@@ -391,7 +393,7 @@ class CoverageService(private val _project: Project) {
 
         val firstStatement = method.children()
             .first {
-                it.tagName() == "statement"
+                it.tagName() == "Statement"
             }
 
         var filePath = ""

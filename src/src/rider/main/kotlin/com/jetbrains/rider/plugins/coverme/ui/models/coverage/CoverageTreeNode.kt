@@ -5,6 +5,6 @@ import javax.swing.tree.DefaultMutableTreeNode
 
 class CoverageTreeNode(
     userObject: Any,
-    val data: CoverageData
+    var data: CoverageData
 ) : DefaultMutableTreeNode(userObject) {
 }

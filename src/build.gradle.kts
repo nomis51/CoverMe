@@ -15,11 +15,6 @@ plugins {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("org.jsoup:jsoup:1.16.1")
-
-    testImplementation(kotlin("test"))
-    testImplementation("io.mockk:mockk:1.13.7")
-    testImplementation("com.jetbrains.intellij.idea:ideaIC:2024.3")
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
 val isWindows = Os.isFamily(Os.FAMILY_WINDOWS)
@@ -83,7 +78,13 @@ val setBuildTool by tasks.registering {
             val stdout = ByteArrayOutputStream()
             exec {
                 executable("${rootDir}\\tools\\vswhere.exe")
-                args("-latest", "-property", "installationPath", "-products", "*")
+                args(
+                    "-latest",
+                    "-property",
+                    "installationPath",
+                    "-products",
+                    "*"
+                )
                 standardOutput = stdout
                 workingDir(rootDir)
             }
@@ -91,7 +92,10 @@ val setBuildTool by tasks.registering {
             val directory = stdout.toString()
                 .trim()
             if (directory.isNotEmpty()) {
-                val files = FileNameFinder().getFileNames("${directory}\\MSBuild", "**/MSBuild.exe")
+                val files = FileNameFinder().getFileNames(
+                    "${directory}\\MSBuild",
+                    "**/MSBuild.exe"
+                )
                 extra["executable"] = files.get(0)
                 args = mutableListOf("/v:minimal")
             }
@@ -122,7 +126,12 @@ val testDotNet by tasks.registering {
     doLast {
         exec {
             executable("dotnet")
-            args("test", "${DotnetSolution}", "--logger", "GitHubActions")
+            args(
+                "test",
+                "${DotnetSolution}",
+                "--logger",
+                "GitHubActions"
+            )
             workingDir(rootDir)
         }
     }
@@ -139,10 +148,22 @@ tasks.buildPlugin {
         val changelogText = file("${rootDir}/CHANGELOG.md").readText()
         val changelogMatches = Regex("(?s)(-.+?)(?=##|$)").findAll(changelogText)
         val changeNotes = changelogMatches.map {
-            it.groups[1]!!.value.replace("(?s)- ".toRegex(), "\u2022 ")
-                .replace("`", "")
-                .replace(",", "%2C")
-                .replace(";", "%3B")
+            it.groups[1]!!.value.replace(
+                "(?s)- ".toRegex(),
+                "\u2022 "
+            )
+                .replace(
+                    "`",
+                    ""
+                )
+                .replace(
+                    ",",
+                    "%2C"
+                )
+                .replace(
+                    ";",
+                    "%3B"
+                )
         }
             .take(1)
             .joinToString()
@@ -183,13 +204,14 @@ tasks.patchPluginXml {
     val changelogText = file("${rootDir}/CHANGELOG.md").readText()
     val changelogMatches = Regex("(?s)(-.+?)(?=##|\$)").findAll(changelogText)
 
-    changeNotes.set(
-        changelogMatches.map {
-            it.groups[1]!!.value.replace("(?s)\r?\n".toRegex(), "<br />\n")
-        }
-            .take(1)
-            .joinToString()
-    )
+    changeNotes.set(changelogMatches.map {
+        it.groups[1]!!.value.replace(
+            "(?s)\r?\n".toRegex(),
+            "<br />\n"
+        )
+    }
+                        .take(1)
+                        .joinToString())
 }
 
 tasks.prepareSandbox {
@@ -204,15 +226,17 @@ tasks.prepareSandbox {
     )
 
     dllFiles.forEach({ f ->
-        val file = file(f)
-        from(file, { into("${rootProject.name}/dotnet") })
-    })
+                         val file = file(f)
+                         from(
+                             file,
+                             { into("${rootProject.name}/dotnet") })
+                     })
 
     doLast {
         dllFiles.forEach({ f ->
-            val file = file(f)
-            if (!file.exists()) throw RuntimeException("File ${file} does not exist")
-        })
+                             val file = file(f)
+                             if (!file.exists()) throw RuntimeException("File ${file} does not exist")
+                         })
     }
 }
 
@@ -244,14 +268,16 @@ val riderModel: Configuration by configurations.creating {
 }
 
 artifacts {
-    add(riderModel.name, provider {
-        intellijPlatform.platformPath.resolve("lib/rd/rider-model.jar")
-            .also {
-                check(it.isFile) {
-                    "rider-model.jar is not found at $riderModel"
+    add(
+        riderModel.name,
+        provider {
+            intellijPlatform.platformPath.resolve("lib/rd/rider-model.jar")
+                .also {
+                    check(it.isFile) {
+                        "rider-model.jar is not found at $riderModel"
+                    }
                 }
-            }
-    }) {
+        }) {
         builtBy(Constants.Tasks.INITIALIZE_INTELLIJ_PLATFORM_PLUGIN)
     }
 }
