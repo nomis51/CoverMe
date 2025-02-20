@@ -3,6 +3,7 @@ package com.jetbrains.rider.plugins.coverme.ui.components
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.treeStructure.treetable.TreeTable
 import com.intellij.util.ui.ColumnInfo
+import com.jetbrains.rider.plugins.coverme.enums.coverage.CoverageDataType
 import com.jetbrains.rider.plugins.coverme.models.coverage.CoverageData
 import com.jetbrains.rider.plugins.coverme.models.coverage.CoverageProgressCellRenderer
 import com.jetbrains.rider.plugins.coverme.models.coverage.CoverageTreeCellRenderer
@@ -20,7 +21,8 @@ class CoverageTable {
             "Solution",
             0,
             0,
-            0
+            0,
+            CoverageDataType.SOLUTION
         )
     )
     private val _columns = arrayOf(
@@ -96,7 +98,7 @@ class CoverageTable {
 
         nodes.drop(1)
             .forEach { node ->
-                val level = node.data.level
+                val level = node.data.level - 1
 
                 if (level == 0) {
                     _rootNode.add(node)

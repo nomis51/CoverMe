@@ -4,6 +4,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.util.UUID
+import com.jetbrains.rider.plugins.coverme.enums.coverage.CoverageDataType
 import com.jetbrains.rider.plugins.coverme.enums.process.DotCoverCliCommand
 import com.jetbrains.rider.plugins.coverme.enums.process.DotCoverCliReportType
 import com.jetbrains.rider.plugins.coverme.helpers.ProcessHelper
@@ -213,6 +214,7 @@ class CoverageService(private val _project: Project) {
                     .toInt(),
                 root.attr("TotalStatements")
                     .toInt(),
+                CoverageDataType.SOLUTION
             )
         )
 
@@ -262,6 +264,7 @@ class CoverageService(private val _project: Project) {
                 .toInt(),
             assembly.attr("TotalStatements")
                 .toInt(),
+            CoverageDataType.ASSEMBLY
         )
         node.level = 1
         nodes.add(node)
@@ -276,8 +279,7 @@ class CoverageService(private val _project: Project) {
                 namespace,
                 nodes,
                 filesIndices,
-                options,
-                2
+                options
             )
         }
 
@@ -301,14 +303,15 @@ class CoverageService(private val _project: Project) {
         namespace: org.jsoup.nodes.Element,
         nodes: MutableList<CoverageData>,
         filesIndices: Map<Int, String>,
-        options: CoverageOptions,
-        level: Int
+        options: CoverageOptions
     ) {
         val name = namespace.attr("Name")
+        var skippedNamespace = true
 
         if (name != assemblyName) {
             if (!Regex(options.filter).containsMatchIn(name)) return;
 
+            skippedNamespace = false
             val node = CoverageData(
                 name,
                 namespace.attr("CoveragePercent")
@@ -317,8 +320,9 @@ class CoverageService(private val _project: Project) {
                     .toInt(),
                 namespace.attr("TotalStatements")
                     .toInt(),
+                CoverageDataType.NAMESPACE
             )
-            node.level = level
+            node.level = 2
             nodes.add(node)
         }
 
@@ -332,7 +336,7 @@ class CoverageService(private val _project: Project) {
                 nodes,
                 filesIndices,
                 options,
-                level + 1
+                if (skippedNamespace) 2 else 3
             )
         }
     }
@@ -355,6 +359,7 @@ class CoverageService(private val _project: Project) {
                 .toInt(),
             type.attr("TotalStatements")
                 .toInt(),
+            CoverageDataType.TYPE
         )
         node.level = level
         nodes.add(node)
@@ -415,6 +420,7 @@ class CoverageService(private val _project: Project) {
                 .toInt(),
             method.attr("TotalStatements")
                 .toInt(),
+            CoverageDataType.METHOD
         )
         node.level = level
         node.filePath = filePath
