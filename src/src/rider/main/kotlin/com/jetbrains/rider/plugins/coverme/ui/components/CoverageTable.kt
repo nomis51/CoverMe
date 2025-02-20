@@ -31,12 +31,12 @@ class CoverageTable {
                 return (o as CoverageTreeNode).data.symbol
             }
         },
-        object : ColumnInfo<Any, String>("Coverage (%)") {
+        object : ColumnInfo<Any, String>("Coverage") {
             override fun valueOf(o: Any): String {
                 return "${(o as CoverageTreeNode).data.coverage}%"
             }
         },
-        object : ColumnInfo<Any, String>("Uncovered") {
+        object : ColumnInfo<Any, String>("Statements") {
             override fun valueOf(o: Any): String {
                 val node = o as CoverageTreeNode
                 return "${node.data.uncoveredLines}/${node.data.totalLines}"
@@ -53,6 +53,9 @@ class CoverageTable {
         _treeTable.rowHeight = 25
         _treeTable.tree.cellRenderer = CoverageTreeCellRenderer()
         _treeTable.columnModel.getColumn(1).cellRenderer = CoverageProgressCellRenderer()
+        _treeTable.columnModel.getColumn(0).preferredWidth = 250
+        _treeTable.columnModel.getColumn(1).preferredWidth = 40
+        _treeTable.columnModel.getColumn(2).preferredWidth = 40
 
         _treeTable.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
