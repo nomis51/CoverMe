@@ -16,7 +16,7 @@
                     anchor="right"
                     doNotActivateOnStart="true"
                     secondary="false"
-                    icon="AllIcons.RunConfigurations.TrackCoverage"/>
+                    icon="AllIcons.Actions.Refresh"/>
         <!--        <codeInsight.lineMarkerProvider language="C#"-->
         <!--                                        implementationClass="com.jetbrains.rider.plugins.coverme.lineMarkers.CoverageLineMarkerProvider"/>-->
     </extensions>
