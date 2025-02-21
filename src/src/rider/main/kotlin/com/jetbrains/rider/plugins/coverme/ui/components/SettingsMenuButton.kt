@@ -56,6 +56,8 @@ class SettingsMenuButton(
 
         addMouseListener(object : MouseAdapter() {
             override fun mouseEntered(e: MouseEvent?) {
+                if (!isEnabled) return
+
                 _isHovered = true
                 repaint()
             }
@@ -83,7 +85,7 @@ class SettingsMenuButton(
             RenderingHints.VALUE_ANTIALIAS_ON
         )
 
-        if (isActivated) {
+        if (isActivated && isEnabled) {
             g2.color = _activatedColor
             g2.fillRoundRect(
                 0,
@@ -95,7 +97,7 @@ class SettingsMenuButton(
             )
         }
 
-        if (_isHovered) {
+        if (_isHovered && isEnabled) {
             g2.color = createTransparentColor(
                 Color(
                     255,
@@ -120,7 +122,17 @@ class SettingsMenuButton(
             )
         }
 
+        if (!isEnabled) {
+            val disabledComposite = AlphaComposite.getInstance(
+                AlphaComposite.SRC_OVER,
+                0.5f
+            )
+            g2.composite = disabledComposite
+        }
+
         super.paintComponent(g)
+
+        g2.composite = AlphaComposite.SrcOver
     }
 
     private fun createTransparentColor(
