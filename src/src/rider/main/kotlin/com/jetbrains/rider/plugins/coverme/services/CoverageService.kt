@@ -103,11 +103,16 @@ class CoverageService(private val _project: Project) {
     fun isLineCovered(
         filePath: String,
         lineNumber: Int
-    ): Boolean {
+    ): Boolean? {
 // TODO: add caching
-        return getLinesCoverage(
-            filePath
-        )[lineNumber] ?: false
+        val lineCoverage = getLinesCoverage(
+            filePath.replace(
+                "/",
+                "\\"
+            )
+        )
+
+        return if (lineCoverage.containsKey(lineNumber)) lineCoverage[lineNumber] else null
     }
 
     fun generateReport(
@@ -220,7 +225,7 @@ class CoverageService(private val _project: Project) {
             }
     }
 
-    private fun getLinesCoverage(windowsFilePath: String): Map<Int, Boolean?> {
+    private fun getLinesCoverage(windowsFilePath: String): Map<Int, Boolean> {
         val lastCoverageFilePath = getLastCoverageFilePath()
         if (lastCoverageFilePath.isEmpty()) return emptyMap()
 
@@ -238,13 +243,10 @@ class CoverageService(private val _project: Project) {
             .select("file")
         if (files.isEmpty()) return emptyMap()
 
-        val statements = root.children()
-            .filter { e ->
-                e.tagName() == "statement"
-            }
+        val statements = root.select("Statement")
         if (statements.isEmpty()) return emptyMap()
 
-        val lineStatus = mutableMapOf<Int, Boolean?>()
+        val lineStatus = mutableMapOf<Int, Boolean>()
 
         statements.forEach { statement ->
             val fileIndex = statement.attr("FileIndex")
@@ -256,7 +258,7 @@ class CoverageService(private val _project: Project) {
             if (file == null) return@forEach
 
             val fileFilePath = file.attr("Name")
-            if (fileFilePath.isNotEmpty()) return@forEach
+            if (fileFilePath.isEmpty()) return@forEach
             if (fileFilePath != windowsFilePath) return@forEach
 
             val statementLine = statement.attr("Line")

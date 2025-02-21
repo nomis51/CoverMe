@@ -17,7 +17,7 @@
                     doNotActivateOnStart="true"
                     secondary="false"
                     icon="AllIcons.Actions.More"/>
-        <!--        <codeInsight.lineMarkerProvider language="C#"-->
-        <!--                                        implementationClass="com.jetbrains.rider.plugins.coverme.lineMarkers.CoverageLineMarkerProvider"/>-->
+        <codeInsight.lineMarkerProvider language="C#"
+                                        implementationClass="com.jetbrains.rider.plugins.coverme.ui.lineMarkers.CoverageLineMarker"/>
     </extensions>
 </idea-plugin>
