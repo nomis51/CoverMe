@@ -1,5 +1,11 @@
 package com.jetbrains.rider.plugins.coverme.ui.components
 
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.editor.ScrollType
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.treeStructure.treetable.TreeTable
 import com.intellij.util.ui.ColumnInfo
@@ -14,7 +20,8 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JTree
 
-class CoverageTable {
+
+class CoverageTable(val _project: Project) {
     private val _rootNode: CoverageTreeNode = CoverageTreeNode(
         "Solution",
         CoverageData(
@@ -69,8 +76,10 @@ class CoverageTable {
                         val node = path?.lastPathComponent as? CoverageTreeNode
 
                         node?.let {
-                            println("Double-clicked on: ${it.data.symbol}")
-                            // TODO: handle click
+                            openFile(
+                                it.data.filePath,
+                                it.data.lineNumber
+                            )
                         }
                     }
                 }
@@ -119,5 +128,37 @@ class CoverageTable {
 
         _treeTableModel.setRoot(_rootNode)
         _treeTableModel.reload()
+    }
+
+    private fun openFile(
+        filePath: String,
+        line: Int
+    ) {
+        try {
+            val virtualFile = LocalFileSystem.getInstance()
+                .findFileByPath(filePath) ?: return
+            val fileEditor = FileEditorManager.getInstance(_project)
+                .openFile(
+                    virtualFile,
+                    true
+                )
+                .firstOrNull() ?: return
+
+            if (fileEditor is TextEditor) {
+                if (line < 0 || fileEditor.editor.document.lineCount < line) return
+
+                val lineStartOffset = fileEditor.editor.document.getLineStartOffset(line - 1)
+
+                ApplicationManager.getApplication()
+                    .invokeLaterOnWriteThread {
+                        fileEditor.editor.caretModel.moveToOffset(lineStartOffset)
+                        fileEditor.editor.scrollingModel.scrollToCaret(ScrollType.CENTER)
+                    }
+            } else {
+
+            }
+        } catch (e: Exception) {
+
+        }
     }
 }

@@ -32,7 +32,7 @@ class CoverMeToolWindow(private val _project: Project) {
     }
     private val _testProjects: MutableList<TestProject> = mutableListOf()
     private val _testProjectsComboBox: ComboBox<String> = ComboBox<String>()
-    private val _coverageTable: CoverageTable = CoverageTable()
+    private val _coverageTable: CoverageTable = CoverageTable(_project)
     private val _filterTextfield: JBTextField = JBTextField().apply {
         emptyText.text = "Type to filter..."
     }
