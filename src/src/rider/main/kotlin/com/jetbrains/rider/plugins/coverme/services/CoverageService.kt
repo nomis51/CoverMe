@@ -1,17 +1,24 @@
 package com.jetbrains.rider.plugins.coverme.services
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileChooser.FileChooser
+import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.jetbrains.rd.util.UUID
 import com.jetbrains.rider.plugins.coverme.enums.coverage.CoverageDataType
 import com.jetbrains.rider.plugins.coverme.enums.process.DotCoverCliCommand
 import com.jetbrains.rider.plugins.coverme.enums.process.DotCoverCliReportType
+import com.jetbrains.rider.plugins.coverme.enums.process.ReportGeneratorReportType
+import com.jetbrains.rider.plugins.coverme.helpers.FileHelper
 import com.jetbrains.rider.plugins.coverme.helpers.ProcessHelper
 import com.jetbrains.rider.plugins.coverme.models.coverage.CoverageData
 import com.jetbrains.rider.plugins.coverme.models.coverage.CoverageOptions
 import com.jetbrains.rider.plugins.coverme.models.coverage.TestProject
 import com.jetbrains.rider.plugins.coverme.models.process.DotCoverCliOptions
+import com.jetbrains.rider.plugins.coverme.models.process.ReportGeneratorOptions
 import org.jsoup.Jsoup
 import java.io.File
 import java.net.URLDecoder
@@ -101,6 +108,116 @@ class CoverageService(private val _project: Project) {
         return getLinesCoverage(
             filePath
         )[lineNumber] ?: false
+    }
+
+    fun generateReport(
+        detailed: Boolean,
+        testProject: TestProject
+    ) {
+        if (detailed) {
+            generateDetailedReport()
+        } else {
+            generateSimpleReport(testProject.getFolderPath())
+        }
+    }
+
+    private fun generateDetailedReport() {
+        val lastReportFilePath = getLastCoverageFilePath()
+        if (lastReportFilePath.isEmpty()) return
+
+        val tempFolder = "${_project.basePath}/.idea/coverme/temp/${UUID.randomUUID()}"
+        val tempFolderFile = File(tempFolder)
+        if (tempFolderFile.exists()) {
+            tempFolderFile.deleteRecursively()
+        }
+
+        tempFolderFile.mkdirs()
+
+        val response = _processHelper.reportGenerator(
+            ReportGeneratorOptions(
+                lastReportFilePath,
+                tempFolder,
+                ReportGeneratorReportType.HTML
+            )
+        )
+
+        if (response.exitCode != 0) return
+
+        saveReport(tempFolder)
+    }
+
+    private fun generateSimpleReport(projectFolderPath: String) {
+        val lastReportFilePath = getLastCoverageFilePath()
+        if (lastReportFilePath.isEmpty()) return
+
+        val tempFolder = "${_project.basePath}/.idea/coverme/temp/${UUID.randomUUID()}"
+        val tempFolderFile = File(tempFolder)
+        if (tempFolderFile.exists()) {
+            tempFolderFile.deleteRecursively()
+        }
+
+        val reportFilePath = "$tempFolder/report.html"
+
+        tempFolderFile.mkdirs()
+
+        val settings = _settingsService.getSettings()
+
+        val response = _processHelper.dotCoverCli(
+            DotCoverCliOptions(
+                DotCoverCliCommand.COVER_DOTNET,
+                DotCoverCliReportType.HTML,
+                reportFilePath,
+                projectFolderPath,
+                settings.coverage.hideAutoProperties,
+                true,
+                settings.coverage.coverageFilter,
+                settings.coverage.testsFilter
+            )
+        )
+        if (response.exitCode != 0) return
+
+        saveReport(tempFolder)
+    }
+
+    private fun saveReport(folderPath: String) {
+        val descriptor = FileChooserDescriptor(
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+        )
+            .withTitle("Select Save Location")
+            .withDescription("Choose the location to save the report")
+
+        ApplicationManager.getApplication()
+            .invokeLater {
+                val reportFolderPath = File(folderPath).toPath()
+
+                try {
+                    val selectedFile: VirtualFile? = FileChooser.chooseFile(
+                        descriptor,
+                        _project,
+                        null
+                    )
+                    if (selectedFile == null) {
+                        return@invokeLater
+                    }
+
+                    val targetFolderPath = File(selectedFile.path).toPath()
+
+                    FileHelper.copyFolderRecursively(
+                        reportFolderPath,
+                        targetFolderPath
+                    )
+                    FileHelper.deleteFolderRecursively(reportFolderPath)
+                } catch (e: Exception) {
+
+                } finally {
+                    FileHelper.deleteFolderRecursively(reportFolderPath)
+                }
+            }
     }
 
     private fun getLinesCoverage(windowsFilePath: String): Map<Int, Boolean?> {

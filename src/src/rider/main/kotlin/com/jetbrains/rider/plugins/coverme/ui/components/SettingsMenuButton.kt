@@ -1,6 +1,5 @@
 package com.jetbrains.rider.plugins.coverme.ui.components
 
-import com.intellij.openapi.ui.JBMenuItem
 import com.intellij.openapi.ui.JBPopupMenu
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
@@ -13,6 +12,7 @@ import javax.swing.JButton
 @Suppress("UseJBColor")
 class SettingsMenuButton(
     icon: Icon,
+    menu: JBPopupMenu,
     val activatedColor: JBColor? = null,
     private val hoverLightLevel: Int = 50
 ) :
@@ -65,16 +65,6 @@ class SettingsMenuButton(
                 repaint()
             }
         })
-
-        val menu = JBPopupMenu()
-        menu.add(
-            JBMenuItem("Refesh")
-                .apply {
-                    addActionListener {
-                        // TODO:
-                    }
-                }
-        )
 
         addActionListener {
             menu.show(
