@@ -193,6 +193,7 @@ class CoverMeToolWindow(private val _project: Project) {
                                 _filterTextfield.text
                             )
                         )
+                        if (data.isEmpty()) return
 
                         ApplicationManager.getApplication()
                             .invokeLater {
@@ -217,6 +218,8 @@ class CoverMeToolWindow(private val _project: Project) {
                         _filterTextfield.text
                     )
                 )
+                if (data.isEmpty()) return@executeOnPooledThread
+
                 ApplicationManager.getApplication()
                     .invokeLater {
                         _coverageTable.updateData(data.toTypedArray())

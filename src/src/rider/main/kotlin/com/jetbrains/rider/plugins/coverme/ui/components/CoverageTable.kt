@@ -93,6 +93,8 @@ class CoverageTable(val _project: Project) {
 
 
     fun updateData(data: Array<CoverageData>) {
+        if (data.isEmpty()) return
+
         val nodes = mutableListOf<CoverageTreeNode>()
 
         data.forEach {
