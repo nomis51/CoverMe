@@ -29,7 +29,6 @@ class ProcessHelper {
         }
 
         val arguments = mutableListOf(
-            "dotcover",
             when (options.command) {
                 DotCoverCliCommand.COVER_DOTNET -> "cover-dotnet"
                 else -> throw UnsupportedOperationException()
@@ -41,7 +40,8 @@ class ProcessHelper {
                     else -> throw UnsupportedOperationException()
                 }
             }",
-            "--Output=\"${options.outputPath}\""
+            "--Output=\"${options.outputPath}\"",
+            "--TargetArguments=\"bin/Debug/net8.0/Watson.Tests.dll\""
         )
 
         if (options.hideAutoProperties) {
@@ -64,7 +64,7 @@ class ProcessHelper {
         }
 
         return execute(
-            "dotnet",
+            "dotCover",
             arguments.toTypedArray(),
             options.projectFolderPath
         )
