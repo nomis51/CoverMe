@@ -1,0 +1,6 @@
+@CoverMe_HostAddress = http://localhost:5219
+
+GET {{CoverMe_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

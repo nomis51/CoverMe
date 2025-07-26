@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoverMe", "CoverMe\CoverMe.csproj", "{ACF14E59-FAEA-41A5-BDE3-8C0E82922F23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{BB3AC07F-1D7F-4C88-848F-9501995934AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B7F81C5D-F869-4794-87B5-5C20FEC199D4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACF14E59-FAEA-41A5-BDE3-8C0E82922F23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACF14E59-FAEA-41A5-BDE3-8C0E82922F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACF14E59-FAEA-41A5-BDE3-8C0E82922F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACF14E59-FAEA-41A5-BDE3-8C0E82922F23}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ACF14E59-FAEA-41A5-BDE3-8C0E82922F23} = {BB3AC07F-1D7F-4C88-848F-9501995934AB}
+	EndGlobalSection
+EndGlobal
