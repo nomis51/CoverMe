@@ -210,8 +210,8 @@ tasks.patchPluginXml {
             "<br />\n"
         )
     }
-                        .take(1)
-                        .joinToString())
+        .take(1)
+        .joinToString())
 }
 
 tasks.prepareSandbox {
@@ -226,17 +226,17 @@ tasks.prepareSandbox {
     )
 
     dllFiles.forEach({ f ->
-                         val file = file(f)
-                         from(
-                             file,
-                             { into("${rootProject.name}/dotnet") })
-                     })
+        val file = file(f)
+        from(
+            file,
+            { into("${rootProject.name}/dotnet") })
+    })
 
     doLast {
         dllFiles.forEach({ f ->
-                             val file = file(f)
-                             if (!file.exists()) throw RuntimeException("File ${file} does not exist")
-                         })
+            val file = file(f)
+            if (!file.exists()) throw RuntimeException("File ${file} does not exist")
+        })
     }
 }
 

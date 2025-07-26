@@ -66,7 +66,7 @@ class ProcessHelper {
         return execute(
             "dotCover",
             arguments.toTypedArray(),
-            options.projectFolderPath
+            options.testProject.getFolderPath()
         )
     }
 

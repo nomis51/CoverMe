@@ -75,11 +75,11 @@ class CoverageService(private val _project: Project) {
                 DotCoverCliCommand.COVER_DOTNET,
                 DotCoverCliReportType.DETAILED_XML,
                 reportFilePath,
-                testProject.getFolderPath(),
                 settings.coverage.hideAutoProperties,
                 !options.rebuild,
                 settings.coverage.coverageFilter,
-                settings.coverage.testsFilter
+                settings.coverage.testsFilter,
+                testProject
             )
         )
         if (response.exitCode != 0) return emptyList()
@@ -122,7 +122,7 @@ class CoverageService(private val _project: Project) {
         if (detailed) {
             generateDetailedReport()
         } else {
-            generateSimpleReport(testProject.getFolderPath())
+            generateSimpleReport(testProject)
         }
     }
 
@@ -151,7 +151,7 @@ class CoverageService(private val _project: Project) {
         saveReport(tempFolder)
     }
 
-    private fun generateSimpleReport(projectFolderPath: String) {
+    private fun generateSimpleReport(testProject: TestProject) {
         val lastReportFilePath = getLastCoverageFilePath()
         if (lastReportFilePath.isEmpty()) return
 
@@ -172,11 +172,11 @@ class CoverageService(private val _project: Project) {
                 DotCoverCliCommand.COVER_DOTNET,
                 DotCoverCliReportType.HTML,
                 reportFilePath,
-                projectFolderPath,
                 settings.coverage.hideAutoProperties,
                 true,
                 settings.coverage.coverageFilter,
-                settings.coverage.testsFilter
+                settings.coverage.testsFilter,
+                testProject
             )
         )
         if (response.exitCode != 0) return
