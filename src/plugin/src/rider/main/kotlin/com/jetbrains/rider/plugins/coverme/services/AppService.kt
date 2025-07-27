@@ -75,17 +75,18 @@ class AppService : Disposable {
     }
 
     private fun readConfig() {
-        val filePath = "${System.getProperty("user.home")}/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_CONFIG_FILE_NAME}"
-        val file = File(filePath)
-        if(!file.exists()) {
-            _config = Config(Configuration.DEFAULT_BACKEND_PORT)
-            val json = Json.encodeToString(Json.serializersModule.serializer(), _config)
-            file.writeText(json)
-            return
-        }
-
-        val data = file.readText()
-        val config = Json.decodeFromString<Config>(data)
-        _config = config
+        _config = Config(Configuration.DEFAULT_BACKEND_PORT)
+//        val filePath = "${System.getProperty("user.home")}/${Configuration.APP_FOLDER_NAME}/${Configuration.APP_CONFIG_FILE_NAME}"
+//        val file = File(filePath)
+//        if(!file.exists()) {
+//            _config = Config(Configuration.DEFAULT_BACKEND_PORT)
+//            val json = Json.encodeToString(Json.serializersModule.serializer(), _config)
+//            file.writeText(json)
+//            return
+//        }
+//
+//        val data = file.readText()
+//        val config = Json.decodeFromString<Config>(data)
+//        _config = config
     }
 }

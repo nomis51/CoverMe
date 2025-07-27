@@ -1,6 +1,6 @@
-@CoverMe_HostAddress = http://localhost:5219
+@CoverMe_HostAddress = http://localhost:5263
 
-GET {{CoverMe_HostAddress}}/weatherforecast/
+GET {{CoverMe_HostAddress}}/api/ipc
 Accept: application/json
 
 ###

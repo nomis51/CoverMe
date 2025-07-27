@@ -1,5 +1,8 @@
+using CoverMe.Core.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
+builder.Services.AddAppServices(builder.Environment);
 
 var app = builder.Build();
 app.UseHttpsRedirection();

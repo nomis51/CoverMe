@@ -10,4 +10,8 @@
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.18"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\CoverMe.Core\CoverMe.Core.csproj"/>
+    </ItemGroup>
+
 </Project>

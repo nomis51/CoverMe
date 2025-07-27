@@ -33,7 +33,7 @@ class BackendService : IProtocolService {
         }
 
         val client = OkHttpClient()
-        val url = "${AppService.getInstance().getBackendUrl()}/api/channel"
+        val url = "${AppService.getInstance().getBackendUrl()}/api/ipc"
         val request = Request.Builder().url(url).build()
 
         client.newCall(request)
