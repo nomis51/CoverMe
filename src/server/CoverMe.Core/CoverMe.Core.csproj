@@ -11,8 +11,4 @@
         <ProjectReference Include="..\CoverMe.Shared\CoverMe.Shared.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Models\Ipc\"/>
-    </ItemGroup>
-
 </Project>

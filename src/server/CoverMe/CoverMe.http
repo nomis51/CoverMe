@@ -4,3 +4,8 @@ GET {{CoverMe_HostAddress}}/api/ipc
 Accept: application/json
 
 ###
+
+GET {{CoverMe_HostAddress}}/api/coverage
+Accept: application/json
+
+###

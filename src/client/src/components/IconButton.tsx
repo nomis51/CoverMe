@@ -1,15 +1,31 @@
 ﻿import {twMerge} from "tailwind-merge";
 
 export interface IconButtonProps {
+    className?: string
     icon: string;
-    iconClass?: string
+    iconClassName: string;
+    active?: boolean;
+    onClick?: () => void
 }
 
-export function IconButton({icon, iconClass}: IconButtonProps) {
+export function IconButton({icon, iconClassName, className, active, onClick}: IconButtonProps) {
     return (
         <button type="button"
-                className="flex flex-row items-center justify-center cursor-pointer">
-            <span className={twMerge("material-icons", iconClass ?? "", "text-neutral-700")}>{icon}</span>
+                onClick={() => onClick && onClick()}
+                className={twMerge(
+                    className,
+                    `flex 
+                    flex-row 
+                    items-center 
+                    justify-center 
+                    cursor-pointer 
+                    hover:bg-neutral-300
+                    rounded`,
+                    active ? "bg-neutral-200" : ""
+                )}>
+            <span className={twMerge(iconClassName, "cursor-pointer")}>
+                {icon}
+            </span>
         </button>
     )
 }
